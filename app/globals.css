@@ -20,6 +20,19 @@
   }
 }
 
+/* Theme Variants — Applied to dashboard root via JS */
+.theme-cyberpunk {
+  --bg-primary: #0b0f19;
+}
+
+.theme-electric {
+  --bg-primary: #050e24;
+}
+
+.theme-contrast {
+  --bg-primary: #000000;
+}
+
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
@@ -99,4 +112,38 @@ body {
 
 .animate-pulse-glow {
   animation: pulseGlow 4s infinite ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Mobile Touch Targets & Spacing */
+@media (max-width: 768px) {
+  .glass-card:hover {
+    transform: none;
+  }
 }

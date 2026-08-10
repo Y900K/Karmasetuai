@@ -6,15 +6,17 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Award, Briefcase, CreditCard, BookOpen, Bot, User, LogOut,
   Users, TrendingUp, FilePlus, BarChart3, Brain, Settings, ClipboardCheck, Video,
-  Upload, MapPin, Landmark, FileText, ChevronLeft, ChevronRight, Cpu, Sparkles, Clock, Shield
+  Upload, MapPin, Landmark, FileText, ChevronLeft, ChevronRight, Cpu, Sparkles, Clock, X
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/context";
 
 interface SidebarProps {
   currentRole: string;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export default function Sidebar({ currentRole }: SidebarProps) {
+export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout, switchRole } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
@@ -32,7 +34,7 @@ export default function Sidebar({ currentRole }: SidebarProps) {
         { label: "Job Matches", href: "/student/jobs", icon: Briefcase },
         { label: "Skill Passport", href: "/student/passport", icon: CreditCard },
         { label: "My Learning Hub", href: "/student/learning", icon: BookOpen, badge: "LMS" },
-        { label: "AI Career Mentor", href: "/student/ai-mentor", icon: Bot, badge: "NVIDIA" },
+        { label: "Buddy AI", href: "/student/ai-mentor", icon: Bot, badge: "AI" },
         { label: "My Profile", href: "/student/profile", icon: User },
       ],
     },
@@ -48,7 +50,7 @@ export default function Sidebar({ currentRole }: SidebarProps) {
         { label: "Course Manager", href: "/institute/courses", icon: BookOpen },
         { label: "Create Course", href: "/institute/courses/create", icon: FilePlus, badge: "New" },
         { label: "Batch Analytics", href: "/institute/analytics", icon: BarChart3, badge: "Live" },
-        { label: "AI Curriculum Analyzer", href: "/institute/ai-curriculum", icon: Brain, badge: "NVIDIA" },
+        { label: "AI Curriculum Analyzer", href: "/institute/ai-curriculum", icon: Brain, badge: "AI" },
         { label: "Settings", href: "/institute/settings", icon: Settings },
       ],
     },
@@ -79,27 +81,14 @@ export default function Sidebar({ currentRole }: SidebarProps) {
         { label: "Company Profile", href: "/employer/settings", icon: Settings },
       ],
     },
-    HR: {
+    NATIONAL: {
       title: "National Governance",
       color: "text-amber-400",
       bg: "bg-amber-500/10",
       border: "border-amber-500/30",
       items: [
         { label: "National KPIs", href: "/admin", icon: LayoutDashboard },
-        { label: "AI Regional Heatmap", href: "/admin/analytics", icon: MapPin, badge: "NVIDIA" },
-        { label: "Institutes Directory", href: "/admin/institutes", icon: Landmark },
-        { label: "Compliance Reports", href: "/admin/reports", icon: FileText },
-        { label: "Admin Settings", href: "/admin/settings", icon: Settings },
-      ],
-    },
-    NATIONAL: {
-      title: "National Governance",
-      color: "text-pink-400",
-      bg: "bg-pink-500/10",
-      border: "border-pink-500/30",
-      items: [
-        { label: "National KPIs", href: "/admin", icon: LayoutDashboard },
-        { label: "AI Regional Heatmap", href: "/admin/analytics", icon: MapPin, badge: "NVIDIA" },
+        { label: "AI Regional Heatmap", href: "/admin/analytics", icon: MapPin, badge: "AI" },
         { label: "Institutes Directory", href: "/admin/institutes", icon: Landmark },
         { label: "Compliance Reports", href: "/admin/reports", icon: FileText },
         { label: "Admin Settings", href: "/admin/settings", icon: Settings },
@@ -117,9 +106,14 @@ export default function Sidebar({ currentRole }: SidebarProps) {
     { id: "NATIONAL", label: "Admin" },
   ];
 
-  return (
+  const handleNavClick = () => {
+    // Auto-close sidebar on mobile when a nav link is clicked
+    if (onClose) onClose();
+  };
+
+  const sidebarContent = (
     <aside
-      className={`relative z-40 bg-[#070b16]/95 border-r border-white/10 flex flex-col justify-between transition-all duration-300 ${
+      className={`relative z-50 bg-[#070b16]/98 border-r border-white/10 flex flex-col justify-between transition-all duration-300 ${
         collapsed ? "w-20" : "w-64"
       } min-h-screen select-none`}
     >
@@ -136,7 +130,7 @@ export default function Sidebar({ currentRole }: SidebarProps) {
               <div className="truncate">
                 <div className="flex items-center gap-1">
                   <span className="text-sm font-black text-white">Karma<span className="text-cyan-400">Setu</span></span>
-                  <span className="text-[9px] font-black bg-amber-500/20 text-amber-300 px-1 py-0.2 rounded border border-amber-500/30">AI</span>
+                  <span className="text-[9px] font-black bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded border border-amber-500/30">AI</span>
                 </div>
                 <div className={`text-[10px] font-extrabold uppercase ${activeConfig.color}`}>
                   {activeConfig.title}
@@ -145,12 +139,24 @@ export default function Sidebar({ currentRole }: SidebarProps) {
             )}
           </div>
 
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="w-7 h-7 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-all"
-          >
-            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
+          <div className="flex items-center gap-1">
+            {/* Mobile close button */}
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="md:hidden w-7 h-7 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-all"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+            {/* Desktop collapse button */}
+            <button
+              onClick={() => setCollapsed(!collapsed)}
+              className="hidden md:flex w-7 h-7 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white items-center justify-center transition-all"
+            >
+              {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            </button>
+          </div>
         </div>
 
         {/* Demo Switcher Quick Menu */}
@@ -187,6 +193,7 @@ export default function Sidebar({ currentRole }: SidebarProps) {
               <Link
                 key={idx}
                 href={item.href}
+                onClick={handleNavClick}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all relative group ${
                   isActive
                     ? `${activeConfig.bg} text-white border ${activeConfig.border} shadow-lg shadow-black/40`
@@ -234,4 +241,6 @@ export default function Sidebar({ currentRole }: SidebarProps) {
       </div>
     </aside>
   );
+
+  return sidebarContent;
 }
