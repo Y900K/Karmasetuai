@@ -13,11 +13,42 @@ interface LessonViewerProps {
 }
 
 export default function LessonViewer({ lesson, courseTitle, onLessonComplete }: LessonViewerProps) {
-  const [videoWatched, setVideoWatched] = useState(false);
-  const [readingDone, setReadingDone] = useState(false);
+  const storageKey = `karmasetu_lesson_${lesson.id}`;
+
+  const [videoWatched, setVideoWatched] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(`${storageKey}_video`);
+      return saved === "true";
+    }
+    return false;
+  });
+
+  const [readingDone, setReadingDone] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(`${storageKey}_reading`);
+      return saved === "true";
+    }
+    return false;
+  });
+
   const [showQuiz, setShowQuiz] = useState(false);
-  const [quizScore, setQuizScore] = useState<number | null>(null);
-  const [passed, setPassed] = useState(false);
+
+  const [quizScore, setQuizScore] = useState<number | null>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(`${storageKey}_score`);
+      return saved ? Number(saved) : null;
+    }
+    return null;
+  });
+
+  const [passed, setPassed] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem(`${storageKey}_passed`);
+      return saved === "true";
+    }
+    return false;
+  });
+
   const [certModalOpen, setCertModalOpen] = useState(false);
 
   // Generate 10-Question Fallback Quiz if not present
@@ -38,15 +69,25 @@ export default function LessonViewer({ lesson, courseTitle, onLessonComplete }: 
 
   const handleVideoCompleted = () => {
     setVideoWatched(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`${storageKey}_video`, "true");
+    }
   };
 
   const handleReadingCompleted = () => {
     setReadingDone(true);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`${storageKey}_reading`, "true");
+    }
   };
 
   const handleQuizFinish = (score: number, isPassed: boolean) => {
     setQuizScore(score);
     setPassed(isPassed);
+    if (typeof window !== "undefined") {
+      localStorage.setItem(`${storageKey}_score`, score.toString());
+      localStorage.setItem(`${storageKey}_passed`, isPassed ? "true" : "false");
+    }
 
     if (isPassed) {
       onLessonComplete(lesson.id, score);

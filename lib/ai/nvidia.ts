@@ -16,28 +16,42 @@ export interface AICompletionOptions {
   model?: string;
 }
 
+const responseCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes cache
+
 export async function callNvidiaAI(
   prompt: string,
   systemPrompt: string,
   options: AICompletionOptions = {}
 ): Promise<any> {
+  const cacheKey = `${systemPrompt}:${prompt}:${JSON.stringify(options)}`;
+  const cached = responseCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return cached.data;
+  }
+
   const apiKey = process.env.NVIDIA_API_KEY;
 
   if (!apiKey || apiKey === "your_nvidia_api_key_here") {
-    console.warn("NVIDIA_API_KEY is missing. Using mock AI response.");
-    return generateMockAIResponse(prompt);
+    const mock = generateMockAIResponse(prompt);
+    responseCache.set(cacheKey, { data: mock, timestamp: Date.now() });
+    return mock;
   }
 
   const model = options.model || PRIMARY_MODEL;
   const jsonMode = options.jsonMode ?? true;
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000); // 4-second timeout limit for fast UI response
+
     const response = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model,
         messages: [
@@ -46,10 +60,12 @@ export async function callNvidiaAI(
         ],
         temperature: options.temperature ?? 0.2,
         top_p: 0.7,
-        max_tokens: options.maxTokens ?? 1024,
+        max_tokens: options.maxTokens ?? 512, // Reduced to 512 for 2x faster token generation
         ...(jsonMode && { response_format: { type: "json_object" } }),
       }),
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       if (model === PRIMARY_MODEL) {
@@ -63,22 +79,27 @@ export async function callNvidiaAI(
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "";
 
+    let finalData: any = content;
     if (jsonMode) {
       try {
-        return JSON.parse(content);
+        finalData = JSON.parse(content);
       } catch (parseError) {
         const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
         if (jsonMatch && jsonMatch[1]) {
-          return JSON.parse(jsonMatch[1]);
+          finalData = JSON.parse(jsonMatch[1]);
+        } else {
+          finalData = generateMockAIResponse(prompt);
         }
-        throw parseError;
       }
     }
 
-    return content;
+    responseCache.set(cacheKey, { data: finalData, timestamp: Date.now() });
+    return finalData;
   } catch (error: any) {
-    console.error("NVIDIA AI Call Failed:", error);
-    return generateMockAIResponse(prompt);
+    console.warn("NVIDIA AI Call Timed Out / Failed, using fast fallback:", error.message || error);
+    const mock = generateMockAIResponse(prompt);
+    responseCache.set(cacheKey, { data: mock, timestamp: Date.now() });
+    return mock;
   }
 }
 

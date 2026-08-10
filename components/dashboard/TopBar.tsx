@@ -2,18 +2,39 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
-  Bell, Search, User, Shield, ChevronDown, CheckCircle2, Award, Briefcase, Sparkles, BookOpen
+  Bell, Search, User, Shield, ChevronDown, CheckCircle2, Award, Briefcase, Sparkles, BookOpen, Check
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/context";
 
 export default function TopBar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, role } = useAuth();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [notifications, setNotifications] = useState([
+    { id: "1", title: "New Job Match", desc: "CNC Operator job at Tata Motors Noida matches 94% of your score", time: "5m ago", icon: Briefcase, color: "text-emerald-400", route: "/student/jobs", unread: true },
+    { id: "2", title: "CapStone Verified", desc: "Your Fanuc Lathe G-Code project signed off by Master Mentor", time: "1h ago", icon: CheckCircle2, color: "text-cyan-400", route: "/student/passport", unread: true },
+    { id: "3", title: "New Masterclass", desc: "3-Phase PLC Control panel session scheduled for tomorrow", time: "3h ago", icon: BookOpen, color: "text-purple-400", route: "/student/learning", unread: true },
+  ]);
 
-  // Derive title from pathname
+  const unreadCount = notifications.filter((n) => n.unread).length;
+
+  const markAllRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
+  };
+
+  const handleNotificationClick = (n: typeof notifications[0]) => {
+    setNotifications((prev) =>
+      prev.map((item) => (item.id === n.id ? { ...item, unread: false } : item))
+    );
+    setNotificationsOpen(false);
+    if (n.route) {
+      router.push(n.route);
+    }
+  };
+
   const getPageTitle = () => {
     if (pathname.includes("/student/skills")) return "My Verified Skills & AI Radar Gaps";
     if (pathname.includes("/student/jobs")) return "Live Pre-Filtered MSME Jobs";
@@ -51,12 +72,6 @@ export default function TopBar() {
     return "KarmaSetu AI Portal";
   };
 
-  const sampleNotifications = [
-    { title: "New Job Match", desc: "CNC Operator job at Tata Motors Noida matches 94% of your score", time: "5m ago", icon: Briefcase, color: "text-emerald-400" },
-    { title: "CapStone Verified", desc: "Your Fanuc Lathe G-Code project signed off by Master Mentor", time: "1h ago", icon: CheckCircle2, color: "text-cyan-400" },
-    { title: "New Masterclass", desc: "3-Phase PLC Control panel session scheduled for tomorrow", time: "3h ago", icon: BookOpen, color: "text-purple-400" },
-  ];
-
   return (
     <header className="h-16 border-b border-white/10 bg-[#070b16]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between z-30 sticky top-0">
       
@@ -90,8 +105,12 @@ export default function TopBar() {
             className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 text-slate-300 flex items-center justify-center relative transition-all"
           >
             <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-cyan-400" />
+            {unreadCount > 0 && (
+              <>
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-cyan-400" />
+              </>
+            )}
           </button>
 
           {notificationsOpen && (
@@ -100,16 +119,33 @@ export default function TopBar() {
                 <span className="text-xs font-extrabold text-white flex items-center gap-1.5">
                   <Sparkles className="w-3.5 h-3.5 text-amber-400" /> REAL-TIME NOTIFICATIONS
                 </span>
-                <span className="text-[10px] text-cyan-400 font-bold">3 Unread</span>
+                {unreadCount > 0 ? (
+                  <button
+                    onClick={markAllRead}
+                    className="text-[10px] text-cyan-400 hover:underline font-bold flex items-center gap-1"
+                  >
+                    <Check className="w-3 h-3" /> Mark all read
+                  </button>
+                ) : (
+                  <span className="text-[10px] text-slate-500 font-bold">All caught up ✓</span>
+                )}
               </div>
 
               <div className="space-y-1.5 max-h-64 overflow-y-auto">
-                {sampleNotifications.map((n, i) => {
+                {notifications.map((n) => {
                   const NIcon = n.icon;
                   return (
-                    <div key={i} className="p-2.5 rounded-xl bg-white/5 border border-white/5 flex gap-2.5 items-start hover:bg-white/10 transition-all">
+                    <div
+                      key={n.id}
+                      onClick={() => handleNotificationClick(n)}
+                      className={`p-2.5 rounded-xl border flex gap-2.5 items-start cursor-pointer transition-all ${
+                        n.unread
+                          ? "bg-cyan-500/10 border-cyan-500/30 text-white font-semibold"
+                          : "bg-white/5 border-white/5 text-slate-300 opacity-70"
+                      }`}
+                    >
                       <NIcon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${n.color}`} />
-                      <div>
+                      <div className="w-full">
                         <div className="text-xs font-bold text-white flex justify-between">
                           <span>{n.title}</span>
                           <span className="text-[9px] text-slate-400">{n.time}</span>
