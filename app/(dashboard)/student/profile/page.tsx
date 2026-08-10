@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { User, Upload, Sparkles, Save, RefreshCw, CheckCircle2, FileText, AlertCircle } from "lucide-react";
+import { User, Upload, Sparkles, Save, RefreshCw, CheckCircle2, FileText, AlertCircle, Eye, GraduationCap, Briefcase, Award, Globe, X } from "lucide-react";
 import AutosaveIndicator from "@/components/dashboard/shared/AutosaveIndicator";
 import { useAuth } from "@/lib/auth/context";
 
@@ -13,11 +13,23 @@ export default function StudentProfilePage() {
   const [trade, setTrade] = useState("CNC Machinist & Programmer");
   const [institute, setInstitute] = useState("Government ITI Lucknow");
   const [passingYear, setPassingYear] = useState(2026);
+
+  // Expanded Candidate Profile Fields
+  const [educationLevel, setEducationLevel] = useState("ITI National Trade Certificate (NTC)");
+  const [educationBoard, setEducationBoard] = useState("NCVT / DGT India");
+  const [marksPercentage, setMarksPercentage] = useState("88.5%");
+  const [experienceCompany, setExperienceCompany] = useState("Tata Motors Ancillary Workshop (Noida)");
+  const [experienceRole, setExperienceRole] = useState("Trainee Machinist & G-Code Operator");
+  const [experienceMonths, setExperienceMonths] = useState("12 Months");
+  const [certifications, setCertifications] = useState("NCVT NTC Certificate, Fanuc Lathe Level-2, 5S Safety License");
+  const [languages, setLanguages] = useState("Hindi (Fluent), English (Working)");
+
   const [resumeText, setResumeText] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [parsing, setParsing] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"SAVED" | "SAVING" | "ERROR">("SAVED");
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
 
   const MAX_FILE_SIZE_BYTES = 3 * 1024 * 1024; // 3MB limit
 
@@ -34,7 +46,6 @@ export default function StudentProfilePage() {
     setFileError(null);
     setSelectedFile(file);
 
-    // Read text from file if plain text or simulated reading
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target?.result as string;
@@ -91,11 +102,20 @@ export default function StudentProfilePage() {
             <span>My Profile & AI Resume Parser</span>
           </h1>
           <p className="text-xs text-slate-300 mt-1">
-            Update personal info or upload resume (PDF / Word up to 3MB) to auto-populate your Skill Passport.
+            Update personal info, education, shopfloor experience, and upload resume (PDF / Word up to 3MB).
           </p>
         </div>
 
-        <AutosaveIndicator status={saveStatus} />
+        <div className="flex items-center gap-3">
+          <AutosaveIndicator status={saveStatus} />
+          <button
+            onClick={() => setPreviewModalOpen(true)}
+            className="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-cyan-500/20"
+          >
+            <Eye className="w-4 h-4 text-black" />
+            <span>Preview Candidate Card</span>
+          </button>
+        </div>
       </div>
 
       {/* File Upload & AI Parser Zone */}
@@ -152,9 +172,11 @@ export default function StudentProfilePage() {
         </button>
       </div>
 
-      {/* Profile Form */}
+      {/* Basic Profile Form */}
       <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4 bg-slate-900/90">
-        <h3 className="text-sm font-bold text-white uppercase tracking-wider">Profile Information</h3>
+        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <User className="w-4 h-4 text-cyan-400" /> Basic Contact Information
+        </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -208,6 +230,41 @@ export default function StudentProfilePage() {
               className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400"
             />
           </div>
+        </div>
+      </div>
+
+      {/* Education & Academic Qualifications */}
+      <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4 bg-slate-900/90">
+        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <GraduationCap className="w-4 h-4 text-purple-400" /> Education & Academic Credentials
+        </h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Highest Qualification / Degree</label>
+            <input
+              type="text"
+              value={educationLevel}
+              onChange={(e) => {
+                setEducationLevel(e.target.value);
+                triggerAutosave();
+              }}
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Board / University / Council</label>
+            <input
+              type="text"
+              value={educationBoard}
+              onChange={(e) => {
+                setEducationBoard(e.target.value);
+                triggerAutosave();
+              }}
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+            />
+          </div>
 
           <div>
             <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Institute Name</label>
@@ -218,24 +275,147 @@ export default function StudentProfilePage() {
                 setInstitute(e.target.value);
                 triggerAutosave();
               }}
-              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400"
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Passing Year</label>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Passing Year & Score %</label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                value={passingYear}
+                onChange={(e) => {
+                  setPassingYear(Number(e.target.value));
+                  triggerAutosave();
+                }}
+                className="w-1/2 bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+              />
+              <input
+                type="text"
+                value={marksPercentage}
+                onChange={(e) => {
+                  setMarksPercentage(e.target.value);
+                  triggerAutosave();
+                }}
+                placeholder="e.g. 88.5%"
+                className="w-1/2 bg-slate-950 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Apprenticeship & Work Experience */}
+      <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4 bg-slate-900/90">
+        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <Briefcase className="w-4 h-4 text-emerald-400" /> Apprenticeship & Practical Experience
+        </h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Company / Workshop Name</label>
             <input
-              type="number"
-              value={passingYear}
+              type="text"
+              value={experienceCompany}
               onChange={(e) => {
-                setPassingYear(Number(e.target.value));
+                setExperienceCompany(e.target.value);
                 triggerAutosave();
               }}
-              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400"
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Role / Trade Position</label>
+            <input
+              type="text"
+              value={experienceRole}
+              onChange={(e) => {
+                setExperienceRole(e.target.value);
+                triggerAutosave();
+              }}
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Duration</label>
+            <input
+              type="text"
+              value={experienceMonths}
+              onChange={(e) => {
+                setExperienceMonths(e.target.value);
+                triggerAutosave();
+              }}
+              placeholder="e.g. 12 Months"
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Certifications & Licenses</label>
+            <input
+              type="text"
+              value={certifications}
+              onChange={(e) => {
+                setCertifications(e.target.value);
+                triggerAutosave();
+              }}
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-400"
             />
           </div>
         </div>
       </div>
+
+      {/* Candidate Resume Preview Modal */}
+      {previewModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="glass-card max-w-2xl w-full p-6 sm:p-8 rounded-3xl border border-cyan-500/40 bg-slate-900 space-y-5 animate-fade-in">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <h3 className="text-lg font-black text-white">{fullName}</h3>
+                <p className="text-xs text-cyan-300 font-mono font-bold">{trade} • {institute}</p>
+              </div>
+              <button
+                onClick={() => setPreviewModalOpen(false)}
+                className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-3 text-xs text-slate-300">
+              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                <span className="font-bold text-white block">Academic Education:</span>
+                <p>{educationLevel} ({educationBoard}) — {marksPercentage} ({passingYear})</p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                <span className="font-bold text-white block">Apprenticeship & Experience:</span>
+                <p>{experienceRole} at {experienceCompany} ({experienceMonths})</p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                <span className="font-bold text-white block">Certifications & Licenses:</span>
+                <p>{certifications}</p>
+              </div>
+
+              <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 font-bold flex justify-between items-center">
+                <span>KarmaSetu Skill Passport Credential ID:</span>
+                <span className="font-mono text-sm">CRT-8A92F1 (Score: 94%)</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setPreviewModalOpen(false)}
+              className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs"
+            >
+              Close Candidate Resume Inspector
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );
