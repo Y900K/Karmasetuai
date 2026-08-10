@@ -1,0 +1,24 @@
+name: Supabase Keep-Alive
+on:
+  schedule:
+    - cron: '0 12 */5 * *' # Runs every 5 days at 12:00 UTC
+  workflow_dispatch:         # Allows manual triggering from GitHub UI
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API to prevent 7-day inactivity pause
+        run: |
+          if [ -z "${{ secrets.SUPABASE_URL }}" ] || [ -z "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
+            echo "Secrets SUPABASE_URL or SUPABASE_ANON_KEY not set yet. Skipping ping."
+            exit 0
+          fi
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/institutes?select=id&limit=1" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+          echo "Supabase Keep-Alive Ping HTTP Status: $HTTP_STATUS"
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "Warning: Received non-200 response from Supabase."
+          fi
