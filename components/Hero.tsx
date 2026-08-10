@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { Sparkles, ArrowRight, Lock, Cpu, Award, UserCheck, Briefcase } from "lucide-react";
 import { Language, translations } from "@/lib/i18n";
+import AnimatedEcosystemBridge from "@/components/AnimatedEcosystemBridge";
 
 interface HeroProps {
   onOpenAuth: (role: string) => void;
@@ -58,29 +58,12 @@ export default function Hero({ onOpenAuth, language }: HeroProps) {
           </button>
         </div>
 
-        {/* Central Graphic Container with 4 Feature Cards around it */}
+        {/* Real Animated Live Ecosystem Video-like Bridge Component */}
         <div className="mt-14 max-w-6xl mx-auto relative">
           
-          {/* Main Visual Image Banner */}
-          <div className="glass-card p-3 rounded-3xl border border-cyan-500/30 overflow-hidden shadow-2xl relative group">
-            <div className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full bg-slate-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-bold flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-              <span>KarmaSetu Live Ecosystem</span>
-            </div>
+          <AnimatedEcosystemBridge />
 
-            <div className="relative w-full h-[320px] sm:h-[450px] rounded-2xl overflow-hidden">
-              <Image
-                src="/karmasetu_bridge.jpg"
-                alt="KarmaSetu AI Live Ecosystem Bridge"
-                fill
-                priority
-                className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#070b14] via-transparent to-transparent opacity-80" />
-            </div>
-          </div>
-
-          {/* 4 Floating Feature Cards Grid below Image */}
+          {/* 4 Feature Cards Grid below Animated Video Bridge */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 text-left">
             
             <div className="glass-card p-5 rounded-2xl border border-cyan-500/20 hover:border-cyan-500/40 transition-all">
