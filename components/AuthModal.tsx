@@ -10,6 +10,7 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultRole?: string;
+  onLoginSuccess?: (user: any, role: string) => void;
 }
 
 const ROLES = [
@@ -66,7 +67,12 @@ const DEMO_CREDENTIALS = [
   { role: "Admin", email: "admin@karmasetu.ai", icon: Flag, color: "text-pink-400 border-pink-500/30 bg-pink-500/10" },
 ];
 
-export default function AuthModal({ isOpen, onClose, defaultRole = "STUDENT" }: AuthModalProps) {
+export default function AuthModal({
+  isOpen,
+  onClose,
+  defaultRole = "STUDENT",
+  onLoginSuccess,
+}: AuthModalProps) {
   const [isLogin, setIsLogin] = useState(false);
   const [selectedRole, setSelectedRole] = useState("STUDENT");
 
@@ -132,11 +138,21 @@ export default function AuthModal({ isOpen, onClose, defaultRole = "STUDENT" }: 
           throw new Error(data.error || "Login failed.");
         }
 
+        const userObj = data.user || { email, full_name: email.split("@")[0] };
+        const roleReturned = data.role || selectedRole;
+
         setMessage({
           type: "success",
-          text: data.message || `Welcome to KarmaSetu AI ${data.role || selectedRole} Portal!`,
+          text: data.message || `Welcome to KarmaSetu AI ${roleReturned} Portal!`,
         });
-        setTimeout(() => onClose(), 1200);
+
+        setTimeout(() => {
+          if (onLoginSuccess) {
+            onLoginSuccess(userObj, roleReturned);
+          } else {
+            onClose();
+          }
+        }, 800);
       } else {
         // Call server-side Register API Route
         const res = await fetch("/api/auth/register", {
@@ -165,8 +181,16 @@ export default function AuthModal({ isOpen, onClose, defaultRole = "STUDENT" }: 
 
         setMessage({
           type: "success",
-          text: data.message || `Registration for ${currentRoleObj.btnText} completed!`,
+          text: data.message || `Registration for ${currentRoleObj.btnText} completed! Directing to portal...`,
         });
+
+        setTimeout(() => {
+          if (onLoginSuccess) {
+            onLoginSuccess({ email, full_name: fullName }, selectedRole);
+          } else {
+            onClose();
+          }
+        }, 1000);
       }
     } catch (err: any) {
       console.error(err);

@@ -10,6 +10,7 @@ import StakeholderGrid from "@/components/StakeholderGrid";
 import ImpactStats from "@/components/ImpactStats";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
+import RoleDashboard from "@/components/RoleDashboard";
 import { Language } from "@/lib/i18n";
 
 export default function Home() {
@@ -18,9 +19,21 @@ export default function Home() {
   const [language, setLanguage] = useState<Language>("hinglish");
   const [theme, setTheme] = useState("cyberpunk");
 
+  // Logged In State
+  const [loggedInUser, setLoggedInUser] = useState<any>(null);
+  const [activeRole, setActiveRole] = useState<string>("STUDENT");
+
   const handleOpenAuth = (role = "STUDENT") => {
     setAuthRole(role);
     setAuthOpen(true);
+  };
+
+  const handleLogout = () => {
+    setLoggedInUser(null);
+  };
+
+  const handleSwitchRole = (newRole: string) => {
+    setActiveRole(newRole);
   };
 
   return (
@@ -33,42 +46,60 @@ export default function Home() {
           : "bg-[#070b14]"
       }`}
     >
-      {/* Navbar with Language & Theme Selectors (No Supabase Floating Badge) */}
-      <Navbar
-        onOpenAuth={handleOpenAuth}
-        language={language}
-        onLanguageChange={setLanguage}
-        theme={theme}
-        onThemeChange={setTheme}
-      />
+      {loggedInUser ? (
+        /* LOGGED-IN ROLE DASHBOARD PORTAL */
+        <RoleDashboard
+          user={loggedInUser}
+          role={activeRole}
+          onLogout={handleLogout}
+          onSwitchRole={handleSwitchRole}
+        />
+      ) : (
+        /* PUBLIC LANDING PAGE (ALL ORIGINAL SECTIONS PRESERVED) */
+        <>
+          {/* Navbar with Language & Theme Selectors */}
+          <Navbar
+            onOpenAuth={handleOpenAuth}
+            language={language}
+            onLanguageChange={setLanguage}
+            theme={theme}
+            onThemeChange={setTheme}
+          />
 
-      {/* Hero Banner with Dynamic Language Translation */}
-      <Hero onOpenAuth={handleOpenAuth} language={language} />
+          {/* Hero Banner with Animated Live Ecosystem Video-like Bridge */}
+          <Hero onOpenAuth={handleOpenAuth} language={language} />
 
-      {/* Interactive AI JobReady Index Demo Widget */}
-      <AIDemoWidget />
+          {/* Interactive AI JobReady Index Demo Widget */}
+          <AIDemoWidget />
 
-      {/* Problem vs Solution Side-by-Side Comparison */}
-      <ProblemSolution onOpenAuth={handleOpenAuth} language={language} />
+          {/* Problem vs Solution Side-by-Side Comparison */}
+          <ProblemSolution onOpenAuth={handleOpenAuth} language={language} />
 
-      {/* 2D Workforce Transformation Ecosystem Map Canvas */}
-      <WorkflowDiagram onOpenAuth={handleOpenAuth} language={language} />
+          {/* 2D Workforce Transformation Ecosystem Map Canvas */}
+          <WorkflowDiagram onOpenAuth={handleOpenAuth} language={language} />
 
-      {/* 5-Role Detailed Portal Access Cards */}
-      <StakeholderGrid onOpenAuth={handleOpenAuth} language={language} />
+          {/* 5-Role Detailed Portal Access Cards */}
+          <StakeholderGrid onOpenAuth={handleOpenAuth} language={language} />
 
-      {/* National Impact, 6 Proprietary Pillars, 6 Metrics & National Vision Ribbon */}
-      <ImpactStats onOpenAuth={handleOpenAuth} language={language} />
+          {/* National Impact, 6 Proprietary Pillars, 6 Metrics & National Vision Ribbon */}
+          <ImpactStats onOpenAuth={handleOpenAuth} language={language} />
 
-      {/* Modern Footer */}
-      <Footer />
+          {/* Modern Footer */}
+          <Footer />
 
-      {/* Multi-Role Authentication Modal */}
-      <AuthModal
-        isOpen={authOpen}
-        onClose={() => setAuthOpen(false)}
-        defaultRole={authRole}
-      />
+          {/* Multi-Role Authentication Modal with Login Portal Redirection */}
+          <AuthModal
+            isOpen={authOpen}
+            onClose={() => setAuthOpen(false)}
+            defaultRole={authRole}
+            onLoginSuccess={(userObj, userRole) => {
+              setLoggedInUser(userObj);
+              setActiveRole(userRole || "STUDENT");
+              setAuthOpen(false);
+            }}
+          />
+        </>
+      )}
     </main>
   );
 }
