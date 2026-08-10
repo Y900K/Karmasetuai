@@ -4,14 +4,14 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Bell, Search, User, Shield, ChevronDown, CheckCircle2, Award, Briefcase, Sparkles, BookOpen, Check
+  Bell, Search, User, Shield, ChevronDown, CheckCircle2, Award, Briefcase, Sparkles, BookOpen, Check, LogOut
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/context";
 
 export default function TopBar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, role } = useAuth();
+  const { user, role, logout } = useAuth();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: "1", title: "New Job Match", desc: "CNC Operator job at Tata Motors Noida matches 94% of your score", time: "5m ago", icon: Briefcase, color: "text-emerald-400", route: "/student/jobs", unread: true },
@@ -160,7 +160,7 @@ export default function TopBar() {
           )}
         </div>
 
-        {/* User Badge */}
+        {/* User Badge & Logout */}
         <div className="flex items-center gap-2 pl-2 border-l border-white/10">
           <div className="w-8 h-8 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 flex items-center justify-center font-bold text-xs">
             {user?.full_name?.charAt(0) || "U"}
@@ -169,6 +169,13 @@ export default function TopBar() {
             <div className="text-xs font-bold text-white leading-none">{user?.full_name || "KarmaSetu User"}</div>
             <div className="text-[10px] text-slate-400 leading-none mt-1">{user?.email || "user@karmasetu.ai"}</div>
           </div>
+          <button
+            onClick={logout}
+            className="p-2 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all ml-1"
+            title="Sign Out"
+          >
+            <LogOut className="w-4 h-4 text-red-400" />
+          </button>
         </div>
 
       </div>

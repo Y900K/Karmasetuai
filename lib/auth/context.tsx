@@ -78,6 +78,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     setRole("STUDENT");
     localStorage.removeItem("karmasetu_auth");
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
   };
 
   const switchRole = (newRole: string) => {
