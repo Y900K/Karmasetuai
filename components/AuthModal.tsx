@@ -140,10 +140,34 @@ export default function AuthModal({ isOpen, onClose, defaultRole = "STUDENT" }: 
             },
           },
         });
+
         if (error) throw error;
+
+        // Auto-create database profile record if user object returned
+        if (data?.user) {
+          try {
+            await supabase.from("profiles").upsert({
+              user_id: data.user.id,
+              full_name: fullName,
+              email: email,
+              phone: phone,
+              role: selectedRole,
+            });
+
+            if (selectedRole === "STUDENT") {
+              await supabase.from("student_details").upsert({
+                user_id: data.user.id,
+                trade_branch: trade || "General Technical",
+              });
+            }
+          } catch (dbErr) {
+            console.warn("Post-signup profile upsert note:", dbErr);
+          }
+        }
+
         setMessage({
           type: "success",
-          text: `Registration for ${currentRoleObj.btnText} initiated! Check email for confirmation.`,
+          text: `Registration for ${currentRoleObj.btnText} completed! Please check your email to confirm your account.`,
         });
       }
     } catch (err: any) {
@@ -212,7 +236,7 @@ export default function AuthModal({ isOpen, onClose, defaultRole = "STUDENT" }: 
 
         {/* Form Body */}
         {isLogin ? (
-          /* SIGN IN MODE (Screenshot 4) */
+          /* SIGN IN MODE */
           <div className="space-y-6">
             
             {/* 1-Click Quick Demo Credentials Panel */}
@@ -303,7 +327,7 @@ export default function AuthModal({ isOpen, onClose, defaultRole = "STUDENT" }: 
 
           </div>
         ) : (
-          /* REGISTRATION MODE (Screenshots 1, 2, 3) */
+          /* REGISTRATION MODE */
           <div className="space-y-5">
             
             {/* Account Type Selector (6 Role Tiles) */}
