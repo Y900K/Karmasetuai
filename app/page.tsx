@@ -10,10 +10,13 @@ import StakeholderGrid from "@/components/StakeholderGrid";
 import ImpactStats from "@/components/ImpactStats";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
+import { Language } from "@/lib/i18n";
 
 export default function Home() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authRole, setAuthRole] = useState("STUDENT");
+  const [language, setLanguage] = useState<Language>("hinglish");
+  const [theme, setTheme] = useState("cyberpunk");
 
   const handleOpenAuth = (role = "STUDENT") => {
     setAuthRole(role);
@@ -21,27 +24,41 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0b0f19] text-slate-100 selection:bg-blue-500 selection:text-white">
-      {/* Global Glass Navbar */}
-      <Navbar onOpenAuth={handleOpenAuth} />
+    <main
+      className={`min-h-screen text-slate-100 selection:bg-cyan-500 selection:text-black transition-colors ${
+        theme === "electric"
+          ? "bg-[#050e24]"
+          : theme === "contrast"
+          ? "bg-[#000000]"
+          : "bg-[#070b14]"
+      }`}
+    >
+      {/* Navbar with Language & Theme Selectors (No Supabase Floating Badge) */}
+      <Navbar
+        onOpenAuth={handleOpenAuth}
+        language={language}
+        onLanguageChange={setLanguage}
+        theme={theme}
+        onThemeChange={setTheme}
+      />
 
-      {/* Hero Banner with Live Ticker */}
-      <Hero onOpenAuth={handleOpenAuth} />
+      {/* Hero Banner with Dynamic Language Translation */}
+      <Hero onOpenAuth={handleOpenAuth} language={language} />
 
       {/* Interactive AI JobReady Index Demo Widget */}
       <AIDemoWidget />
 
       {/* Problem vs Solution Side-by-Side Comparison */}
-      <ProblemSolution />
+      <ProblemSolution onOpenAuth={handleOpenAuth} language={language} />
 
-      {/* Closed-Loop 6-Step Learner Journey */}
-      <WorkflowDiagram />
+      {/* 2D Workforce Transformation Ecosystem Map Canvas */}
+      <WorkflowDiagram onOpenAuth={handleOpenAuth} language={language} />
 
-      {/* 4-Stakeholder Tabbed Value Grid */}
-      <StakeholderGrid onOpenAuth={handleOpenAuth} />
+      {/* 5-Role Detailed Portal Access Cards */}
+      <StakeholderGrid onOpenAuth={handleOpenAuth} language={language} />
 
-      {/* National Impact & UN SDGs */}
-      <ImpactStats />
+      {/* National Impact, 6 Proprietary Pillars, 6 Metrics & National Vision Ribbon */}
+      <ImpactStats onOpenAuth={handleOpenAuth} language={language} />
 
       {/* Modern Footer */}
       <Footer />

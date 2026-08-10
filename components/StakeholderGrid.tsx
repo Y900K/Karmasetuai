@@ -1,145 +1,145 @@
 "use client";
 
-import React, { useState } from "react";
-import { GraduationCap, Building2, Landmark, Factory, CheckCircle2 } from "lucide-react";
+import React from "react";
+import { GraduationCap, Landmark, Factory, Building2, UserCheck, CheckCircle2, ChevronRight } from "lucide-react";
+import { Language, translations } from "@/lib/i18n";
 
 interface StakeholderGridProps {
   onOpenAuth: (role: string) => void;
+  language: Language;
 }
 
-const STAKEHOLDERS = [
+const ROLES = [
   {
     id: "STUDENT",
-    title: "Students & Job Seekers",
-    subtitle: "ITI, Polytechnic & Degree Technical Graduates",
+    title: "JobReady Passport",
+    subtitle: "Student",
+    desc: "Skill Passport & JobReady Index",
     icon: GraduationCap,
-    color: "from-blue-500 to-indigo-500",
-    benefits: [
-      "Digital Skill Passport with tamper-proof QR verification",
-      "Personalized AI learning roadmap to close identified skill gaps",
-      "AI-simulated interview practice with real-time feedback",
-      "Direct visibility to verified hiring MSMEs in UP & Uttarakhand",
+    color: "border-cyan-500/40 text-cyan-400 bg-cyan-500/10",
+    features: [
+      "Verifiable Skill Passport",
+      "AI Skill Gap Radar",
+      "Direct MSME Matching",
     ],
-    cta: "Sign Up as Student",
   },
   {
     id: "INSTITUTE_ADMIN",
-    title: "ITIs, Polytechnics & Colleges",
-    subtitle: "Technical Vocational Institutes & Universities",
+    title: "NCVT Batch Portal",
+    subtitle: "Institute",
+    desc: "Batch tracking & placement dashboard",
     icon: Landmark,
-    color: "from-indigo-500 to-purple-500",
-    benefits: [
-      "SaaS dashboard tracking institutional skill gap heatmaps",
-      "Accelerated placement rates & improved employer satisfaction",
-      "Streamlined NIRF, NCTVT, and Accreditation reporting",
-      "Direct integration of Industry Expert-Led practical modules",
+    color: "border-blue-500/40 text-blue-400 bg-blue-500/10",
+    features: [
+      "Curriculum Gap Insights",
+      "Employer Demand Feeds",
+      "Automated Placement Reports",
     ],
-    cta: "Partner Your Institute",
+  },
+  {
+    id: "INDUSTRY_MENTOR",
+    title: "Master Mentor Hub",
+    subtitle: "Industry",
+    desc: "Practical verification & master portal",
+    icon: UserCheck,
+    color: "border-purple-500/40 text-purple-400 bg-purple-500/10",
+    features: [
+      "CapStone Project Verification",
+      "Live Masterclasses",
+      "Skill Rating Authority",
+    ],
   },
   {
     id: "EMPLOYER_MSME",
-    title: "MSMEs & Industrial Plants",
-    subtitle: "Manufacturing, Automotive & Technical Enterprises",
+    title: "MSME Direct Hiring",
+    subtitle: "Employer",
+    desc: "Zero-retraining candidate hiring",
     icon: Factory,
-    color: "from-purple-500 to-emerald-500",
-    benefits: [
-      "Access pre-verified candidates with JobReady Index™ scores",
-      "Reduce hiring time from 60–90 days down to a few days",
-      "Success-based hiring model with zero initial upfront risk",
-      "Significantly reduced onboarding time & lower early attrition",
+    color: "border-emerald-500/40 text-emerald-400 bg-emerald-500/10",
+    features: [
+      "JobReady 80+ Pre-Filtered",
+      "Instant CapStone Video Reviews",
+      "10-Day Hiring Cycles",
     ],
-    cta: "Hire Verified Candidates",
   },
   {
-    id: "SUPER_ADMIN",
-    title: "State & Central Government",
-    subtitle: "Skill Development Missions & Department Partnerships",
+    id: "HR_MANAGER",
+    title: "HR Talent Suite",
+    subtitle: "HR / Manager",
+    desc: "Team panel & internal hiring control",
     icon: Building2,
-    color: "from-emerald-500 to-teal-500",
-    benefits: [
-      "Transparent workforce intelligence and skilling expenditure ROI",
-      "Full alignment with Skill India Mission, NEP 2020 & MSME initiatives",
-      "State-level skill deficit mapping for targeted curriculum updates",
-      "Verifiable employment tracking data at regional scale",
+    color: "border-amber-500/40 text-amber-400 bg-amber-500/10",
+    features: [
+      "Team Role Authorization",
+      "Internal Talent Pipeline",
+      "Placement Metrics",
     ],
-    cta: "Explore Government Data API",
   },
 ];
 
-export default function StakeholderGrid({ onOpenAuth }: StakeholderGridProps) {
-  const [activeTab, setActiveTab] = useState("STUDENT");
-
-  const current = STAKEHOLDERS.find((s) => s.id === activeTab) || STAKEHOLDERS[0];
-  const Icon = current.icon;
+export default function StakeholderGrid({ onOpenAuth, language }: StakeholderGridProps) {
+  const t = translations[language] || translations.hinglish;
 
   return (
-    <section id="stakeholders" className="py-20 bg-slate-950/50 relative">
+    <section id="stakeholders" className="py-20 bg-slate-950/60 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
-            Designed for Every <span className="gradient-text">Workforce Stakeholder</span>
+        {/* Section Header */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            {t.selectRoleTitle}
           </h2>
-          <p className="mt-4 text-slate-400 text-sm sm:text-base">
-            KarmaSetu AI delivers tailored value across the entire technical education and manufacturing value chain.
+          <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
+            {t.selectRoleSub}
           </p>
         </div>
 
-        {/* Tab Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-          {STAKEHOLDERS.map((s) => {
-            const TabIcon = s.icon;
-            const isSelected = activeTab === s.id;
+        {/* 5 Role Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+          {ROLES.map((r) => {
+            const Icon = r.icon;
             return (
-              <button
-                key={s.id}
-                onClick={() => setActiveTab(s.id)}
-                className={`px-5 py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${
-                  isSelected
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-500/25"
-                    : "glass-card text-slate-400 hover:text-white hover:border-white/20"
-                }`}
+              <div
+                key={r.id}
+                className="glass-card p-6 rounded-3xl border border-white/10 hover:border-cyan-500/40 transition-all flex flex-col justify-between group"
               >
-                <TabIcon className="w-4 h-4" />
-                <span>{s.title.split("&")[0]}</span>
-              </button>
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`w-10 h-10 rounded-2xl border flex items-center justify-center ${r.color}`}>
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
+                      {r.subtitle}
+                    </span>
+                  </div>
+
+                  <h3 className="text-base font-bold text-white group-hover:text-cyan-300 transition-colors">
+                    {r.title}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-1 mb-4 leading-normal">
+                    {r.desc}
+                  </p>
+
+                  <div className="space-y-2 pt-3 border-t border-white/10 mb-6">
+                    {r.features.map((f, idx) => (
+                      <div key={idx} className="flex items-center gap-2 text-xs text-slate-300">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        <span className="text-[11px] leading-tight">{f}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => onOpenAuth(r.id)}
+                  className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-slate-800/90 border border-white/15 hover:border-cyan-400 hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-1.5"
+                >
+                  <span>Login / Register</span>
+                  <ChevronRight className="w-3.5 h-3.5 text-cyan-400" />
+                </button>
+              </div>
             );
           })}
-        </div>
-
-        {/* Tab Detail Card */}
-        <div className="glass-card p-8 sm:p-10 rounded-3xl max-w-4xl mx-auto border border-white/10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-          
-          <div className="md:col-span-1 text-center md:text-left">
-            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-tr ${current.color} p-0.5 shadow-xl mx-auto md:mx-0 mb-4`}>
-              <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
-                <Icon className="w-8 h-8 text-white" />
-              </div>
-            </div>
-            <h3 className="text-xl font-bold text-white">{current.title}</h3>
-            <p className="text-xs text-slate-400 mt-1">{current.subtitle}</p>
-
-            <button
-              onClick={() => onOpenAuth(current.id)}
-              className="mt-6 w-full py-3 px-4 rounded-xl text-xs font-bold text-white btn-primary-glow"
-            >
-              {current.cta}
-            </button>
-          </div>
-
-          <div className="md:col-span-2 space-y-4">
-            <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">Key Benefits & Capabilities:</h4>
-            <div className="space-y-3">
-              {current.benefits.map((b, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/5">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-xs text-slate-200 leading-relaxed">{b}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
 
       </div>

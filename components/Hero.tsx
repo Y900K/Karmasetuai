@@ -1,92 +1,122 @@
 "use client";
 
 import React from "react";
-import { Sparkles, ArrowRight, ShieldCheck, Award, Building2, GraduationCap, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
+import { Sparkles, ArrowRight, Lock, Cpu, Award, UserCheck, Briefcase } from "lucide-react";
+import { Language, translations } from "@/lib/i18n";
 
 interface HeroProps {
   onOpenAuth: (role: string) => void;
+  language: Language;
 }
 
-export default function Hero({ onOpenAuth }: HeroProps) {
+export default function Hero({ onOpenAuth, language }: HeroProps) {
+  const t = translations[language] || translations.hinglish;
+
   return (
-    <section className="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden">
+    <section className="relative pt-10 pb-16 md:pt-16 md:pb-24 overflow-hidden">
       
-      {/* Background Decorative Lighting */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-blue-600/15 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* Background Lighting Gradients */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/4 w-[350px] h-[350px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
         
         {/* Top Tagline Pill */}
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-blue-500/30 text-blue-400 text-xs font-semibold uppercase tracking-wider mb-8 animate-fade-in">
-          <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-          <span>India&apos;s AI-Powered Employability Ecosystem</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-cyan-500/30 text-cyan-300 text-xs font-bold uppercase tracking-wider mb-6 animate-pulse-glow">
+          <Sparkles className="w-4 h-4 text-cyan-400" />
+          <span>{t.heroTag}</span>
         </div>
 
         {/* Main Headline */}
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white max-w-5xl mx-auto leading-[1.15]">
-          Bridging India&apos;s <br className="hidden sm:block" />
-          <span className="gradient-text">Industry Readiness Gap</span>
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-5xl mx-auto leading-[1.1]">
+          From Learning to Earning <br className="hidden sm:block" />
+          — <span className="gradient-text">Powered by AI</span>
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-6 text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed">
-          Connecting technical learners (ITIs & Polytechnics), training institutes, MSMEs, and government 
-          through one intelligent, verified workforce ecosystem.
+        <p className="mt-6 text-base sm:text-lg text-slate-300 max-w-3xl mx-auto font-normal leading-relaxed">
+          {t.heroSub}
         </p>
 
-        {/* Dual Role Call To Action Buttons */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
+        {/* Action Buttons */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
           <button
             onClick={() => onOpenAuth("STUDENT")}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-bold text-white btn-primary-glow flex items-center justify-center gap-3 group"
+            className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-extrabold text-black bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-400 hover:scale-105 shadow-xl shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 group"
           >
-            <GraduationCap className="w-5 h-5 text-blue-200" />
-            <span>Check JobReady Index™</span>
+            <span>{t.btnStart}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </button>
           
           <button
-            onClick={() => onOpenAuth("EMPLOYER_MSME")}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-bold text-slate-200 btn-secondary-glass flex items-center justify-center gap-3 hover:text-white"
+            onClick={() => onOpenAuth("STUDENT")}
+            className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-bold text-slate-200 bg-slate-900/80 border border-white/15 hover:border-white/30 hover:bg-slate-800 flex items-center justify-center gap-2 transition-all"
           >
-            <Building2 className="w-5 h-5 text-emerald-400" />
-            <span>Hire Job-Ready Talent</span>
+            <Lock className="w-4 h-4 text-amber-400" />
+            <span>{t.btnLogin}</span>
           </button>
         </div>
 
-        {/* Key Feature Highlights Pill Badges */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-6 text-xs font-medium text-slate-400">
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Digital Skill Passport
-          </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-blue-400" /> Competency Verification
-          </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-4 h-4 text-indigo-400" /> Smart MSME Matching
-          </span>
-        </div>
+        {/* Central Graphic Container with 4 Feature Cards around it */}
+        <div className="mt-14 max-w-6xl mx-auto relative">
+          
+          {/* Main Visual Image Banner */}
+          <div className="glass-card p-3 rounded-3xl border border-cyan-500/30 overflow-hidden shadow-2xl relative group">
+            <div className="absolute top-4 left-4 z-20 px-3 py-1.5 rounded-full bg-slate-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-bold flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+              <span>KarmaSetu Live Ecosystem</span>
+            </div>
 
-        {/* Live Pilot Metric Ticker Banner */}
-        <div className="mt-16 pt-10 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-          <div className="glass-card p-4 rounded-2xl text-center">
-            <div className="text-3xl font-black text-white gradient-text">2,000+</div>
-            <div className="text-xs text-slate-400 mt-1 font-medium">Phase-1 Learners</div>
+            <div className="relative w-full h-[320px] sm:h-[450px] rounded-2xl overflow-hidden">
+              <Image
+                src="/karmasetu_bridge.jpg"
+                alt="KarmaSetu AI Live Ecosystem Bridge"
+                fill
+                priority
+                className="object-cover object-center group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#070b14] via-transparent to-transparent opacity-80" />
+            </div>
           </div>
-          <div className="glass-card p-4 rounded-2xl text-center">
-            <div className="text-3xl font-black text-white gradient-text">50+</div>
-            <div className="text-xs text-slate-400 mt-1 font-medium">MSME Partners</div>
+
+          {/* 4 Floating Feature Cards Grid below Image */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6 text-left">
+            
+            <div className="glass-card p-5 rounded-2xl border border-cyan-500/20 hover:border-cyan-500/40 transition-all">
+              <div className="w-9 h-9 rounded-xl bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mb-3">
+                <Cpu className="w-5 h-5" />
+              </div>
+              <h4 className="text-sm font-bold text-white mb-1">{t.radarTitle}</h4>
+              <p className="text-xs text-slate-400 leading-relaxed">{t.radarDesc}</p>
+            </div>
+
+            <div className="glass-card p-5 rounded-2xl border border-blue-500/20 hover:border-blue-500/40 transition-all">
+              <div className="w-9 h-9 rounded-xl bg-blue-500/20 border border-blue-500/30 text-blue-400 flex items-center justify-center mb-3">
+                <Award className="w-5 h-5" />
+              </div>
+              <h4 className="text-sm font-bold text-white mb-1">{t.passportTitle}</h4>
+              <p className="text-xs text-slate-400 leading-relaxed">{t.passportDesc}</p>
+            </div>
+
+            <div className="glass-card p-5 rounded-2xl border border-purple-500/20 hover:border-purple-500/40 transition-all">
+              <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 flex items-center justify-center mb-3">
+                <UserCheck className="w-5 h-5" />
+              </div>
+              <h4 className="text-sm font-bold text-white mb-1">{t.mentorTitle}</h4>
+              <p className="text-xs text-slate-400 leading-relaxed">{t.mentorDesc}</p>
+            </div>
+
+            <div className="glass-card p-5 rounded-2xl border border-emerald-500/20 hover:border-emerald-500/40 transition-all">
+              <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mb-3">
+                <Briefcase className="w-5 h-5" />
+              </div>
+              <h4 className="text-sm font-bold text-white mb-1">{t.hiringTitle}</h4>
+              <p className="text-xs text-slate-400 leading-relaxed">{t.hiringDesc}</p>
+            </div>
+
           </div>
-          <div className="glass-card p-4 rounded-2xl text-center">
-            <div className="text-3xl font-black text-white gradient-text">20+</div>
-            <div className="text-xs text-slate-400 mt-1 font-medium">Partner Institutes</div>
-          </div>
-          <div className="glass-card p-4 rounded-2xl text-center">
-            <div className="text-3xl font-black text-emerald-400">90 Days</div>
-            <div className="text-xs text-slate-400 mt-1 font-medium">Placement Goal</div>
-          </div>
+
         </div>
 
       </div>
