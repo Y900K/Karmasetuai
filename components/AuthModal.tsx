@@ -5,7 +5,6 @@ import {
   X, Cpu, GraduationCap, Landmark, UserCheck, Briefcase, Shield, Flag,
   Mail, Lock, Phone, Building, Award, ChevronRight, Sparkles, CheckCircle2
 } from "lucide-react";
-import { supabase } from "@/lib/supabase/client";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -121,51 +120,57 @@ export default function AuthModal({ isOpen, onClose, defaultRole = "STUDENT" }: 
 
     try {
       if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) {
-          // If auth fails on demo credentials or unconfirmed account, show friendly status
-          if (error.message.includes("Invalid login credentials") || error.message.includes("Forbidden")) {
-            setMessage({
-              type: "success",
-              text: `Signed in as ${email}! Redirecting to ${selectedRole} dashboard...`,
-            });
-            setTimeout(() => onClose(), 1200);
-            return;
-          }
-          throw error;
-        }
-        setMessage({ type: "success", text: "Signed in successfully! Redirecting..." });
-        setTimeout(() => onClose(), 1200);
-      } else {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: fullName,
-              phone: phone,
-              role: selectedRole,
-              institute_name: instituteName,
-              trade: trade,
-              roll_no: rollNo,
-              ncvt_code: codeNcvt,
-              company_name: companyName,
-              designation: designation,
-              experience: experience,
-            },
-          },
+        // Call server-side Login API Route
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
         });
 
-        if (error && !error.message.includes("Forbidden")) throw error;
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || "Login failed.");
+        }
 
         setMessage({
           type: "success",
-          text: `Registration for ${currentRoleObj.btnText} submitted successfully! Please check your email to confirm.`,
+          text: data.message || `Welcome to KarmaSetu AI ${data.role || selectedRole} Portal!`,
+        });
+        setTimeout(() => onClose(), 1200);
+      } else {
+        // Call server-side Register API Route
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            password,
+            fullName,
+            phone,
+            role: selectedRole,
+            instituteName,
+            trade,
+            rollNo,
+            codeNcvt,
+            companyName,
+            designation,
+            experience,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.error || "Registration failed.");
+        }
+
+        setMessage({
+          type: "success",
+          text: data.message || `Registration for ${currentRoleObj.btnText} completed!`,
         });
       }
     } catch (err: any) {
       console.error(err);
-      setMessage({ type: "error", text: err.message || "Authentication failed. Please check your credentials." });
+      setMessage({ type: "error", text: err.message || "Authentication failed." });
     } finally {
       setLoading(false);
     }
