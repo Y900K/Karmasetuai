@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import AIDemoWidget from "@/components/AIDemoWidget";
@@ -10,30 +11,38 @@ import StakeholderGrid from "@/components/StakeholderGrid";
 import ImpactStats from "@/components/ImpactStats";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
-import RoleDashboard from "@/components/RoleDashboard";
 import { Language } from "@/lib/i18n";
+import { AuthProvider, useAuth } from "@/lib/auth/context";
 
-export default function Home() {
+function LandingPageContent() {
+  const router = useRouter();
+  const { login } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [authRole, setAuthRole] = useState("STUDENT");
   const [language, setLanguage] = useState<Language>("hinglish");
   const [theme, setTheme] = useState("cyberpunk");
-
-  // Logged In State
-  const [loggedInUser, setLoggedInUser] = useState<any>(null);
-  const [activeRole, setActiveRole] = useState<string>("STUDENT");
 
   const handleOpenAuth = (role = "STUDENT") => {
     setAuthRole(role);
     setAuthOpen(true);
   };
 
-  const handleLogout = () => {
-    setLoggedInUser(null);
-  };
+  const handleLoginSuccess = (userObj: any, userRole: string) => {
+    login(userObj, userRole);
+    setAuthOpen(false);
 
-  const handleSwitchRole = (newRole: string) => {
-    setActiveRole(newRole);
+    // Route to role-specific dashboard with persistent sidebars
+    const roleRoutes: Record<string, string> = {
+      STUDENT: "/student",
+      INSTITUTE: "/institute",
+      INDUSTRY: "/expert",
+      EMPLOYER: "/employer",
+      HR: "/admin",
+      NATIONAL: "/admin",
+    };
+
+    const targetRoute = roleRoutes[userRole] || "/student";
+    router.push(targetRoute);
   };
 
   return (
@@ -46,60 +55,51 @@ export default function Home() {
           : "bg-[#070b14]"
       }`}
     >
-      {loggedInUser ? (
-        /* LOGGED-IN ROLE DASHBOARD PORTAL */
-        <RoleDashboard
-          user={loggedInUser}
-          role={activeRole}
-          onLogout={handleLogout}
-          onSwitchRole={handleSwitchRole}
-        />
-      ) : (
-        /* PUBLIC LANDING PAGE (ALL ORIGINAL SECTIONS PRESERVED) */
-        <>
-          {/* Navbar with Language & Theme Selectors */}
-          <Navbar
-            onOpenAuth={handleOpenAuth}
-            language={language}
-            onLanguageChange={setLanguage}
-            theme={theme}
-            onThemeChange={setTheme}
-          />
+      {/* PUBLIC LANDING PAGE (ALL ORIGINAL SECTIONS PRESERVED) */}
+      <Navbar
+        onOpenAuth={handleOpenAuth}
+        language={language}
+        onLanguageChange={setLanguage}
+        theme={theme}
+        onThemeChange={setTheme}
+      />
 
-          {/* Hero Banner with Animated Live Ecosystem Video-like Bridge */}
-          <Hero onOpenAuth={handleOpenAuth} language={language} />
+      {/* Hero Banner with Animated Live Ecosystem Video-like Bridge */}
+      <Hero onOpenAuth={handleOpenAuth} language={language} />
 
-          {/* Interactive AI JobReady Index Demo Widget */}
-          <AIDemoWidget />
+      {/* Interactive AI JobReady Index Demo Widget */}
+      <AIDemoWidget />
 
-          {/* Problem vs Solution Side-by-Side Comparison */}
-          <ProblemSolution onOpenAuth={handleOpenAuth} language={language} />
+      {/* Problem vs Solution Side-by-Side Comparison */}
+      <ProblemSolution onOpenAuth={handleOpenAuth} language={language} />
 
-          {/* 2D Workforce Transformation Ecosystem Map Canvas */}
-          <WorkflowDiagram onOpenAuth={handleOpenAuth} language={language} />
+      {/* 2D Workforce Transformation Ecosystem Map Canvas */}
+      <WorkflowDiagram onOpenAuth={handleOpenAuth} language={language} />
 
-          {/* 5-Role Detailed Portal Access Cards */}
-          <StakeholderGrid onOpenAuth={handleOpenAuth} language={language} />
+      {/* 5-Role Detailed Portal Access Cards */}
+      <StakeholderGrid onOpenAuth={handleOpenAuth} language={language} />
 
-          {/* National Impact, 6 Proprietary Pillars, 6 Metrics & National Vision Ribbon */}
-          <ImpactStats onOpenAuth={handleOpenAuth} language={language} />
+      {/* National Impact, 6 Proprietary Pillars, 6 Metrics & National Vision Ribbon */}
+      <ImpactStats onOpenAuth={handleOpenAuth} language={language} />
 
-          {/* Modern Footer */}
-          <Footer />
+      {/* Modern Footer */}
+      <Footer />
 
-          {/* Multi-Role Authentication Modal with Login Portal Redirection */}
-          <AuthModal
-            isOpen={authOpen}
-            onClose={() => setAuthOpen(false)}
-            defaultRole={authRole}
-            onLoginSuccess={(userObj, userRole) => {
-              setLoggedInUser(userObj);
-              setActiveRole(userRole || "STUDENT");
-              setAuthOpen(false);
-            }}
-          />
-        </>
-      )}
+      {/* Multi-Role Authentication Modal */}
+      <AuthModal
+        isOpen={authOpen}
+        onClose={() => setAuthOpen(false)}
+        defaultRole={authRole}
+        onLoginSuccess={handleLoginSuccess}
+      />
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <AuthProvider>
+      <LandingPageContent />
+    </AuthProvider>
   );
 }
