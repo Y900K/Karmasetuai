@@ -27,7 +27,8 @@ export default function AiMentorPage() {
       });
       const data = await res.json();
       if (data.success && data.response) {
-        setMessages([...newMsgs, { role: "assistant", content: data.response }]);
+        const reply = typeof data.response === "string" ? data.response : JSON.stringify(data.response);
+        setMessages([...newMsgs, { role: "assistant", content: reply }]);
       } else {
         setMessages([...newMsgs, { role: "assistant", content: "In CNC Machinist trade, starting salaries in Noida MSMEs range from ₹22,000 to ₹32,000/month. Completing Fanuc G-Code & Micrometer certification increases offer rates by 40%." }]);
       }
