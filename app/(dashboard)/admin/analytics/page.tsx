@@ -2,61 +2,10 @@
 
 import React, { useState } from "react";
 import { MapPin, Sparkles, RefreshCw, CheckCircle2, Building, AlertTriangle } from "lucide-react";
+import { useEcosystemStore } from "@/lib/store/EcosystemStore";
 
 export default function AdminAnalyticsPage() {
-  const districts = [
-    {
-      name: "Gautam Buddha Nagar (Noida)",
-      state: "Uttar Pradesh",
-      placementRate: 92,
-      status: "EXCELLENT",
-      totalStudentsPlaced: 1850,
-      topDemandTrades: ["CNC Machinist", "Robotics Operator", "CAD/CAM Designer"],
-      supplyDeficitTrades: ["IoT Sensor Specialist", "Automated Quality Tech"],
-      keyIndustrialClusters: ["Noida Phase II Sector 80", "Greater Noida Ecotech IT Park"],
-    },
-    {
-      name: "Haridwar (SIDCUL)",
-      state: "Uttarakhand",
-      placementRate: 88,
-      status: "HIGH",
-      totalStudentsPlaced: 1420,
-      topDemandTrades: ["Pharma Packaging Operator", "Industrial Electrician"],
-      supplyDeficitTrades: ["PLC Automation Programmer", "Cleanroom Specialist"],
-      keyIndustrialClusters: ["SIDCUL Industrial Area", "Bahadrabad Cluster"],
-    },
-    {
-      name: "Kanpur Nagar",
-      state: "Uttar Pradesh",
-      placementRate: 64,
-      status: "DEFICIT",
-      totalStudentsPlaced: 980,
-      topDemandTrades: ["Leather Tanner Fabricator", "Mechanical Fitter"],
-      supplyDeficitTrades: ["CNC Turning Operator", "QA/QC Inspection Tech"],
-      keyIndustrialClusters: ["Dada Nagar Industrial Estate", "Panki Industrial Area"],
-    },
-    {
-      name: "Lucknow Central",
-      state: "Uttar Pradesh",
-      placementRate: 85,
-      status: "GOOD",
-      totalStudentsPlaced: 1260,
-      topDemandTrades: ["Industrial Electrician", "HVAC Maintenance Tech"],
-      supplyDeficitTrades: ["Solar Grid Technician", "Heavy Diesel Mechanic"],
-      keyIndustrialClusters: ["Chinhat Industrial Area", "Amausi Industrial Estate"],
-    },
-    {
-      name: "Pune Industrial Belt",
-      state: "Maharashtra",
-      placementRate: 90,
-      status: "EXCELLENT",
-      totalStudentsPlaced: 2100,
-      topDemandTrades: ["Automotive Assembly Tech", "Mechatronics Specialist"],
-      supplyDeficitTrades: ["EV Battery Pack Assembler", "Robotic Arm Programmer"],
-      keyIndustrialClusters: ["Pimpri-Chinchwad MIDC", "Chakan Auto Hub", "Bhosari"],
-    },
-  ];
-
+  const { districts } = useEcosystemStore();
   const [selectedDistrictName, setSelectedDistrictName] = useState(districts[0].name);
   const [loading, setLoading] = useState(false);
   const [aiInsights, setAiInsights] = useState<any>(null);
@@ -97,7 +46,7 @@ export default function AdminAnalyticsPage() {
     aiPolicyRecommendations: aiInsights?.aiPolicyRecommendations || [
       `Increase training capacity for top trades in ${selectedDistrictObj.name}.`,
       `Establish MSME bridge learning labs focusing on ${selectedDistrictObj.supplyDeficitTrades.join(", ")}.`,
-      `Expand industry apprenticeship partnerships with ${selectedDistrictObj.keyIndustrialClusters[0]} plants.`
+      `Expand industry apprenticeship partnerships with ${(selectedDistrictObj.keyIndustrialClusters || selectedDistrictObj.clusters)?.[0] || 'local'} plants.`
     ]
   };
 

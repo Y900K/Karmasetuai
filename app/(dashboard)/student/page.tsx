@@ -6,10 +6,16 @@ import {
   Award, Briefcase, CreditCard, BookOpen, Bot, CheckCircle2, TrendingUp, Sparkles, Play, ChevronRight, FileText
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/context";
+import { useEcosystem } from "@/lib/context/EcosystemContext";
+import { useEcosystemStore } from "@/lib/store/EcosystemStore";
 import CourseProgressChart from "@/components/dashboard/charts/CourseProgressChart";
 
 export default function StudentDashboardPage() {
   const { user } = useAuth();
+  const { t } = useEcosystem();
+  const { students, jobs } = useEcosystemStore();
+
+  const rajesh = students.find(s => s.name === "Rajesh Kumar") || students[0];
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -20,16 +26,16 @@ export default function StudentDashboardPage() {
           <div>
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-bold uppercase">
-                Digital Skill Passport Active
+                {t("dashPassportActive", "Digital Skill Passport Active")}
               </span>
               <span className="text-xs text-slate-400 font-mono">ID: KMP-8A92F1</span>
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-black text-white mt-2">
-              Welcome back, <span className="text-cyan-400">{user?.full_name || "Rajesh Kumar"}</span>
+              {t("dashWelcomeBack", "Welcome back")}, <span className="text-cyan-400">{user?.full_name || rajesh.name}</span>
             </h1>
             <p className="text-xs text-slate-300 max-w-xl mt-1">
-              Govt ITI Lucknow • CNC Machinist & Programmer • Batch 2026. Your shopfloor readiness is elevated.
+              Govt ITI Lucknow • {rajesh.trade} • Batch 2026. {t("dashReadinessElevated", "Your shopfloor readiness is elevated.")}
             </p>
           </div>
 
@@ -39,7 +45,7 @@ export default function StudentDashboardPage() {
               className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-extrabold text-xs shadow-lg shadow-cyan-500/20 flex items-center gap-1.5 hover:scale-102 transition-all"
             >
               <BookOpen className="w-4 h-4" />
-              <span>Resume Learning Hub</span>
+              <span>{t("btnResumeLearning", "Resume Learning Hub")}</span>
             </Link>
 
             <Link
@@ -47,40 +53,40 @@ export default function StudentDashboardPage() {
               className="px-4 py-2.5 rounded-2xl bg-white/10 border border-white/20 text-white font-bold text-xs hover:bg-white/20 transition-all flex items-center gap-1.5"
             >
               <CreditCard className="w-4 h-4 text-cyan-400" />
-              <span>View Passport Card</span>
+              <span>{t("btnViewPassportCard", "View Passport Card")}</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Metric Cards Row */}
+      {/* Metric Cards Row (Real-Time Synced) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         <div className="glass-card p-5 rounded-3xl border border-emerald-500/30 text-center space-y-1 bg-slate-900/90">
-          <div className="text-xs font-bold text-slate-400 uppercase">JobReady Index™</div>
-          <div className="text-4xl font-black text-emerald-400">94.0</div>
+          <div className="text-xs font-bold text-slate-400 uppercase">{t("metricJobReady", "JobReady Index™")}</div>
+          <div className="text-4xl font-black text-emerald-400">{rajesh.jobReadyIndex.toFixed(1)}</div>
           <div className="text-[10px] text-emerald-300 font-bold flex items-center justify-center gap-1">
             <TrendingUp className="w-3 h-3" /> ↑ 12% vs Industry Baseline
           </div>
         </div>
 
         <div className="glass-card p-5 rounded-3xl border border-cyan-500/30 text-center space-y-1 bg-slate-900/90">
-          <div className="text-xs font-bold text-slate-400 uppercase">Overall Course Completion %</div>
-          <div className="text-4xl font-black text-cyan-300">88%</div>
+          <div className="text-xs font-bold text-slate-400 uppercase">{t("metricCourseCompletion", "Overall Course Completion %")}</div>
+          <div className="text-4xl font-black text-cyan-300">{rajesh.courseCompletion}%</div>
           <div className="text-[10px] text-cyan-300 font-bold flex items-center justify-center gap-1">
             <CheckCircle2 className="w-3 h-3" /> 4 of 5 Courses Passed
           </div>
         </div>
 
         <div className="glass-card p-5 rounded-3xl border border-amber-500/30 text-center space-y-1 bg-slate-900/90">
-          <div className="text-xs font-bold text-slate-400 uppercase">Certificates Earned</div>
-          <div className="text-4xl font-black text-amber-400">4 Verified</div>
+          <div className="text-xs font-bold text-slate-400 uppercase">{t("metricCertificates", "Certificates Earned")}</div>
+          <div className="text-4xl font-black text-amber-400">{rajesh.certificatesEarned} Verified</div>
           <div className="text-[10px] text-amber-300 font-bold">QR & Blockchain Ready</div>
         </div>
 
         <div className="glass-card p-5 rounded-3xl border border-purple-500/30 text-center space-y-1 bg-slate-900/90">
-          <div className="text-xs font-bold text-slate-400 uppercase">Live MSME Matches</div>
-          <div className="text-4xl font-black text-purple-300">12 Jobs</div>
+          <div className="text-xs font-bold text-slate-400 uppercase">{t("metricMsmeMatches", "Live MSME Matches")}</div>
+          <div className="text-4xl font-black text-purple-300">{jobs.length} Jobs</div>
           <div className="text-[10px] text-purple-300 font-bold">Pre-filtered Score &gt; 80</div>
         </div>
 
@@ -95,9 +101,9 @@ export default function StudentDashboardPage() {
             <div>
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <BookOpen className="w-5 h-5 text-cyan-400" />
-                <span>Real-Time Course Completion Analytics (%)</span>
+                <span>{t("chartCourseTitle", "Real-Time Course Completion Analytics (%)")}</span>
               </h3>
-              <p className="text-xs text-slate-400 mt-0.5">Live tracking of your learning progress & exam scores</p>
+              <p className="text-xs text-slate-400 mt-0.5">{t("chartCourseSub", "Live tracking of your learning progress & exam scores")}</p>
             </div>
 
             <Link href="/student/learning" className="text-xs text-cyan-400 font-bold hover:underline flex items-center gap-1">
@@ -112,7 +118,7 @@ export default function StudentDashboardPage() {
         <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4 bg-slate-900/90">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-amber-400" />
-            <h3 className="text-base font-bold text-white">AI Learning Path Suggestions</h3>
+            <h3 className="text-base font-bold text-white">{t("aiPathSuggestions", "AI Learning Path Suggestions")}</h3>
           </div>
 
           <div className="space-y-3">

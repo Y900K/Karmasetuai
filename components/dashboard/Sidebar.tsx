@@ -9,6 +9,7 @@ import {
   Upload, MapPin, Landmark, FileText, ChevronLeft, ChevronRight, Cpu, Sparkles, Clock, X
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/context";
+import { useEcosystem } from "@/lib/context/EcosystemContext";
 
 interface SidebarProps {
   currentRole: string;
@@ -37,6 +38,8 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
     if (onClose) onClose();
   };
 
+  const { t } = useEcosystem();
+
   // Role Configuration & Navigation Links
   const roleConfigs: Record<string, { title: string; color: string; bg: string; border: string; items: any[] }> = {
     STUDENT: {
@@ -45,13 +48,13 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       bg: "bg-cyan-500/10",
       border: "border-cyan-500/30",
       items: [
-        { label: "Dashboard", href: "/student", icon: LayoutDashboard },
-        { label: "My Skills & Radar", href: "/student/skills", icon: Award },
-        { label: "Job Matches", href: "/student/jobs", icon: Briefcase },
-        { label: "Skill Passport", href: "/student/passport", icon: CreditCard },
-        { label: "My Learning Hub", href: "/student/learning", icon: BookOpen, badge: "LMS" },
-        { label: "Buddy AI", href: "/student/ai-mentor", icon: Bot, badge: "AI" },
-        { label: "My Profile", href: "/student/profile", icon: User },
+        { labelKey: "navDashboard", label: "Dashboard", href: "/student", icon: LayoutDashboard },
+        { labelKey: "navSkillsRadar", label: "My Skills & Radar", href: "/student/skills", icon: Award },
+        { labelKey: "navJobMatches", label: "Job Matches", href: "/student/jobs", icon: Briefcase },
+        { labelKey: "navPassport", label: "Skill Passport", href: "/student/passport", icon: CreditCard },
+        { labelKey: "navLearningHub", label: "My Learning Hub", href: "/student/learning", icon: BookOpen, badge: "LMS" },
+        { labelKey: "navBuddyAI", label: "Buddy AI", href: "/student/ai-mentor", icon: Bot, badge: "AI" },
+        { labelKey: "navProfile", label: "My Profile", href: "/student/profile", icon: User },
       ],
     },
     INSTITUTE: {
@@ -60,14 +63,14 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       bg: "bg-blue-500/10",
       border: "border-blue-500/30",
       items: [
-        { label: "Dashboard", href: "/institute", icon: LayoutDashboard },
-        { label: "Student Roster", href: "/institute/students", icon: Users },
-        { label: "Placements Report", href: "/institute/placements", icon: TrendingUp },
-        { label: "Course Manager", href: "/institute/courses", icon: BookOpen },
-        { label: "Create Course", href: "/institute/courses/create", icon: FilePlus, badge: "New" },
-        { label: "Batch Analytics", href: "/institute/analytics", icon: BarChart3, badge: "Live" },
-        { label: "AI Curriculum Analyzer", href: "/institute/ai-curriculum", icon: Brain, badge: "AI" },
-        { label: "Settings", href: "/institute/settings", icon: Settings },
+        { labelKey: "navDashboard", label: "Dashboard", href: "/institute", icon: LayoutDashboard },
+        { labelKey: "navStudentRoster", label: "Student Roster", href: "/institute/students", icon: Users },
+        { labelKey: "navPlacementsReport", label: "Placements Report", href: "/institute/placements", icon: TrendingUp },
+        { labelKey: "navCourseManager", label: "Course Manager", href: "/institute/courses", icon: BookOpen },
+        { labelKey: "navCreateCourse", label: "Create Course", href: "/institute/courses/create", icon: FilePlus, badge: "New" },
+        { labelKey: "navBatchAnalytics", label: "Batch Analytics", href: "/institute/analytics", icon: BarChart3, badge: "Live" },
+        { labelKey: "navCurriculumAnalyzer", label: "AI Curriculum Analyzer", href: "/institute/ai-curriculum", icon: Brain, badge: "AI" },
+        { labelKey: "navSettings", label: "Settings", href: "/institute/settings", icon: Settings },
       ],
     },
     INDUSTRY: {
@@ -76,11 +79,11 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       bg: "bg-purple-500/10",
       border: "border-purple-500/30",
       items: [
-        { label: "Dashboard", href: "/expert", icon: LayoutDashboard },
-        { label: "Verify Capstone", href: "/expert/verify", icon: ClipboardCheck, badge: "AI Rubric" },
-        { label: "Masterclasses", href: "/expert/masterclass", icon: Video },
-        { label: "Upload Content", href: "/expert/content", icon: Upload },
-        { label: "My Profile", href: "/expert/profile", icon: User },
+        { labelKey: "navDashboard", label: "Dashboard", href: "/expert", icon: LayoutDashboard },
+        { labelKey: "navVerifyCapstone", label: "Verify Capstone", href: "/expert/verify", icon: ClipboardCheck, badge: "AI Rubric" },
+        { labelKey: "navMasterclasses", label: "Masterclasses", href: "/expert/masterclass", icon: Video },
+        { labelKey: "navUploadContent", label: "Upload Content", href: "/expert/content", icon: Upload },
+        { labelKey: "navProfile", label: "My Profile", href: "/expert/profile", icon: User },
       ],
     },
     EMPLOYER: {
@@ -89,12 +92,12 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       bg: "bg-emerald-500/10",
       border: "border-emerald-500/30",
       items: [
-        { label: "Dashboard", href: "/employer", icon: LayoutDashboard },
-        { label: "Post New Job", href: "/employer/post-job", icon: FilePlus, badge: "AI JD" },
-        { label: "Candidate Pipeline", href: "/employer/candidates", icon: Users },
-        { label: "Hiring Tracker", href: "/employer/hiring", icon: Clock, badge: "10-Day" },
-        { label: "Hiring Analytics", href: "/employer/analytics", icon: BarChart3, badge: "Live" },
-        { label: "Company Profile", href: "/employer/settings", icon: Settings },
+        { labelKey: "navDashboard", label: "Dashboard", href: "/employer", icon: LayoutDashboard },
+        { labelKey: "navPostJob", label: "Post New Job", href: "/employer/post-job", icon: FilePlus, badge: "AI JD" },
+        { labelKey: "navCandidates", label: "Candidate Pipeline", href: "/employer/candidates", icon: Users },
+        { labelKey: "navHiringTracker", label: "Hiring Tracker", href: "/employer/hiring", icon: Clock, badge: "10-Day" },
+        { labelKey: "navHiringAnalytics", label: "Hiring Analytics", href: "/employer/analytics", icon: BarChart3, badge: "Live" },
+        { labelKey: "navSettings", label: "Company Profile", href: "/employer/settings", icon: Settings },
       ],
     },
     NATIONAL: {
@@ -103,11 +106,11 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       bg: "bg-amber-500/10",
       border: "border-amber-500/30",
       items: [
-        { label: "National KPIs", href: "/admin", icon: LayoutDashboard },
-        { label: "AI Regional Heatmap", href: "/admin/analytics", icon: MapPin, badge: "AI" },
-        { label: "Institutes Directory", href: "/admin/institutes", icon: Landmark },
-        { label: "Compliance Reports", href: "/admin/reports", icon: FileText },
-        { label: "Admin Settings", href: "/admin/settings", icon: Settings },
+        { labelKey: "navNationalKPIs", label: "National KPIs", href: "/admin", icon: LayoutDashboard },
+        { labelKey: "navSkillHeatmap", label: "AI Regional Heatmap", href: "/admin/analytics", icon: MapPin, badge: "AI" },
+        { labelKey: "navInstitutesDirectory", label: "Institutes Directory", href: "/admin/institutes", icon: Landmark },
+        { labelKey: "navComplianceReports", label: "Compliance Reports", href: "/admin/reports", icon: FileText },
+        { labelKey: "navSettings", label: "Admin Settings", href: "/admin/settings", icon: Settings },
       ],
     },
   };
@@ -204,6 +207,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
           {activeConfig.items.map((item, idx) => {
             const Icon = item.icon;
             const isActive = pathname === item.href || (item.href !== "/student" && item.href !== "/institute" && item.href !== "/expert" && item.href !== "/employer" && item.href !== "/admin" && pathname.startsWith(item.href));
+            const translatedLabel = t(item.labelKey, item.label);
 
             return (
               <Link
@@ -215,12 +219,12 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
                     ? `${activeConfig.bg} text-white border ${activeConfig.border} shadow-lg shadow-black/40`
                     : "text-slate-400 hover:text-white hover:bg-white/5"
                 }`}
-                title={collapsed ? item.label : undefined}
+                title={collapsed ? translatedLabel : undefined}
               >
                 <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? activeConfig.color : "group-hover:text-slate-200"}`} />
                 {!collapsed && (
                   <span className="truncate flex-1 flex items-center justify-between">
-                    <span>{item.label}</span>
+                    <span>{translatedLabel}</span>
                     {item.badge && (
                       <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
                         {item.badge}

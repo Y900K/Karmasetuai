@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Clock, Users, CheckCircle2, ArrowRight, RotateCcw, AlertCircle } from "lucide-react";
+import { useEcosystemStore } from "@/lib/store/EcosystemStore";
 
 export default function EmployerHiringPage() {
   const [candidates, setCandidates] = useState(() => {
@@ -25,11 +26,16 @@ export default function EmployerHiringPage() {
     { id: "HIRED", label: "4. Offer Joined", color: "border-emerald-500/40 text-emerald-400 bg-emerald-500/10" },
   ];
 
+  const { hireCandidate } = useEcosystemStore();
+
   const moveStage = (cId: string, nextStage: string) => {
     const updated = candidates.map((c: any) => (c.id === cId ? { ...c, stage: nextStage } : c));
     setCandidates(updated);
     if (typeof window !== "undefined") {
       localStorage.setItem("karmasetu_hiring_kanban", JSON.stringify(updated));
+    }
+    if (nextStage === "HIRED") {
+      hireCandidate("j1", cId);
     }
   };
 

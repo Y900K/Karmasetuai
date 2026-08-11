@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import { FilePlus, Sparkles, RefreshCw, Save, Check } from "lucide-react";
 import AutosaveIndicator from "@/components/dashboard/shared/AutosaveIndicator";
+import { useEcosystemStore } from "@/lib/store/EcosystemStore";
 
 export default function EmployerPostJobPage() {
+  const { addJob } = useEcosystemStore();
   const [roleSummary, setRoleSummary] = useState("CNC Lathe Operator for Noida Plant");
   const [tradeSelect, setTradeSelect] = useState("CNC Machinist & Programmer");
   const [customTrade, setCustomTrade] = useState("");
@@ -14,6 +16,7 @@ export default function EmployerPostJobPage() {
   const [jdDescription, setJdDescription] = useState("");
   const [generating, setGenerating] = useState(false);
   const [status, setStatus] = useState<"SAVED" | "SAVING" | "ERROR">("SAVED");
+  const [published, setPublished] = useState(false);
 
   const effectiveTrade = tradeSelect === "OTHER" ? customTrade : tradeSelect;
 
@@ -50,7 +53,16 @@ export default function EmployerPostJobPage() {
   };
 
   const handlePublishJob = () => {
-    alert(`Job posting for "${roleSummary || effectiveTrade}" successfully published to pre-filtered candidate matches!`);
+    addJob({
+      title: roleSummary || effectiveTrade,
+      company: "Tata Motors Noida Auto Plant",
+      location: location || "Noida, UP",
+      trade: effectiveTrade,
+      salary: salary || "₹24,000 / month",
+      matchedScore: minScore,
+    });
+    setPublished(true);
+    setTimeout(() => setPublished(false), 3000);
   };
 
   return (
@@ -69,6 +81,11 @@ export default function EmployerPostJobPage() {
         </div>
 
         <div className="flex items-center gap-3">
+          {published && (
+            <span className="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold animate-pulse">
+              ✓ Broadcasted to Student Matches in Real Time!
+            </span>
+          )}
           <AutosaveIndicator status={status} />
           <button
             onClick={handlePublishJob}

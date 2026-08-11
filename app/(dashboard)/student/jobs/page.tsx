@@ -2,42 +2,11 @@
 
 import React, { useState } from "react";
 import { Briefcase, MapPin, CheckCircle2, Building, DollarSign, Filter, Search } from "lucide-react";
+import { useEcosystemStore } from "@/lib/store/EcosystemStore";
 
 export default function StudentJobsPage() {
+  const { jobs } = useEcosystemStore();
   const [appliedJobs, setAppliedJobs] = useState<Record<string, boolean>>({});
-
-  const jobs = [
-    {
-      id: "job-1",
-      title: "CNC Machinist & Controller Programmer",
-      company: "Tata Motors Plant",
-      location: "Noida Sector 63",
-      salary: "₹24,000 - ₹32,000 / month",
-      matchScore: 94,
-      requiredTrade: "CNC Machinist",
-      skills: ["Fanuc G-Code", "Precision Calibration ±0.01mm", "5S Safety"],
-    },
-    {
-      id: "job-2",
-      title: "Industrial 3-Phase Electrician",
-      company: "Havells Manufacturing",
-      location: "Haridwar SIDCUL",
-      salary: "₹22,000 - ₹28,000 / month",
-      matchScore: 91,
-      requiredTrade: "Electrician",
-      skills: ["Motor Control Wiring", "PLC Panel Diagnostics", "Safety Compliance"],
-    },
-    {
-      id: "job-3",
-      title: "Precision Tooling & Quality Inspector",
-      company: "Godrej Precision Engineering",
-      location: "Pune Industrial Belt",
-      salary: "₹26,000 - ₹34,000 / month",
-      matchScore: 88,
-      requiredTrade: "Fitter & Assembly",
-      skills: ["Vernier Micrometer", "Tolerance Inspection", "ISO 9001 Docs"],
-    },
-  ];
 
   const toggleApply = (id: string) => {
     setAppliedJobs((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -54,12 +23,12 @@ export default function StudentJobsPage() {
             <span>Pre-Filtered MSME Job Matches</span>
           </h1>
           <p className="text-xs text-slate-300 mt-1">
-            Jobs pre-filtered for your JobReady Index™ score &gt; 80 with zero retraining required.
+            Jobs pre-filtered for your JobReady Index™ score &gt; 80 with zero retraining required. Real-time postings sync directly from employers.
           </p>
         </div>
 
         <div className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-bold">
-          10-Day Hiring Cycle Active
+          10-Day Hiring Cycle Active ({jobs.length} Matches)
         </div>
       </div>
 
@@ -77,7 +46,7 @@ export default function StudentJobsPage() {
                   </div>
                 </div>
                 <span className="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-black text-xs border border-emerald-500/40">
-                  {j.matchScore}% Match
+                  {j.matchedScore}% Match
                 </span>
               </div>
 
@@ -91,13 +60,11 @@ export default function StudentJobsPage() {
               </div>
 
               <div className="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1.5">
-                <div className="text-[10px] font-bold text-slate-400 uppercase">Required Verified Skills</div>
+                <div className="text-[10px] font-bold text-slate-400 uppercase">Required Verified Trade</div>
                 <div className="flex flex-wrap gap-1">
-                  {j.skills.map((s, idx) => (
-                    <span key={idx} className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 text-[10px] font-bold border border-cyan-500/20">
-                      {s}
-                    </span>
-                  ))}
+                  <span className="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 text-[10px] font-bold border border-cyan-500/20">
+                    {j.trade}
+                  </span>
                 </div>
               </div>
             </div>
