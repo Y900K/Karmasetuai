@@ -180,8 +180,7 @@ body {
   aside,
   header,
   nav,
-  button,
-  .glass-card:has(button:not(.printable-button)) {
+  button:not(.printable-button) {
     display: none !important;
   }
 
@@ -193,17 +192,19 @@ body {
     box-shadow: none !important;
     border: none !important;
     color: #000000 !important;
-    background: transparent !important;
+    background: #ffffff !important;
   }
 
   .glass-card {
     background: #ffffff !important;
-    border: 1px solid #e2e8f0 !important;
+    border: 1px solid #cbd5e1 !important;
     color: #000000 !important;
     box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 
-  h1, h2, h3, h4, h5, h6, p, td, th, span {
+  h1, h2, h3, h4, h5, h6, p, td, th, span, div {
     color: #000000 !important;
   }
 }

@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 import { Landmark, Download } from "lucide-react";
 import FilterBar from "@/components/shared/FilterBar";
 import { useFilterSort } from "@/lib/hooks/useFilterSort";
+import { exportToCSV } from "@/lib/utils/export";
 
 function InstitutesDirectoryContent() {
   const { filters, updateFilters, clearFilters } = useFilterSort("score");
@@ -54,7 +55,10 @@ function InstitutesDirectoryContent() {
           </p>
         </div>
 
-        <button className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-amber-500/20 no-print">
+        <button
+          onClick={() => exportToCSV("national_iti_directory", filtered)}
+          className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-amber-500/20 no-print"
+        >
           <Download className="w-4 h-4 text-black" /> Export Directory CSV
         </button>
       </div>

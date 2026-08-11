@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { FileText, Download, Sparkles, RefreshCw, Printer } from "lucide-react";
+import { exportToCSV } from "@/lib/utils/export";
 
 export default function AdminReportsPage() {
   const [generating, setGenerating] = useState(false);
@@ -9,6 +10,13 @@ export default function AdminReportsPage() {
   const [quarter, setQuarter] = useState("Q2 2026");
   const [district, setDistrict] = useState("Gautam Buddha Nagar (Noida)");
   const [itiCount, setItiCount] = useState("127");
+
+  const complianceReports = [
+    { reportName: "NCVT Curriculum & Lab Equipment Audit Q2", cluster: "Noida Sector 63", status: "100% COMPLIANT", score: 94 },
+    { reportName: "MSME Apprenticeship Attendance Audit", cluster: "Haridwar SIDCUL", status: "VERIFIED", score: 88 },
+    { reportName: "Dual Training System Placement Velocity", cluster: "Kanpur Industrial", status: "ACTION REQUIRED", score: 64 },
+    { reportName: "Industry 4.0 PLC Lab Readiness Index", cluster: "Lucknow Main", status: "VERIFIED", score: 91 },
+  ];
 
   const handleGenerateSummary = async () => {
     setGenerating(true);
@@ -32,7 +40,7 @@ export default function AdminReportsPage() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in printable-area">
       
       {/* Header */}
       <div className="glass-card p-6 rounded-3xl border border-amber-500/30 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4">
@@ -46,7 +54,13 @@ export default function AdminReportsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 no-print">
+          <button
+            onClick={() => exportToCSV("compliance_reports", complianceReports)}
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-amber-500/20"
+          >
+            <Download className="w-4 h-4 text-black" /> Export Compliance CSV
+          </button>
           <button
             onClick={() => window.print()}
             className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-all"

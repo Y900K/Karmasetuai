@@ -13,9 +13,10 @@ import { useEcosystem } from "@/lib/context/EcosystemContext";
 
 interface TopBarProps {
   onToggleSidebar?: () => void;
+  onToggleAnalytics?: () => void;
 }
 
-export default function TopBar({ onToggleSidebar }: TopBarProps) {
+export default function TopBar({ onToggleSidebar, onToggleAnalytics }: TopBarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, role, logout } = useAuth();
@@ -182,6 +183,16 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
             className="w-full bg-slate-900/90 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
           />
         </div>
+
+        {/* Real-Time AI Analytics Drawer Toggle */}
+        <button
+          onClick={() => onToggleAnalytics?.()}
+          className="h-8 sm:h-9 px-2.5 sm:px-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 hover:border-cyan-400 text-cyan-300 flex items-center gap-1.5 transition-all text-xs font-extrabold shadow-sm"
+          title="Open Real-Time AI Telemetry Analytics"
+        >
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          <span className="hidden md:inline">Live Analytics</span>
+        </button>
 
         {/* Language Toggle */}
         <div className="relative" onClick={(e) => e.stopPropagation()}>

@@ -61,6 +61,72 @@ Answer in 50-100 words. Language: ${targetLang === "hi" ? "Hindi (हिंद�
 function getDiverseFallbackResponse(prompt: string, trade: string, lang: string): string {
   const p = prompt.toLowerCase();
 
+  // PPE (Personal Protective Equipment)
+  if (p.includes("ppe") || p.includes("protective equipment") || p.includes("safety gear")) {
+    if (lang === "hi") {
+      return `PPE (Personal Protective Equipment) का मतलब व्यक्तिगत सुरक्षा उपकरण है। इंडस्ट्रियल शॉपफ्लोर पर 5 मुख्य PPE अनिवार्य हैं: 1) सेफ्टी हेलमेट, 2) ISI-marked सेफ्टी शूज़ (Steel Toe), 3) यूवी सेफ्टी गॉगल्स, 4) कट-रेसिस्टेंट ग्लव्स, और 5) इयर प्लग्स।`;
+    }
+    if (lang === "en") {
+      return `PPE stands for Personal Protective Equipment mandatory on manufacturing shopfloors. It includes: 1) Steel-toe safety shoes, 2) UV protective eye goggles, 3) High-grade industrial helmet, 4) Heat/Cut resistant gloves, and 5) Noise attenuation ear defenders for operator protection.`;
+    }
+    return `PPE (Personal Protective Equipment) का मतलब औद्योगिक सुरक्षा उपकरण है। MSME वर्कशॉप में 5 PPE ज़रूरी हैं: Steel-Toe Safety Shoes, Safety Glasses/Goggles, Industrial Helmet, Cut-Resistant Gloves और Ear Defenders!`;
+  }
+
+  // Welding & Fabrication
+  if (p.includes("weld") || p.includes("welder") || p.includes("tig") || p.includes("mig") || p.includes("arc")) {
+    if (lang === "hi") {
+      return `वेल्डिंग में करियर के लिए TIG (Argon Gas Shielded) और MIG (CO2) वेल्डिंग सीखें। L&T और भेल जैसी कंपनियों में NDT Radiography टेस्टिंग पास करने वाले प्रेशर वेसल वेल्डर्स को ₹35,000+ प्रतिमाह पैकेज और खाड़ी देशों में डायरेक्ट जॉब अपॉर्चुनिटी मिलती है।`;
+    }
+    if (lang === "en") {
+      return `For welding trade, mastering TIG (Argon) and MIG (CO2) processes with ISO 3834 certification unlocks premium packages in defense, aerospace, and heavy fabrication starting from ₹28,000 to ₹42,000 per month.`;
+    }
+    return `Welding trade में TIG & MIG gas welding सबसे इन-डिमांड है। NDT X-Ray Radiography passed welders को L&T, BHEL और MSME export plants में 35% higher salary पैकेज मिलता है!`;
+  }
+
+  // Electrical, PLC & Automation
+  if (p.includes("electrician") || p.includes("plc") || p.includes("motor") || p.includes("wiring") || p.includes("vfd")) {
+    if (lang === "hi") {
+      return `इंडस्ट्रियल इलेक्ट्रिशियन के लिए 3-फेज मोटर स्टार्टर (DOL & Star-Delta), VFD ड्राइव प्रोग्रामिंग और PLC I/O कार्ड वायरिंग सबसे महत्वपूर्ण स्किल है। कर्मसेतु 15-घंटे PLC डायग्नोस्टिक्स मॉड्यूल पूरा करने पर Havells और Schneider में डायरेक्ट प्रेफरेंस मिलती है।`;
+    }
+    if (lang === "en") {
+      return `Industrial Electricians must master 3-Phase Star-Delta starters, VFD frequency control, and PLC sensor wiring. Completing KarmaSetu's 15-hour PLC diagnostic bridge module boosts your hiring rank with Havells & Dixon Technologies.`;
+    }
+    return `Industrial Electrician के लिए 3-Phase Star-Delta Motor Control, VFD Speed Control और PLC Sensor wiring सबसे high-salary skills हैं। KarmaSetu का 15-hour PLC module complete करके 90+ Score पाएँ!`;
+  }
+
+  // G-Code, Lathe & CNC Machine
+  if (p.includes("lathe") || p.includes("g-code") || p.includes("gcode") || p.includes("cnc") || p.includes("fanuc") || p.includes("m-code")) {
+    if (lang === "hi") {
+      return `सीएनसी लेथ मशीन में G00 (Rapid Transit), G01 (Linear Cut), G02/G03 (Arc Interpolation) और M03 (Spindle Clockwise) बेसिक प्रोग्रामिंग कमांड्स हैं। फानुक कंट्रोलर पर वर्कशॉप सिमुलेशन पूरा करके आपका जॉबरेडी इंडेक्स तुरंत 94 हो जाता है।`;
+    }
+    if (lang === "en") {
+      return `Core CNC Lathe commands include G00 (Rapid Positioning), G01 (Linear Interpolation), G02/G03 (Circular Arcs), and M30 (Program End). Completing Fanuc controller G-Code verification unlocks direct tier-1 MSME hiring.`;
+    }
+    return `CNC Lathe में G00 (Rapid Feed), G01 (Cut), G02/G03 (Circular Arcs) और Fanuc Offsets मुख्य हैं। Fanuc Lathe G-Code module complete करने से JobReady Index 94+ हो जाता है!`;
+  }
+
+  // Precision Instruments & Micrometer
+  if (p.includes("micrometer") || p.includes("vernier") || p.includes("caliper") || p.includes("tolerance") || p.includes("gauge")) {
+    if (lang === "hi") {
+      return `प्रेसिजन माइक्रोमीटर का लीस्ट काउंट 0.01mm (10 माइक्रोन) होता है। वर्कशॉप क्वालिटी इंस्पेक्शन में वर्नियर कैलिपर, माइक्रोमीटर कैलिब्रेशन और बोर गेज रीडिंग्स में 100% सटीकता हासिल करने पर Bosch और Tata Motors में ₹26,000+ जॉब ऑफर मिलता है।`;
+    }
+    if (lang === "en") {
+      return `Precision Micrometers measure component tolerances down to 0.01mm accuracy. Demonstrating verified micrometer calibration and CMM inspection skills qualifies you for Quality Inspector roles at Bosch and L&T.`;
+    }
+    return `Precision Micrometer का least count 0.01mm (10 microns) होता है। ±0.01mm tolerance test pass करने पर Bosch और Tier-1 MSME plants में Quality Inspector role के लिए direct matching मिलती है!`;
+  }
+
+  // Safety & 5S
+  if (p.includes("safety") || p.includes("5s") || p.includes("hazard") || p.includes("iso")) {
+    if (lang === "hi") {
+      return `5S का अर्थ है: Seiri (छांटना), Seiton (सुव्यवस्थित करना), Seiso (सफाई), Seiketsu (मानकीकरण) और Shitsuke (अनुशासन)। इसे अपनाने से विनिर्माण संयंत्रों में दुर्घटनाएं शून्य हो जाती हैं और उत्पादकता 25% बढ़ती है।`;
+    }
+    if (lang === "en") {
+      return `5S Methodology comprises: Sort, Set in Order, Shine, Standardize, and Sustain. Practicing ISO 45001 shopfloor safety protocols reduces manufacturing downtime and establishes zero-accident work habits.`;
+    }
+    return `5S Methodology (Sort, Set in Order, Shine, Standardize, Sustain) और ISO 45001 Safety Protocol फॉलो करने से MSME plants में Zero Accident environment बनता है और Recruiters priority hiring देते हैं!`;
+  }
+
   // HR / Recruiter / Hiring questions
   if (p.includes("hr") || p.includes("recruiter") || p.includes("hire") || p.includes("interview")) {
     if (lang === "hi") {

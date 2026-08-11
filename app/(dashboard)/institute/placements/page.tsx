@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { TrendingUp, Download, Building, Award, CheckCircle2 } from "lucide-react";
+import { TrendingUp, Download, Building, Award, CheckCircle2, Printer } from "lucide-react";
+import { exportToCSV } from "@/lib/utils/export";
 
 export default function InstitutePlacementsPage() {
   const placements = [
@@ -12,7 +13,7 @@ export default function InstitutePlacementsPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in printable-area">
       
       {/* Header */}
       <div className="glass-card p-6 rounded-3xl border border-blue-500/30 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4">
@@ -26,12 +27,21 @@ export default function InstitutePlacementsPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => window.print()}
-          className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-blue-500/20"
-        >
-          <Download className="w-4 h-4" /> Export NCVT Placement PDF
-        </button>
+        <div className="flex items-center gap-2 no-print">
+          <button
+            onClick={() => exportToCSV("placement_records_ncvt", placements)}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-blue-500/20"
+          >
+            <Download className="w-4 h-4" /> Export Placement CSV
+          </button>
+
+          <button
+            onClick={() => window.print()}
+            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-all"
+          >
+            <Printer className="w-4 h-4 text-cyan-400" /> Print PDF Report
+          </button>
+        </div>
       </div>
 
       {/* Table */}

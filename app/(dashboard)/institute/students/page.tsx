@@ -4,6 +4,7 @@ import React, { Suspense } from "react";
 import { Users, Download, Printer } from "lucide-react";
 import FilterBar from "@/components/shared/FilterBar";
 import { useFilterSort } from "@/lib/hooks/useFilterSort";
+import { exportToCSV } from "@/lib/utils/export";
 
 function StudentRosterContent() {
   const { filters, updateFilters, clearFilters } = useFilterSort("score");
@@ -62,7 +63,10 @@ function StudentRosterContent() {
           >
             <Printer className="w-4 h-4 text-cyan-400" /> Print Roster
           </button>
-          <button className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all">
+          <button
+            onClick={() => exportToCSV("student_batch_roster", filtered)}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all"
+          >
             <Download className="w-4 h-4" /> Export CSV Roster
           </button>
         </div>

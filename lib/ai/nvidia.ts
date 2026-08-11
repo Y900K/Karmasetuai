@@ -32,14 +32,15 @@ export async function callNvidiaAI(
 
   const apiKey = process.env.NVIDIA_API_KEY;
 
+  const jsonMode = options.jsonMode ?? true;
+
   if (!apiKey || apiKey === "your_nvidia_api_key_here") {
-    const mock = generateMockAIResponse(prompt, systemPrompt);
+    const mock = generateMockAIResponse(prompt, systemPrompt, jsonMode);
     responseCache.set(cacheKey, { data: mock, timestamp: Date.now() });
     return mock;
   }
 
   const model = options.model || PRIMARY_MODEL;
-  const jsonMode = options.jsonMode ?? true;
 
   try {
     const controller = new AbortController();
@@ -88,7 +89,7 @@ export async function callNvidiaAI(
         if (jsonMatch && jsonMatch[1]) {
           finalData = JSON.parse(jsonMatch[1]);
         } else {
-          finalData = generateMockAIResponse(prompt, systemPrompt);
+          finalData = generateMockAIResponse(prompt, systemPrompt, jsonMode);
         }
       }
     }
@@ -97,17 +98,94 @@ export async function callNvidiaAI(
     return finalData;
   } catch (error: any) {
     console.warn("NVIDIA AI Call Timed Out / Failed, using fast fallback:", error.message || error);
-    const mock = generateMockAIResponse(prompt, systemPrompt);
+    const mock = generateMockAIResponse(prompt, systemPrompt, jsonMode);
     responseCache.set(cacheKey, { data: mock, timestamp: Date.now() });
     return mock;
   }
 }
 
-function generateMockAIResponse(prompt: string, systemPrompt: string = "") {
+function generateMockAIResponse(prompt: string, systemPrompt: string = "", jsonMode: boolean = true) {
   const sys = systemPrompt.toLowerCase();
   const p = prompt.toLowerCase();
 
-  // 1. Curriculum Gap Analysis
+  // If non-JSON text response requested (e.g. Buddy AI chat)
+  if (!jsonMode) {
+    return "";
+  }
+
+  // 1. Job Description Generator for MSME Employers (Custom & Standard Roles)
+  if (sys.includes("job description") || sys.includes("posting") || p.includes("role/title")) {
+    let title = "Technical Role";
+    let trade = "Engineering Specialist";
+    let responsibilities = ["Execute operational duties", "Maintain safety standards"];
+    let skills = ["Technical proficiency", "Safety compliance"];
+
+    if (p.includes("recruiter") || p.includes("hr")) {
+      title = "HR Recruiter & Talent Acquisition Executive";
+      trade = "Human Resources & Recruitment";
+      responsibilities = [
+        "Screen ITI & Polytechnic candidates using JobReady Index™ scores",
+        "Schedule shopfloor practical interviews with MSME plant supervisors",
+        "Manage end-to-end 10-day direct hiring pipeline and offer letter issuance",
+        "Maintain NCVT apprenticeship compliance and attendance logs"
+      ];
+      skills = ["Recruitment Screening", "JobReady Index Assessment", "MSME HR Operations", "Labour Law Compliance"];
+    } else if (p.includes("welder") || p.includes("welding")) {
+      title = "TIG/MIG Precision Welder";
+      trade = "Welder & Metal Fabrication";
+      responsibilities = [
+        "Perform argon gas shielded TIG and MIG welding on SS/MS structural components",
+        "Interpret 3D assembly blueprints and welding symbol specifications",
+        "Inspect weld seam integrity using dye penetrant testing",
+        "Adhere to ISO 3834 shopfloor welding quality standards"
+      ];
+      skills = ["TIG/MIG Welding", "Blueprint Reading", "Dye Penetrant Inspection", "5S Workplace Safety"];
+    } else if (p.includes("electrician") || p.includes("plc")) {
+      title = "Industrial Electrician & PLC Technician";
+      trade = "Industrial Electrician & PLC";
+      responsibilities = [
+        "Diagnose 3-phase motor control panels, VFD drives, and relay logic",
+        "Calibrate digital sensors, proximity switches, and PLC I/O channels",
+        "Perform preventative electrical maintenance on CNC machinery",
+        "Ensure compliance with Indian Electricity Rules (IE Rules 1956)"
+      ];
+      skills = ["3-Phase Motor Control", "PLC Diagnostics", "VFD Calibration", "Electrical Safety PPE"];
+    } else if (p.includes("safety") || p.includes("officer")) {
+      title = "Industrial Safety & 5S Officer";
+      trade = "Quality & Safety Compliance";
+      responsibilities = [
+        "Enforce mandatory PPE protocols and shopfloor hazard controls",
+        "Conduct daily 5S audits across machining and assembly bays",
+        "Investigate near-miss incidents and report safety metrics",
+        "Lead ISO 45001 safety training for new ITI apprentices"
+      ];
+      skills = ["5S Audit Protocol", "PPE Compliance", "Hazard Identification", "ISO 45001"];
+    } else {
+      title = "CNC Machinist & Fanuc Programmer";
+      trade = "CNC Machinist & Programmer";
+      responsibilities = [
+        "Operate 3-axis CNC lathe machines using Fanuc/Siemens controller G-Code",
+        "Measure machined components using precision micrometers down to ±0.01mm",
+        "Perform tool offset changes and insert wear inspection",
+        "Maintain 5S workplace cleanliness and coolant fluid levels"
+      ];
+      skills = ["Fanuc G-Code Programming", "Precision Micrometer Calibration", "Tool Offset Calibration", "5S Safety"];
+    }
+
+    return {
+      title,
+      requiredTrade: trade,
+      location: "Noida Sector 63 Industrial Hub",
+      suggestedSalary: "₹24,000 - ₹34,000 / month",
+      minJobReadyScore: 80,
+      summary: `We are hiring a qualified ${title} for our Tier-1 MSME manufacturing facility. Candidates with verified JobReady Index™ scores of 80+ will receive 10-day direct hiring priority.`,
+      responsibilities,
+      requiredSkills: skills,
+      qualifications: ["ITI / Polytechnic Diploma in relevant trade", "Skill Passport verified certificate"]
+    };
+  }
+
+  // 2. Curriculum Gap Analysis
   if (sys.includes("curriculum") || sys.includes("ncvt")) {
     const tradeMatch = prompt.match(/CNC|Electrician|Fitter|Welder|Quality|Automation/i);
     const trade = tradeMatch ? tradeMatch[0] : "Industrial Electrician";
@@ -139,14 +217,14 @@ function generateMockAIResponse(prompt: string, systemPrompt: string = "") {
     };
   }
 
-  // 2. National Executive Summary & Compliance
+  // 3. National Executive Summary & Compliance
   if (sys.includes("executive summary") || sys.includes("governance") || sys.includes("compliance") || p.includes("executive summary")) {
     return {
       summary: "National Skill Governance Executive Narrative (Q2 2026): Across 127 accredited ITIs in North-Western industrial clusters, overall placement velocity reached 84.2%, led by Gautam Buddha Nagar (Noida) at 92.0%. High demand for Industry 4.0 CNC Machinists and Smart Electrical Technicians drove a 28% decrease in post-hiring retraining costs for MSME partners. Key focus remains bridging PLC Sensor Calibration gaps in Tier-2 institutes."
     };
   }
 
-  // 3. District Skill Heatmap & Insights
+  // 4. District Skill Heatmap & Insights
   if (sys.includes("district") || sys.includes("heatmap")) {
     const districtMatch = prompt.match(/Noida|Haridwar|Kanpur|Lucknow|Pune|Gautam Buddha Nagar/i);
     const dName = districtMatch ? districtMatch[0] : "Gautam Buddha Nagar (Noida)";
@@ -166,7 +244,7 @@ function generateMockAIResponse(prompt: string, systemPrompt: string = "") {
     };
   }
 
-  // 4. Skill Radar Analysis
+  // 5. Skill Radar Analysis
   if (sys.includes("skill radar") || sys.includes("radar")) {
     return {
       coveragePercentage: 84.0,
@@ -192,11 +270,10 @@ function generateMockAIResponse(prompt: string, systemPrompt: string = "") {
     };
   }
 
-  // 5. Default Candidate JobReady Index Evaluation (Used by Landing AI Demo Widget)
+  // 6. Default Candidate JobReady Index Evaluation
   const tradeMatch = prompt.match(/CNC|Electrician|Fitter|Welder|Quality|Tool|Die|Machinist/i);
   const trade = tradeMatch ? tradeMatch[0] : "CNC Machinist";
 
-  // Dynamic user input extraction from free text
   const extractedSkills: string[] = [`${trade} Operations`, "Blueprint Reading", "Safety Compliance"];
   let bonusPoints = 0;
 

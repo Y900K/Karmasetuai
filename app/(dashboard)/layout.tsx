@@ -19,11 +19,19 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
   // Determine current active role based on path or fallback to auth role
   let currentRole = role || "STUDENT";
-  if (pathname.startsWith("/student")) currentRole = "STUDENT";
-  else if (pathname.startsWith("/institute")) currentRole = "INSTITUTE";
-  else if (pathname.startsWith("/expert")) currentRole = "INDUSTRY";
-  else if (pathname.startsWith("/employer")) currentRole = "EMPLOYER";
-  else if (pathname.startsWith("/admin")) currentRole = "NATIONAL";
+  if (role === "HR") {
+    currentRole = "HR";
+  } else if (pathname.startsWith("/student")) {
+    currentRole = "STUDENT";
+  } else if (pathname.startsWith("/institute")) {
+    currentRole = "INSTITUTE";
+  } else if (pathname.startsWith("/expert")) {
+    currentRole = "INDUSTRY";
+  } else if (pathname.startsWith("/employer")) {
+    currentRole = "EMPLOYER";
+  } else if (pathname.startsWith("/admin")) {
+    currentRole = "NATIONAL";
+  }
 
   // Auto-close sidebar on route change (mobile)
   useEffect(() => {
@@ -61,20 +69,14 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
-        <TopBar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+        <TopBar
+          onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+          onToggleAnalytics={() => setAnalyticsOpen(!analyticsOpen)}
+        />
         <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 space-y-4 sm:space-y-6 overflow-y-auto relative">
           {children}
         </main>
       </div>
-
-      {/* Floating Real-Time Analytics Sidebar Toggle Button */}
-      <button
-        onClick={() => setAnalyticsOpen(!analyticsOpen)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 p-3 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-extrabold text-xs shadow-2xl shadow-cyan-500/40 flex items-center gap-2 hover:scale-105 transition-all"
-      >
-        <BarChart3 className="w-4 h-4 text-black animate-pulse" />
-        <span className="hidden sm:inline">Real-Time AI Analytics</span>
-      </button>
 
       {/* Real-Time Analytics Drawer */}
       <AnalyticsSmartSidebar
