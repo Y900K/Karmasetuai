@@ -20,28 +20,26 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
   const router = useRouter();
   const { user, role, logout } = useAuth();
 
-  // Notifications
+  // Notifications initialized with persisted read state
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [notifications, setNotifications] = useState([
-    { id: "1", title: "New Job Match", desc: "CNC Operator job at Tata Motors Noida matches 94% of your score", time: "5m ago", icon: Briefcase, color: "text-emerald-400", route: "/student/jobs", unread: true },
-    { id: "2", title: "CapStone Verified", desc: "Your Fanuc Lathe G-Code project signed off by Master Mentor", time: "1h ago", icon: CheckCircle2, color: "text-cyan-400", route: "/student/passport", unread: true },
-    { id: "3", title: "New Masterclass", desc: "3-Phase PLC Control panel session scheduled for tomorrow", time: "3h ago", icon: BookOpen, color: "text-purple-400", route: "/student/learning", unread: true },
-  ]);
+  const [notifications, setNotifications] = useState(() => {
+    const defaultList = [
+      { id: "1", title: "New Job Match", desc: "CNC Operator job at Tata Motors Noida matches 94% of your score", time: "5m ago", icon: Briefcase, color: "text-emerald-400", route: "/student/jobs", unread: true },
+      { id: "2", title: "CapStone Verified", desc: "Your Fanuc Lathe G-Code project signed off by Master Mentor", time: "1h ago", icon: CheckCircle2, color: "text-cyan-400", route: "/student/passport", unread: true },
+      { id: "3", title: "New Masterclass", desc: "3-Phase PLC Control panel session scheduled for tomorrow", time: "3h ago", icon: BookOpen, color: "text-purple-400", route: "/student/learning", unread: true },
+    ];
 
-  // Load persisted notification read status
-  useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedRead = localStorage.getItem("karmasetu_notifications_read");
-      if (savedRead) {
-        try {
+      try {
+        const savedRead = localStorage.getItem("karmasetu_notifications_read");
+        if (savedRead) {
           const readIds: string[] = JSON.parse(savedRead);
-          setNotifications((prev) =>
-            prev.map((n) => (readIds.includes(n.id) ? { ...n, unread: false } : n))
-          );
-        } catch (e) {}
-      }
+          return defaultList.map((n) => (readIds.includes(n.id) ? { ...n, unread: false } : n));
+        }
+      } catch (e) {}
     }
-  }, []);
+    return defaultList;
+  });
 
   const saveReadStatus = (readIds: string[]) => {
     if (typeof window !== "undefined") {
@@ -78,8 +76,9 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   const markAllRead = () => {
+    const allIds = notifications.map((n) => n.id);
     setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
-    saveReadStatus(notifications.map((n) => n.id));
+    saveReadStatus(allIds);
   };
 
   const handleNotificationClick = (n: typeof notifications[0]) => {

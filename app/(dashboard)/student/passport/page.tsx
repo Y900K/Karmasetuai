@@ -32,25 +32,25 @@ export default function StudentPassportPage() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in printable-area">
       
       {/* Header */}
       <div className="glass-card p-6 rounded-3xl border border-cyan-500/30 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-white flex items-center gap-2">
             <CreditCard className="w-6 h-6 text-cyan-400" />
-            <span>Digital Skill Passport & Earned Certificates</span>
+            <span>Digital Skill Passport & Verified Badges</span>
           </h1>
           <p className="text-xs text-slate-300 mt-1">
-            Blockchain-verifiable digital credential card with live JobReady Index™ scores.
+            Tamper-proof digital credentials verified on Skill India NCVT Standards.
           </p>
         </div>
 
         <button
           onClick={() => window.print()}
-          className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-all"
+          className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-cyan-500/20 no-print"
         >
-          <Printer className="w-4 h-4 text-cyan-400" /> Print Passport
+          <Printer className="w-4 h-4 text-black" /> Print / PDF Skill Passport
         </button>
       </div>
 

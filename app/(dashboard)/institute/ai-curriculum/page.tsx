@@ -11,6 +11,13 @@ export default function AiCurriculumPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
 
+  const [selectedNode, setSelectedNode] = useState<{ name: string; desc: string; hours: number; prereq: string }>({
+    name: "Fanuc DXF Import",
+    desc: "Direct CAD/CAM DXF file import to Fanuc controller for automatic toolpath generation.",
+    hours: 15,
+    prereq: "G-Code / PLC Control Logic"
+  });
+
   const handleAnalyze = async () => {
     setLoading(true);
     try {
@@ -97,7 +104,7 @@ export default function AiCurriculumPage() {
           <span className="text-xs font-extrabold text-purple-300 uppercase flex items-center gap-2">
             <GitFork className="w-4 h-4 text-purple-400" /> INTERACTIVE SKILL DEPENDENCY BRAINMAP ({trade})
           </span>
-          <span className="text-xs text-slate-400 font-mono">Node Graph • Industry 4.0 Standard</span>
+          <span className="text-xs text-slate-400 font-mono">Click Nodes to Inspect Skill Dependencies</span>
         </div>
 
         <div className="relative w-full h-64 bg-[#060a17] rounded-2xl border border-purple-500/20 p-4 flex items-center justify-between overflow-hidden">
@@ -112,43 +119,75 @@ export default function AiCurriculumPage() {
           </svg>
 
           {/* Node 1: Root Syllabus */}
-          <div className="z-10 p-3 rounded-2xl bg-blue-500/20 border border-blue-400 text-center text-xs">
-            <div className="font-extrabold text-blue-300">NCVT Core</div>
+          <div
+            onClick={() => setSelectedNode({ name: "NCVT Core Syllabus", desc: "Base accredited NCVT 2-year trade curriculum.", hours: 200, prereq: "Secondary Education" })}
+            className={`z-10 p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("NCVT") ? "bg-blue-500/30 border-blue-400 text-white shadow-lg shadow-blue-500/30" : "bg-blue-500/10 border-blue-500/30 text-blue-300"}`}
+          >
+            <div className="font-extrabold">NCVT Core</div>
             <div className="text-[10px] text-slate-400">{trade} Base</div>
           </div>
 
           {/* Node 2 & 3: Intermediate Skills */}
           <div className="z-10 flex flex-col gap-12">
-            <div className="p-3 rounded-2xl bg-cyan-500/20 border border-cyan-400 text-center text-xs">
-              <div className="font-extrabold text-cyan-300">G-Code / PLC</div>
+            <div
+              onClick={() => setSelectedNode({ name: "G-Code / PLC Control", desc: "Fanuc lathe programming, axis interpolation, and M-Code spindle control.", hours: 40, prereq: "NCVT Core" })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("G-Code") ? "bg-cyan-500/30 border-cyan-400 text-white shadow-lg shadow-cyan-500/30" : "bg-cyan-500/10 border-cyan-500/30 text-cyan-300"}`}
+            >
+              <div className="font-extrabold">G-Code / PLC</div>
               <div className="text-[10px] text-slate-400">Control Logic</div>
             </div>
 
-            <div className="p-3 rounded-2xl bg-amber-500/20 border border-amber-400 text-center text-xs">
-              <div className="font-extrabold text-amber-300">Precision Calib</div>
+            <div
+              onClick={() => setSelectedNode({ name: "Precision Calibration", desc: "Micrometer & Vernier caliper calibration down to ±0.01mm tolerance.", hours: 25, prereq: "NCVT Core" })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("Precision") ? "bg-amber-500/30 border-amber-400 text-white shadow-lg shadow-amber-500/30" : "bg-amber-500/10 border-amber-500/30 text-amber-300"}`}
+            >
+              <div className="font-extrabold">Precision Calib</div>
               <div className="text-[10px] text-slate-400">±0.01mm Tolerance</div>
             </div>
           </div>
 
           {/* Node 4 & 5: Advanced Industry 4.0 Additions */}
           <div className="z-10 flex flex-col gap-12">
-            <div className="p-3 rounded-2xl bg-purple-500/20 border border-purple-400 text-center text-xs">
-              <div className="font-extrabold text-purple-300">Fanuc DXF Import</div>
+            <div
+              onClick={() => setSelectedNode({ name: "Fanuc DXF Import", desc: "Direct CAD/CAM DXF file import to Fanuc controller for automatic toolpathing.", hours: 15, prereq: "G-Code / PLC" })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("DXF") ? "bg-purple-500/30 border-purple-400 text-white shadow-lg shadow-purple-500/30" : "bg-purple-500/10 border-purple-500/30 text-purple-300"}`}
+            >
+              <div className="font-extrabold">Fanuc DXF Import</div>
               <div className="text-[10px] text-slate-400">CAD/CAM Sync</div>
             </div>
 
-            <div className="p-3 rounded-2xl bg-emerald-500/20 border border-emerald-400 text-center text-xs">
-              <div className="font-extrabold text-emerald-300">5S Shopfloor</div>
+            <div
+              onClick={() => setSelectedNode({ name: "5S Shopfloor Safety", desc: "Workplace organisation, hazard identification, and ISO 45001 safety compliance.", hours: 20, prereq: "Precision Calib" })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("5S") ? "bg-emerald-500/30 border-emerald-400 text-white shadow-lg shadow-emerald-500/30" : "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"}`}
+            >
+              <div className="font-extrabold">5S Shopfloor</div>
               <div className="text-[10px] text-slate-400">Safety Protocol</div>
             </div>
           </div>
 
           {/* Node 6: End Goal JobReady Index */}
-          <div className="z-10 p-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-400 text-black text-center text-xs font-black shadow-lg shadow-emerald-500/30">
+          <div
+            onClick={() => setSelectedNode({ name: "JobReady 94+ Index", desc: "Verified Skill Passport threshold unlocking immediate 10-day direct hiring matches.", hours: 300, prereq: "All Modules Verified" })}
+            className="z-10 p-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-400 text-black text-center text-xs font-black shadow-lg shadow-emerald-500/30 cursor-pointer hover:scale-105 transition-all"
+          >
             <div>JOBREADY 94+</div>
             <div className="text-[10px] text-black font-extrabold">Direct MSME Hire</div>
           </div>
         </div>
+
+        {/* Selected Skill Node Inspector Card */}
+        {selectedNode && (
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="font-extrabold text-white text-sm">Node Details: {selectedNode.name}</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold">
+                {selectedNode.hours} Lab Hours Required
+              </span>
+            </div>
+            <p className="text-slate-300">{selectedNode.desc}</p>
+            <div className="text-[11px] text-slate-400">Prerequisite: <strong className="text-cyan-300">{selectedNode.prereq}</strong></div>
+          </div>
+        )}
       </div>
 
       {/* Real-Time Gap Report Results */}

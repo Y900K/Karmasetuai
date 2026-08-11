@@ -72,7 +72,7 @@ export default function FloatingBuddyAI() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-4 left-4 z-40 p-3 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-purple-500 via-cyan-400 to-emerald-400 hover:scale-105 text-black font-extrabold text-xs shadow-2xl shadow-purple-500/40 flex items-center gap-2 transition-all no-print"
+        className="fixed bottom-4 right-24 z-50 p-3 sm:px-4 sm:py-3 rounded-full bg-gradient-to-r from-purple-500 via-cyan-400 to-emerald-400 hover:scale-105 text-black font-extrabold text-xs shadow-2xl shadow-purple-500/40 flex items-center gap-2 transition-all no-print"
       >
         <Bot className="w-5 h-5 text-black animate-bounce" />
         <span className="hidden sm:inline">Buddy AI Assistant</span>
@@ -81,7 +81,7 @@ export default function FloatingBuddyAI() {
   }
 
   return (
-    <div className={`fixed bottom-4 left-4 z-50 transition-all duration-300 no-print ${minimized ? "w-72 h-14" : "w-80 sm:w-96 h-[460px]"} glass-card rounded-3xl border border-purple-500/40 bg-[#080d1e]/95 shadow-2xl flex flex-col justify-between overflow-hidden`}>
+    <div className={`fixed bottom-4 right-4 z-50 transition-all duration-300 no-print ${minimized ? "w-72 h-14" : "w-80 sm:w-96 h-[460px]"} glass-card rounded-3xl border border-purple-500/40 bg-[#080d1e]/95 shadow-2xl flex flex-col justify-between overflow-hidden`}>
       {/* Widget Header */}
       <div className="p-3.5 border-b border-white/10 flex items-center justify-between bg-slate-900/90">
         <div className="flex items-center gap-2">

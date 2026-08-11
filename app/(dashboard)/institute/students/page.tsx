@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { Users, Search, Download, CheckCircle2, Award } from "lucide-react";
+import React, { Suspense } from "react";
+import { Users, Download, Printer } from "lucide-react";
+import FilterBar from "@/components/shared/FilterBar";
+import { useFilterSort } from "@/lib/hooks/useFilterSort";
 
-export default function InstituteStudentsPage() {
-  const [searchTerm, setSearchTerm] = useState("");
+function StudentRosterContent() {
+  const { filters, updateFilters, clearFilters } = useFilterSort("score");
 
   const students = [
     { name: "Rajesh Kumar", trade: "CNC Machinist", passportId: "KMP-8A92F1", score: 94, progress: 100, status: "PLACED (Tata Motors)" },
@@ -14,15 +16,32 @@ export default function InstituteStudentsPage() {
     { name: "Suman Patel", trade: "CNC Machinist", passportId: "KMP-9C44E1", score: 92, progress: 100, status: "PLACED (L&T)" },
   ];
 
-  const filtered = students.filter(
-    (s) =>
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.trade.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.passportId.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const trades = Array.from(new Set(students.map((s) => s.trade)));
+  const statuses = Array.from(new Set(students.map((s) => s.status)));
+
+  const filtered = students
+    .filter((s) => {
+      const matchSearch =
+        !filters.search ||
+        s.name.toLowerCase().includes(filters.search.toLowerCase()) ||
+        s.trade.toLowerCase().includes(filters.search.toLowerCase()) ||
+        s.passportId.toLowerCase().includes(filters.search.toLowerCase());
+      const matchTrade = !filters.trade || s.trade === filters.trade;
+      const matchStatus = !filters.status || s.status === filters.status;
+      return matchSearch && matchTrade && matchStatus;
+    })
+    .sort((a, b) => {
+      let valA = (a as any)[filters.sortBy] || a.name;
+      let valB = (b as any)[filters.sortBy] || b.name;
+      if (typeof valA === "string") valA = valA.toLowerCase();
+      if (typeof valB === "string") valB = valB.toLowerCase();
+      if (valA < valB) return filters.sortOrder === "asc" ? -1 : 1;
+      if (valA > valB) return filters.sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in printable-area">
       
       {/* Header */}
       <div className="glass-card p-6 rounded-3xl border border-blue-500/30 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4">
@@ -36,27 +55,38 @@ export default function InstituteStudentsPage() {
           </p>
         </div>
 
-        <button className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all">
-          <Download className="w-4 h-4" /> Export CSV Roster
-        </button>
+        <div className="flex items-center gap-2 no-print">
+          <button
+            onClick={() => window.print()}
+            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-all"
+          >
+            <Printer className="w-4 h-4 text-cyan-400" /> Print Roster
+          </button>
+          <button className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all">
+            <Download className="w-4 h-4" /> Export CSV Roster
+          </button>
+        </div>
       </div>
+
+      {/* FilterBar */}
+      <FilterBar
+        filters={filters}
+        onUpdate={updateFilters}
+        onClear={clearFilters}
+        options={{
+          trades,
+          statuses,
+          sortOptions: [
+            { id: "name", label: "Student Name" },
+            { id: "score", label: "JobReady Score" },
+            { id: "progress", label: "Course Completion %" },
+          ],
+        }}
+        placeholder="Filter by student name, trade, or Passport ID..."
+      />
 
       {/* Roster Table Container */}
       <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4 bg-slate-900/90">
-        
-        {/* Filter Bar */}
-        <div className="relative max-w-md">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Filter by student name, trade, or Passport ID..."
-            className="w-full bg-slate-950 border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-400"
-          />
-        </div>
-
-        {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left text-slate-300">
             <thead className="bg-slate-950 text-slate-400 font-bold uppercase text-[10px]">
@@ -87,9 +117,16 @@ export default function InstituteStudentsPage() {
             </tbody>
           </table>
         </div>
-
       </div>
 
     </div>
+  );
+}
+
+export default function InstituteStudentsPage() {
+  return (
+    <Suspense fallback={<div className="text-white p-6">Loading student roster...</div>}>
+      <StudentRosterContent />
+    </Suspense>
   );
 }
