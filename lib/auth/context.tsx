@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const formattedUser: UserProfile = {
       id: userObj.id || userObj.user_id || "user-" + Math.random().toString(36).substr(2, 9),
       email: userObj.email || `${userRole.toLowerCase()}@karmasetu.ai`,
-      full_name: userObj.full_name || userObj.fullName || userObj.name || `${userRole} User`,
+      full_name: userObj.full_name || userObj.user_metadata?.full_name || userObj.fullName || userObj.name || DEMO_USERS[userRole]?.full_name || `${userRole} User`,
       role: userRole,
     };
     setUser(formattedUser);

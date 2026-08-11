@@ -62,7 +62,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   return (
     <div
       id="dashboard-root"
-      className={`min-h-screen bg-[#050814] text-slate-100 flex font-sans selection:bg-cyan-500 selection:text-black overflow-x-hidden relative ${themeClass}`}
+      className={`min-h-screen bg-[var(--bg-primary)] text-slate-100 flex font-sans selection:bg-cyan-500 selection:text-black overflow-x-hidden relative transition-colors duration-300 ${themeClass}`}
     >
       {/* Desktop Sidebar — always visible on md+ */}
       <div className="hidden md:block">

@@ -65,7 +65,7 @@ export default function InstituteCoursesPage() {
             </div>
 
             <Link
-              href="/institute/courses/create"
+              href={`/institute/courses/create?id=${c.id}&title=${encodeURIComponent(c.title)}&trade=${encodeURIComponent(c.trade)}`}
               className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs flex items-center justify-center gap-1 transition-all"
             >
               <span>Edit Course & Quizzes</span>

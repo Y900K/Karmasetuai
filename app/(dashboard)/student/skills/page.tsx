@@ -15,8 +15,11 @@ export default function StudentSkillsPage() {
     ]
   });
 
+  const [scanSuccess, setScanSuccess] = useState(false);
+
   const handleRunRadar = async () => {
     setLoadingRadar(true);
+    setScanSuccess(false);
     try {
       const res = await fetch("/api/ai/skill-radar", {
         method: "POST",
@@ -29,6 +32,7 @@ export default function StudentSkillsPage() {
       const data = await res.json();
       if (data.success && data.data) {
         setRadarResult(data.data);
+        setScanSuccess(true);
       }
     } catch (e) {
       console.error(e);
@@ -108,6 +112,19 @@ export default function StudentSkillsPage() {
           </div>
         </div>
       </div>
+
+      {/* Success Notification Banner */}
+      {scanSuccess && (
+        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-bold flex items-center justify-between animate-fade-in">
+          <span className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+            AI Radar Scan Complete — Fresh shopfloor gap analysis loaded for {trade}!
+          </span>
+          <span className="text-[10px] bg-emerald-500/20 px-2 py-0.5 rounded text-emerald-400 font-extrabold uppercase">
+            Updated Just Now
+          </span>
+        </div>
+      )}
 
       {/* AI Radar Scan Results */}
       {radarResult && (

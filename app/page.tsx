@@ -39,6 +39,7 @@ function LandingPageContent() {
       EMPLOYER: "/employer",
       HR: "/admin",
       NATIONAL: "/admin",
+      SUPER_ADMIN: "/admin",
     };
 
     const targetRoute = roleRoutes[userRole] || "/student";

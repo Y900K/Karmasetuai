@@ -10,7 +10,7 @@ export default function AdminReportsPage() {
   const handleGenerateSummary = async () => {
     setGenerating(true);
     try {
-      const res = await fetch("/api/ai/mentor", {
+      const res = await fetch("/api/ai/executive-summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

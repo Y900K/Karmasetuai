@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Award, Briefcase, CreditCard, BookOpen, Bot, User, LogOut,
   Users, TrendingUp, FilePlus, BarChart3, Brain, Settings, ClipboardCheck, Video,
@@ -18,8 +18,24 @@ interface SidebarProps {
 
 export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout, switchRole } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
+
+  const roleRoutes: Record<string, string> = {
+    STUDENT: "/student",
+    INSTITUTE: "/institute",
+    INDUSTRY: "/expert",
+    EMPLOYER: "/employer",
+    NATIONAL: "/admin",
+  };
+
+  const handleSwitchRole = (rId: string) => {
+    switchRole(rId);
+    const target = roleRoutes[rId] || "/student";
+    router.push(target);
+    if (onClose) onClose();
+  };
 
   // Role Configuration & Navigation Links
   const roleConfigs: Record<string, { title: string; color: string; bg: string; border: string; items: any[] }> = {
@@ -169,7 +185,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
               {demoRoles.map((r) => (
                 <button
                   key={r.id}
-                  onClick={() => switchRole(r.id)}
+                  onClick={() => handleSwitchRole(r.id)}
                   className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
                     currentRole === r.id
                       ? "bg-cyan-500 text-black font-black"

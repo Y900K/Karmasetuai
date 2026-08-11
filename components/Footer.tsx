@@ -43,10 +43,10 @@ export default function Footer() {
           <div className="space-y-2">
             <h4 className="font-bold text-white uppercase tracking-wider text-[11px]">National Missions</h4>
             <ul className="space-y-2">
-              <li><span className="text-slate-400">Skill India Mission</span></li>
-              <li><span className="text-slate-400">Make in India Initiative</span></li>
-              <li><span className="text-slate-400">Digital India Skilling</span></li>
-              <li><span className="text-slate-400">MSME Competency Push</span></li>
+              <li><a href="https://www.skillindia.gov.in/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">Skill India Mission</a></li>
+              <li><a href="https://www.makeinindia.com/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">Make in India Initiative</a></li>
+              <li><a href="https://www.digitalindia.gov.in/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">Digital India Skilling</a></li>
+              <li><a href="https://msme.gov.in/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">MSME Competency Push</a></li>
             </ul>
           </div>
 

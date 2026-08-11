@@ -23,7 +23,7 @@ export default function SingleCoursePage() {
       lessonType: "VIDEO_YOUTUBE" as const,
       orderIndex: 1,
       durationMinutes: 15,
-      youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      youtubeUrl: "https://www.youtube.com/watch?v=LXb3EKWsInQ",
       contentMarkdown: "Standard Operating Standard (TOS): Ensure workpiece is chucked securely with hydraulic pressure set to 2.5 MPa.",
     },
     {
@@ -33,7 +33,7 @@ export default function SingleCoursePage() {
       lessonType: "VIDEO_YOUTUBE" as const,
       orderIndex: 2,
       durationMinutes: 20,
-      youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      youtubeUrl: "https://www.youtube.com/watch?v=S_8nB4sT798",
       contentMarkdown: "Calibrate NPN proximity sensors and verify 24V DC input LED status on PLC rack.",
     },
     {
@@ -43,7 +43,7 @@ export default function SingleCoursePage() {
       lessonType: "VIDEO_YOUTUBE" as const,
       orderIndex: 3,
       durationMinutes: 25,
-      youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      youtubeUrl: "https://www.youtube.com/watch?v=LXb3EKWsInQ",
       contentMarkdown: "Set G54 work coordinate system and calculate imaginary tool tip orientation P1-P9.",
     }
   ];

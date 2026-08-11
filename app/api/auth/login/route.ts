@@ -37,14 +37,26 @@ export async function POST(req: Request) {
       else if (email.includes("expert")) role = "INDUSTRY";
       else if (email.includes("employer")) role = "EMPLOYER";
       else if (email.includes("hr")) role = "HR";
-      else if (email.includes("admin")) role = "SUPER_ADMIN";
+      else if (email.includes("admin")) role = "NATIONAL";
+
+      const DEMO_NAMES: Record<string, string> = {
+        STUDENT: "Rajesh Kumar",
+        INSTITUTE: "Govt ITI Director",
+        INDUSTRY: "Vikram Malhotra",
+        EMPLOYER: "Tata Motors Plant HR",
+        HR: "National HR Lead",
+        NATIONAL: "MSDE Governance Lead",
+      };
+
+      const demoName = DEMO_NAMES[role] || `${role} User`;
 
       return NextResponse.json({
         success: true,
         user: {
           id: "demo-user-" + role.toLowerCase(),
           email: email,
-          user_metadata: { full_name: "Demo " + role, role: role },
+          full_name: demoName,
+          user_metadata: { full_name: demoName, role: role },
         },
         role: role,
         message: `Welcome to KarmaSetu AI ${role} Portal!`,

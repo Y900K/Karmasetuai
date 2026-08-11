@@ -131,3 +131,7 @@ export const translations: Record<Language, Record<string, string>> = {
     footerTag: "आत्मनिर्भर भारत कार्यबल बुनियादी ढांचे को सशक्त बनाना",
   },
 };
+
+export function t(lang: Language, key: string, fallback: string = ""): string {
+  return translations[lang]?.[key] || translations["en"]?.[key] || fallback || key;
+}

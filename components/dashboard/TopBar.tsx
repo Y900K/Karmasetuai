@@ -42,7 +42,7 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
   ];
 
   const languages: { id: Language; label: string; flag: string }[] = [
-    { id: "en", label: "English", flag: "🇬🇧" },
+    { id: "en", label: "English", flag: "🇮🇳" },
     { id: "hi", label: "हिंदी", flag: "🇮🇳" },
     { id: "hinglish", label: "Hinglish", flag: "🔀" },
   ];
@@ -70,13 +70,19 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
 
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);
-    localStorage.setItem("karmasetu_language", lang);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("karmasetu_language", lang);
+      window.dispatchEvent(new Event("storage"));
+    }
     setLangOpen(false);
   };
 
   const handleThemeChange = (t: string) => {
     setTheme(t);
-    localStorage.setItem("karmasetu_theme", t);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("karmasetu_theme", t);
+      window.dispatchEvent(new Event("storage"));
+    }
     setThemeOpen(false);
   };
 
@@ -116,7 +122,7 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
     if (pathname.includes("/student/profile")) return "My Profile & AI Resume Parser";
     if (pathname.includes("/student")) return "Student Overview Dashboard";
 
-    if (pathname.includes("/institute/students")) return "Student Batch Roster & Live Scores";
+    if (pathname.includes("/institute/students")) return "Active Student Batch Roster & Live Scores";
     if (pathname.includes("/institute/placements")) return "Placement Records & NCVT Report Export";
     if (pathname.includes("/institute/courses/create")) return "LMS Course Builder (YouTube & Drive Embed)";
     if (pathname.includes("/institute/courses")) return "Institute Course Management";

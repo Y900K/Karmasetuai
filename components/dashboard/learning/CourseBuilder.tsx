@@ -1,17 +1,34 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Plus, Trash2, Video, FileText, HelpCircle, Sparkles, Folder, Check, Save, ArrowLeft, RefreshCw } from "lucide-react";
 import AutosaveIndicator from "../shared/AutosaveIndicator";
 
 export default function CourseBuilder() {
-  const [courseTitle, setCourseTitle] = useState("");
-  const [trade, setTrade] = useState("CNC Machinist & Programmer");
-  const [description, setDescription] = useState("");
+  const searchParams = useSearchParams();
+  const editTitle = searchParams?.get("title");
+  const editTrade = searchParams?.get("trade");
+
+  const [courseTitle, setCourseTitle] = useState(editTitle || "");
+  const [trade, setTrade] = useState(editTrade || "CNC Machinist & Programmer");
+  const [description, setDescription] = useState(
+    editTitle
+      ? `Comprehensive NCVT accredited training syllabus for ${editTitle}. Includes interactive video lectures, Google Drive technical documentation, and mandatory 10-Question AI exam.`
+      : ""
+  );
+
   const [modules, setModules] = useState<
     { id: string; title: string; youtubeUrl: string; gdriveUrl: string; autoQuizGenerated: boolean; quizCount: number }[]
   >([
-    { id: "mod-1", title: "Fanuc Controller G-Code & M-Code Programming", youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", gdriveUrl: "https://drive.google.com/file/d/123", autoQuizGenerated: true, quizCount: 10 },
+    {
+      id: "mod-1",
+      title: editTitle ? `${editTitle} — Hands-on Core Module` : "Fanuc Controller G-Code & M-Code Programming",
+      youtubeUrl: "https://www.youtube.com/watch?v=LXb3EKWsInQ",
+      gdriveUrl: "https://drive.google.com/file/d/123",
+      autoQuizGenerated: true,
+      quizCount: 10
+    },
   ]);
 
   const [savingStatus, setSavingStatus] = useState<"SAVED" | "SAVING" | "ERROR">("SAVED");
