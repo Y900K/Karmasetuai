@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FileText, Download, Sparkles, RefreshCw, Printer } from "lucide-react";
+import { FileText, Download, Sparkles, RefreshCw, FileJson, FileSpreadsheet } from "lucide-react";
 import { exportToCSV } from "@/lib/utils/export";
 
 export default function AdminReportsPage() {
@@ -39,6 +39,31 @@ export default function AdminReportsPage() {
     }
   };
 
+  const handleDownloadJSON = () => {
+    const blob = new Blob(
+      [JSON.stringify({ quarter, district, itiCount, reports: complianceReports }, null, 2)],
+      { type: "application/json" }
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `compliance_data_${quarter.replace(/\s/g, "_")}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadNarrative = () => {
+    if (!executiveSummary) return;
+    const text = `KarmaSetu AI — Executive Compliance Narrative\nPeriod: ${quarter}\nDistrict: ${district}\nITIs: ${itiCount}\n\n${executiveSummary}`;
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `executive_narrative_${quarter.replace(/\s/g, "_")}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6 animate-fade-in printable-area">
       
@@ -54,19 +79,27 @@ export default function AdminReportsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 no-print">
+        <div className="flex items-center gap-2 flex-wrap no-print">
           <button
             onClick={() => exportToCSV("compliance_reports", complianceReports)}
-            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-amber-500/20"
+            className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-amber-500/20"
           >
-            <Download className="w-4 h-4 text-black" /> Export Compliance CSV
+            <FileSpreadsheet className="w-4 h-4 text-black" /> Export CSV
           </button>
           <button
-            onClick={() => window.print()}
-            className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-all"
+            onClick={handleDownloadJSON}
+            className="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-cyan-500/20"
           >
-            <Printer className="w-4 h-4 text-amber-400" /> Print PDF Report
+            <FileJson className="w-4 h-4 text-black" /> Export JSON
           </button>
+          {executiveSummary && (
+            <button
+              onClick={handleDownloadNarrative}
+              className="px-3.5 py-2 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-purple-500/20"
+            >
+              <Download className="w-4 h-4" /> Download Narrative (TXT)
+            </button>
+          )}
         </div>
       </div>
 

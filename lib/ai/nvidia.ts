@@ -35,16 +35,15 @@ export async function callNvidiaAI(
   const jsonMode = options.jsonMode ?? true;
 
   if (!apiKey || apiKey === "your_nvidia_api_key_here") {
-    const mock = generateMockAIResponse(prompt, systemPrompt, jsonMode);
-    responseCache.set(cacheKey, { data: mock, timestamp: Date.now() });
-    return mock;
+    // Don't cache mock responses — real API may become available later
+    return generateMockAIResponse(prompt, systemPrompt, jsonMode);
   }
 
   const model = options.model || PRIMARY_MODEL;
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000); // 4-second timeout limit for fast UI response
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15-second timeout — NVIDIA NIM large models need 6-10s for first response
 
     const response = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
       method: "POST",
@@ -98,9 +97,8 @@ export async function callNvidiaAI(
     return finalData;
   } catch (error: any) {
     console.warn("NVIDIA AI Call Timed Out / Failed, using fast fallback:", error.message || error);
-    const mock = generateMockAIResponse(prompt, systemPrompt, jsonMode);
-    responseCache.set(cacheKey, { data: mock, timestamp: Date.now() });
-    return mock;
+    // Don't cache error/mock responses — next request should retry the real API
+    return generateMockAIResponse(prompt, systemPrompt, jsonMode);
   }
 }
 

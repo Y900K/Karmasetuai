@@ -4,12 +4,74 @@ import React, { useState } from "react";
 import { Brain, Sparkles, RefreshCw, CheckCircle2, AlertTriangle, Building, GitFork, Layers, Target } from "lucide-react";
 import { useEcosystemStore } from "@/lib/store/EcosystemStore";
 
+interface BrainmapNode {
+  name: string;
+  sub: string;
+  desc: string;
+  hours: number;
+  prereq: string;
+  colorClass: string;
+}
+
+const TRADE_BRAINMAP_CONFIGS: Record<string, { rootSub: string; nodes: BrainmapNode[] }> = {
+  "CNC Machinist": {
+    rootSub: "Machinist Base",
+    nodes: [
+      { name: "G-Code / PLC Control", sub: "Control Logic", desc: "Fanuc lathe programming, axis interpolation, and M-Code spindle control.", hours: 40, prereq: "NCVT Core", colorClass: "bg-cyan-500/30 border-cyan-400 text-white shadow-cyan-500/30" },
+      { name: "Precision Calibration", sub: "±0.01mm Tolerance", desc: "Micrometer & Vernier caliper calibration down to ±0.01mm tolerance.", hours: 25, prereq: "NCVT Core", colorClass: "bg-amber-500/30 border-amber-400 text-white shadow-amber-500/30" },
+      { name: "Fanuc DXF Import", sub: "CAD/CAM Sync", desc: "Direct CAD/CAM DXF file import to Fanuc controller for automatic toolpathing.", hours: 15, prereq: "G-Code / PLC", colorClass: "bg-purple-500/30 border-purple-400 text-white shadow-purple-500/30" },
+      { name: "5S Shopfloor Safety", sub: "Safety Protocol", desc: "Workplace organisation, hazard identification, and ISO 45001 safety compliance.", hours: 20, prereq: "Precision Calib", colorClass: "bg-emerald-500/30 border-emerald-400 text-white shadow-emerald-500/30" },
+    ],
+  },
+  "Industrial Electrician": {
+    rootSub: "Electrical Base",
+    nodes: [
+      { name: "3-Phase Motor Wiring", sub: "Star-Delta Controls", desc: "Industrial 3-phase motor wiring, Star-Delta starter assembly, and relay control.", hours: 35, prereq: "NCVT Core", colorClass: "bg-cyan-500/30 border-cyan-400 text-white shadow-cyan-500/30" },
+      { name: "PLC Sensor Interfacing", sub: "Siemens S7-1200", desc: "Proximity sensor, thermocouple, and solenoid valve ladder logic programming.", hours: 45, prereq: "NCVT Core", colorClass: "bg-amber-500/30 border-amber-400 text-white shadow-amber-500/30" },
+      { name: "VFD Speed Control", sub: "AC Drives", desc: "Variable Frequency Drive parameter tuning and Modbus RS485 network setup.", hours: 20, prereq: "3-Phase Motor Wiring", colorClass: "bg-purple-500/30 border-purple-400 text-white shadow-purple-500/30" },
+      { name: "IE Rules Safety", sub: "Lockout / Tagout", desc: "Indian Electricity Rules, high voltage LOTO safety procedures, and earthing audits.", hours: 15, prereq: "PLC Sensor Interfacing", colorClass: "bg-emerald-500/30 border-emerald-400 text-white shadow-emerald-500/30" },
+    ],
+  },
+  "Fitter": {
+    rootSub: "Mechanical Base",
+    nodes: [
+      { name: "Bench Work & Limits", sub: "H7/g6 Fits", desc: "Precision filing, drilling, tapping, and ISO limit/fit shaft clearance calculations.", hours: 40, prereq: "NCVT Core", colorClass: "bg-cyan-500/30 border-cyan-400 text-white shadow-cyan-500/30" },
+      { name: "Hydraulic Pneumatics", sub: "Fluid Power", desc: "Directional control valve circuits, pneumatic cylinder piping, and pressure relief.", hours: 30, prereq: "NCVT Core", colorClass: "bg-amber-500/30 border-amber-400 text-white shadow-amber-500/30" },
+      { name: "CMM Metrology", sub: "Quality Inspection", desc: "Coordinate Measuring Machine probe calibration and GD&T geometric tolerance checks.", hours: 25, prereq: "Bench Work & Limits", colorClass: "bg-purple-500/30 border-purple-400 text-white shadow-purple-500/30" },
+      { name: "Preventive Maintenance", sub: "TPM Practices", desc: "Total Productive Maintenance, bearing replacement, and spindle lubrication protocols.", hours: 20, prereq: "Hydraulic Pneumatics", colorClass: "bg-emerald-500/30 border-emerald-400 text-white shadow-emerald-500/30" },
+    ],
+  },
+  "Welder": {
+    rootSub: "Fabrication Base",
+    nodes: [
+      { name: "SMAW & GMAW / MIG", sub: "Multi-Pass Joints", desc: "Shielded Metal Arc & Gas Metal Arc Welding in 1G, 2G, and 3F position joints.", hours: 50, prereq: "NCVT Core", colorClass: "bg-cyan-500/30 border-cyan-400 text-white shadow-cyan-500/30" },
+      { name: "GTAW / TIG Stainless", sub: "Argon Purging", desc: "TIG welding of SS304 pipes and aluminum plates with high frequency arc stabilization.", hours: 35, prereq: "NCVT Core", colorClass: "bg-amber-500/30 border-amber-400 text-white shadow-amber-500/30" },
+      { name: "NDT Weld Inspection", sub: "Dye Penetrant / UT", desc: "Non-destructive testing liquid penetrant inspection and ultrasonic flaw detection.", hours: 20, prereq: "SMAW & GMAW / MIG", colorClass: "bg-purple-500/30 border-purple-400 text-white shadow-purple-500/30" },
+      { name: "ISO 3834 Quality", sub: "WPS Compliance", desc: "Welding Procedure Specification (WPS) adherence and shopfloor fume safety.", hours: 15, prereq: "GTAW / TIG Stainless", colorClass: "bg-emerald-500/30 border-emerald-400 text-white shadow-emerald-500/30" },
+    ],
+  },
+  "OTHER": {
+    rootSub: "Custom Trade Base",
+    nodes: [
+      { name: "Core Technical Competencies", sub: "Trade Foundation", desc: "Essential trade fundamentals, tool safety, and shopfloor operations.", hours: 40, prereq: "NCVT Core", colorClass: "bg-cyan-500/30 border-cyan-400 text-white shadow-cyan-500/30" },
+      { name: "Specialized Equipment", sub: "Hands-on Operations", desc: "Hands-on calibration and operation of trade-specific machinery.", hours: 30, prereq: "NCVT Core", colorClass: "bg-amber-500/30 border-amber-400 text-white shadow-amber-500/30" },
+      { name: "Industry 4.0 Digitalization", sub: "Smart Integration", desc: "Digital data logging, sensor monitoring, and automated process controls.", hours: 25, prereq: "Core Technical Competencies", colorClass: "bg-purple-500/30 border-purple-400 text-white shadow-purple-500/30" },
+      { name: "EHS & Quality Control", sub: "Safety & Compliance", desc: "Environmental Health & Safety protocols, ISO quality standards, and lean manufacturing.", hours: 20, prereq: "Specialized Equipment", colorClass: "bg-emerald-500/30 border-emerald-400 text-white shadow-emerald-500/30" },
+    ],
+  },
+};
+
 export default function AiCurriculumPage() {
   const { districts } = useEcosystemStore();
-  const [trade, setTrade] = useState("CNC Machinist");
+  const [tradeSelect, setTradeSelect] = useState("CNC Machinist");
+  const [customTrade, setCustomTrade] = useState("");
+  const trade = tradeSelect === "OTHER" ? (customTrade || "Custom Trade") : tradeSelect;
+
   const [syllabus, setSyllabus] = useState("NCVT 2-Year CNC Machinist Syllabus: Lathe Operations, Milling, Safety, Basic G-Code.");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+
+  const activeBrainmapConfig = TRADE_BRAINMAP_CONFIGS[tradeSelect] || TRADE_BRAINMAP_CONFIGS["OTHER"];
 
   const [selectedNode, setSelectedNode] = useState<{ name: string; desc: string; hours: number; prereq: string }>({
     name: "Fanuc DXF Import",
@@ -59,15 +121,27 @@ export default function AiCurriculumPage() {
           <div>
             <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Select Trade Specialization</label>
             <select
-              value={trade}
-              onChange={(e) => setTrade(e.target.value)}
+              value={tradeSelect}
+              onChange={(e) => setTradeSelect(e.target.value)}
               className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-400"
             >
               <option value="CNC Machinist">CNC Machinist & Programmer</option>
               <option value="Industrial Electrician">Industrial Electrician & PLC</option>
               <option value="Fitter">Fitter & Quality Inspection</option>
               <option value="Welder">Welder & Fabrication</option>
+              <option value="OTHER">OTHER (Specify Custom Trade)</option>
             </select>
+
+            {tradeSelect === "OTHER" && (
+              <input
+                type="text"
+                required
+                value={customTrade}
+                onChange={(e) => setCustomTrade(e.target.value)}
+                placeholder="Specify custom trade (e.g. Mechatronics, Tool & Die)..."
+                className="w-full mt-2 bg-slate-950 border border-cyan-500/40 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+              />
+            )}
           </div>
         </div>
 
@@ -120,48 +194,48 @@ export default function AiCurriculumPage() {
 
           {/* Node 1: Root Syllabus */}
           <div
-            onClick={() => setSelectedNode({ name: "NCVT Core Syllabus", desc: "Base accredited NCVT 2-year trade curriculum.", hours: 200, prereq: "Secondary Education" })}
+            onClick={() => setSelectedNode({ name: "NCVT Core Syllabus", desc: `Base accredited NCVT 2-year ${trade} curriculum.`, hours: 200, prereq: "Secondary Education" })}
             className={`z-10 p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("NCVT") ? "bg-blue-500/30 border-blue-400 text-white shadow-lg shadow-blue-500/30" : "bg-blue-500/10 border-blue-500/30 text-blue-300"}`}
           >
             <div className="font-extrabold">NCVT Core</div>
-            <div className="text-[10px] text-slate-400">{trade} Base</div>
+            <div className="text-[10px] text-slate-400">{activeBrainmapConfig.rootSub}</div>
           </div>
 
           {/* Node 2 & 3: Intermediate Skills */}
           <div className="z-10 flex flex-col gap-12">
             <div
-              onClick={() => setSelectedNode({ name: "G-Code / PLC Control", desc: "Fanuc lathe programming, axis interpolation, and M-Code spindle control.", hours: 40, prereq: "NCVT Core" })}
-              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("G-Code") ? "bg-cyan-500/30 border-cyan-400 text-white shadow-lg shadow-cyan-500/30" : "bg-cyan-500/10 border-cyan-500/30 text-cyan-300"}`}
+              onClick={() => setSelectedNode({ name: activeBrainmapConfig.nodes[0].name, desc: activeBrainmapConfig.nodes[0].desc, hours: activeBrainmapConfig.nodes[0].hours, prereq: activeBrainmapConfig.nodes[0].prereq })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name === activeBrainmapConfig.nodes[0].name ? "bg-cyan-500/30 border-cyan-400 text-white shadow-lg shadow-cyan-500/30" : activeBrainmapConfig.nodes[0].colorClass}`}
             >
-              <div className="font-extrabold">G-Code / PLC</div>
-              <div className="text-[10px] text-slate-400">Control Logic</div>
+              <div className="font-extrabold">{activeBrainmapConfig.nodes[0].name}</div>
+              <div className="text-[10px] text-slate-400">{activeBrainmapConfig.nodes[0].sub}</div>
             </div>
 
             <div
-              onClick={() => setSelectedNode({ name: "Precision Calibration", desc: "Micrometer & Vernier caliper calibration down to ±0.01mm tolerance.", hours: 25, prereq: "NCVT Core" })}
-              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("Precision") ? "bg-amber-500/30 border-amber-400 text-white shadow-lg shadow-amber-500/30" : "bg-amber-500/10 border-amber-500/30 text-amber-300"}`}
+              onClick={() => setSelectedNode({ name: activeBrainmapConfig.nodes[1].name, desc: activeBrainmapConfig.nodes[1].desc, hours: activeBrainmapConfig.nodes[1].hours, prereq: activeBrainmapConfig.nodes[1].prereq })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name === activeBrainmapConfig.nodes[1].name ? "bg-amber-500/30 border-amber-400 text-white shadow-lg shadow-amber-500/30" : activeBrainmapConfig.nodes[1].colorClass}`}
             >
-              <div className="font-extrabold">Precision Calib</div>
-              <div className="text-[10px] text-slate-400">±0.01mm Tolerance</div>
+              <div className="font-extrabold">{activeBrainmapConfig.nodes[1].name}</div>
+              <div className="text-[10px] text-slate-400">{activeBrainmapConfig.nodes[1].sub}</div>
             </div>
           </div>
 
           {/* Node 4 & 5: Advanced Industry 4.0 Additions */}
           <div className="z-10 flex flex-col gap-12">
             <div
-              onClick={() => setSelectedNode({ name: "Fanuc DXF Import", desc: "Direct CAD/CAM DXF file import to Fanuc controller for automatic toolpathing.", hours: 15, prereq: "G-Code / PLC" })}
-              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("DXF") ? "bg-purple-500/30 border-purple-400 text-white shadow-lg shadow-purple-500/30" : "bg-purple-500/10 border-purple-500/30 text-purple-300"}`}
+              onClick={() => setSelectedNode({ name: activeBrainmapConfig.nodes[2].name, desc: activeBrainmapConfig.nodes[2].desc, hours: activeBrainmapConfig.nodes[2].hours, prereq: activeBrainmapConfig.nodes[2].prereq })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name === activeBrainmapConfig.nodes[2].name ? "bg-purple-500/30 border-purple-400 text-white shadow-lg shadow-purple-500/30" : activeBrainmapConfig.nodes[2].colorClass}`}
             >
-              <div className="font-extrabold">Fanuc DXF Import</div>
-              <div className="text-[10px] text-slate-400">CAD/CAM Sync</div>
+              <div className="font-extrabold">{activeBrainmapConfig.nodes[2].name}</div>
+              <div className="text-[10px] text-slate-400">{activeBrainmapConfig.nodes[2].sub}</div>
             </div>
 
             <div
-              onClick={() => setSelectedNode({ name: "5S Shopfloor Safety", desc: "Workplace organisation, hazard identification, and ISO 45001 safety compliance.", hours: 20, prereq: "Precision Calib" })}
-              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("5S") ? "bg-emerald-500/30 border-emerald-400 text-white shadow-lg shadow-emerald-500/30" : "bg-emerald-500/10 border-emerald-500/30 text-emerald-300"}`}
+              onClick={() => setSelectedNode({ name: activeBrainmapConfig.nodes[3].name, desc: activeBrainmapConfig.nodes[3].desc, hours: activeBrainmapConfig.nodes[3].hours, prereq: activeBrainmapConfig.nodes[3].prereq })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name === activeBrainmapConfig.nodes[3].name ? "bg-emerald-500/30 border-emerald-400 text-white shadow-lg shadow-emerald-500/30" : activeBrainmapConfig.nodes[3].colorClass}`}
             >
-              <div className="font-extrabold">5S Shopfloor</div>
-              <div className="text-[10px] text-slate-400">Safety Protocol</div>
+              <div className="font-extrabold">{activeBrainmapConfig.nodes[3].name}</div>
+              <div className="text-[10px] text-slate-400">{activeBrainmapConfig.nodes[3].sub}</div>
             </div>
           </div>
 

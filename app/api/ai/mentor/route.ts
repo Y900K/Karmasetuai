@@ -61,6 +61,84 @@ Answer in 50-100 words. Language: ${targetLang === "hi" ? "Hindi (हिंद�
 function getDiverseFallbackResponse(prompt: string, trade: string, lang: string): string {
   const p = prompt.toLowerCase();
 
+  // Data Management, Computer, IT & Software
+  if (
+    p.includes("data management") ||
+    p.includes("data") ||
+    p.includes("computer") ||
+    p.includes("database") ||
+    p.includes("software") ||
+    p.includes("coding") ||
+    p.includes("it trade") ||
+    p.includes("copa")
+  ) {
+    if (lang === "hi") {
+      return `डेटा मैनेजमेंट (Data Management) का अर्थ है डिजिटल जानकारी को सुरक्षित रूप से स्टोर, व्यवस्थित और प्रोसेस करना। ITI COPA और कंप्यूटर ट्रेड में SQL डेटाबेस प्रबंधन, Excel ऑटोमेशन और ERP शॉपफ्लोर एंट्री की मांग बढ़ रही है। TCS और Wipro BPO में ₹22,000 से ₹28,000 की शुरुआती सैलरी मिलती है।`;
+    }
+    if (lang === "en") {
+      return `Data Management involves organizing, storing, retrieving, and securing digital information efficiently. In ITI COPA and Computer Operations, mastering SQL relational databases, Excel macros, and MSME ERP data entry unlocks computer operator and data analyst roles starting from ₹22,000 to ₹30,000/month.`;
+    }
+    return `Data Management का मतलब है डिजिटल जानकारी को तरीके से Organize, Store और Process करना। ITI COPA & Computer Ops में SQL Database, Excel Macros और Shopfloor ERP entry सबसे ज़रूरी skills हैं। TCS, Infosys BPO और MSME IT hubs में ₹22,000-₹30,000/month stipend मिलता है!`;
+  }
+
+  // CAD/CAM & Technical Drafting
+  if (
+    p.includes("cad") ||
+    p.includes("cam") ||
+    p.includes("autocad") ||
+    p.includes("solidworks") ||
+    p.includes("design") ||
+    p.includes("drafting") ||
+    p.includes("dxf") ||
+    p.includes("step")
+  ) {
+    if (lang === "hi") {
+      return `CAD (Computer-Aided Design) जैसे AutoCAD और SolidWorks 2D/3D मॉडल बनाने के लिए उपयोग किए जाते हैं, जबकि CAM (Computer-Aided Manufacturing) उन CAD डिजाइनों को सीएनसी टूलपाथ (G-Code) में बदलता है। CAD/CAM ड्राफ्ट्समैन को औद्योगिक डिजाइन सेंटरों में ₹25,000 से ₹35,000/माह का शुरुआती पैकेज मिलता है।`;
+    }
+    if (lang === "en") {
+      return `CAD (AutoCAD, SolidWorks) creates precise 2D engineering drawings and 3D solid models, while CAM software generates CNC G-Code toolpaths directly from CAD geometry. Mastering CAD/CAM DXF/STEP file conversion qualifies you for Design Draftsman roles in Tier-1 MSME plants.`;
+    }
+    return `CAD (AutoCAD, SolidWorks) 2D/3D component design के लिए और CAM सॉफ्टवेयर DXF files से automatic CNC G-Code toolpaths बनाने के लिए use होता है। CAD/CAM Draftsman role के लिए MSME R&D units में ₹25,000 से ₹35,000/month starting salary मिलती है!`;
+  }
+
+  // Quality Control & Inspection
+  if (
+    p.includes("quality control") ||
+    p.includes("qc") ||
+    p.includes("inspection") ||
+    p.includes("cmm") ||
+    p.includes("qa") ||
+    p.includes("six sigma") ||
+    p.includes("lean")
+  ) {
+    if (lang === "hi") {
+      return `क्वालिटी कंट्रोल (QC) का मुख्य काम उत्पादन लाइन पर घटकों के आयाम, टॉलरेंस और फिनिश की जांच करना है। CMM मशीन संचालन, वर्नियर कैलिपर कैलिब्रेशन और 7 QC टूल्स में महारत हासिल करने से Bosch और Tata Motors सप्लायर प्लांट्स में QC इंस्पेक्टर पद मिलता है।`;
+    }
+    if (lang === "en") {
+      return `Quality Control (QC) ensures products meet precise engineering specs and dimensional tolerances. Proficiency in Vernier calibration, CMM (Coordinate Measuring Machine) inspection, and 7 QC Tools qualifies you for QA Inspector positions with zero-rejection mandates.`;
+    }
+    return `Quality Control (QC) का काम shopfloor components की dimensional accuracy और ±0.01mm tolerance चेक करना है। Vernier Micrometer, CMM machine operation और ISO 9001 audit सीखकर Tier-1 MSME plants में QC Inspector role हासिल करें!`;
+  }
+
+  // Cutting Tools & Tooling
+  if (
+    p.includes("cutting tool") ||
+    p.includes("insert") ||
+    p.includes("carbide") ||
+    p.includes("drill") ||
+    p.includes("tap") ||
+    p.includes("tool life") ||
+    p.includes("spindle speed")
+  ) {
+    if (lang === "hi") {
+      return `कटिंग टूल्स (जैसे कार्बाइड इंसर्ट्स, HSS ड्रिल और टैप) धातु को सटीक आकार में काटते हैं। टूल लाइफ बढ़ाने और वर्कपीस फिनिश बेहतर करने के लिए कटिंग स्पीड (Vc), फीड रेट (f) और कट की गहराई (ap) का सही संतुलन जरूरी है।`;
+    }
+    if (lang === "en") {
+      return `Cutting tools (Carbide inserts, HSS drills, end mills) shape metal under high temperature. Optimizing Cutting Speed (Vc), Feed Rate (f), and Depth of Cut (ap) extends tool life and achieves high surface finish Ra < 0.8 µm.`;
+    }
+    return `Cutting Tools (Tungsten Carbide Inserts, End Mills) CNC machining में metal removal के लिए use होते हैं। Correct Cutting Speed (Vc), Feed Rate और Coolant flow से tool life 40% बढ़ती है और Surface Finish Ra < 0.8µm मिलती है!`;
+  }
+
   // PPE (Personal Protective Equipment)
   if (p.includes("ppe") || p.includes("protective equipment") || p.includes("safety gear")) {
     if (lang === "hi") {
@@ -182,7 +260,7 @@ function getDiverseFallbackResponse(prompt: string, trade: string, lang: string)
     return `नमस्ते Trainee Buddy! मैं आपका 24/7 Buddy AI guide हूँ। ${trade || "CNC Machinist"} में career growth, MSME salary packages या JobReady Index 90+ boost करने के बारे में कोई भी सवाल पूछें!`;
   }
 
-  // Default response
+  // Default response (Trade-sensitive)
   if (lang === "hi") {
     return `नमस्ते दोस्त! ${trade || "तकनीकी ट्रेड"} में करियर आगे बढ़ाने के लिए कर्मसेतु प्लेटफॉर्म के 4-स्टेप लर्निंग पाथ (वीडियो ➔ रीडिंग ➔ 10-प्रश्न AI परीक्षा ➔ डिजिटल स्किल पासपोर्ट) को पूरा करें। इससे आपकी प्रैक्टिकल क्षमता प्रमाणित होगी।`;
   }
@@ -194,6 +272,30 @@ function getDiverseFallbackResponse(prompt: string, trade: string, lang: string)
 
 function getDynamicSuggestions(prompt: string, trade: string, lang: string): string[] {
   const p = prompt.toLowerCase();
+
+  if (p.includes("data") || p.includes("computer") || p.includes("software")) {
+    return [
+      "What are top computer trade jobs in MSME IT hubs?",
+      "How does SQL database management boost my JobReady Index?",
+      "What is starting salary for ITI COPA computer operator?"
+    ];
+  }
+
+  if (p.includes("cad") || p.includes("cam") || p.includes("autocad") || p.includes("design")) {
+    return [
+      "How to convert 2D AutoCAD drawings into CNC G-Code?",
+      "What is starting stipend for SolidWorks draftsman?",
+      "Which short-term CAD/CAM course is accredited by NCVT?"
+    ];
+  }
+
+  if (p.includes("quality") || p.includes("qc") || p.includes("inspection")) {
+    return [
+      "How to pass CMM machine inspection tolerance test?",
+      "What are 7 QC tools used in manufacturing shopfloors?",
+      "Which companies hire Quality Inspectors at ₹30,000/month?"
+    ];
+  }
 
   if (p.includes("salary") || p.includes("earning") || p.includes("pay")) {
     return [

@@ -321,15 +321,8 @@ export default function TopBar({ onToggleSidebar, onToggleAnalytics }: TopBarPro
           )}
         </div>
 
-        {/* User Badge & Logout */}
-        <div className="flex items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 border-l border-white/10">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 flex items-center justify-center font-bold text-xs">
-            {user?.full_name?.charAt(0) || "U"}
-          </div>
-          <div className="hidden xl:block text-left">
-            <div className="text-xs font-bold text-white leading-none">{user?.full_name || "KarmaSetu User"}</div>
-            <div className="text-[10px] text-slate-400 leading-none mt-1">{user?.email || "user@karmasetu.ai"}</div>
-          </div>
+        {/* Logout Button (user details shown in Sidebar footer) */}
+        <div className="flex items-center pl-1.5 sm:pl-2 border-l border-white/10">
           <button
             onClick={logout}
             className="p-1.5 sm:p-2 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all"

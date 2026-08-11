@@ -1,21 +1,31 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import TopBar from "@/components/dashboard/TopBar";
 import AnalyticsSmartSidebar from "@/components/dashboard/shared/AnalyticsSmartSidebar";
-import { AuthProvider, useAuth } from "@/lib/auth/context";
-import { EcosystemProvider, useEcosystem } from "@/lib/context/EcosystemContext";
+import { useAuth } from "@/lib/auth/context";
+import { useEcosystem } from "@/lib/context/EcosystemContext";
 import FloatingBuddyAI from "@/components/dashboard/shared/FloatingBuddyAI";
-import { BarChart3 } from "lucide-react";
 
-function DashboardContent({ children }: { children: React.ReactNode }) {
-  const { role } = useAuth();
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const { role, isAuthenticated, isLoading } = useAuth();
   const { theme } = useEcosystem();
   const pathname = usePathname();
+  const router = useRouter();
   const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Auth guard — redirect to home if not authenticated
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+      if (!isDemoMode) {
+        router.push("/?auth=required");
+      }
+    }
+  }, [isLoading, isAuthenticated, router]);
 
   // Determine current active role based on path or fallback to auth role
   let currentRole = role || "STUDENT";
@@ -73,7 +83,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           onToggleAnalytics={() => setAnalyticsOpen(!analyticsOpen)}
         />
-        <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 space-y-4 sm:space-y-6 overflow-y-auto relative">
+        <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 pt-4 space-y-4 sm:space-y-6 overflow-y-auto relative">
           {children}
         </main>
       </div>
@@ -87,15 +97,5 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       {/* Floating Buddy AI Assistant Widget */}
       <FloatingBuddyAI />
     </div>
-  );
-}
-
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <AuthProvider>
-      <EcosystemProvider>
-        <DashboardContent>{children}</DashboardContent>
-      </EcosystemProvider>
-    </AuthProvider>
   );
 }

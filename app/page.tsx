@@ -12,10 +12,10 @@ import ImpactStats from "@/components/ImpactStats";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
 import { Language } from "@/lib/i18n";
-import { AuthProvider, useAuth } from "@/lib/auth/context";
-import { EcosystemProvider, useEcosystem } from "@/lib/context/EcosystemContext";
+import { useAuth } from "@/lib/auth/context";
+import { useEcosystem } from "@/lib/context/EcosystemContext";
 
-function LandingPageContent() {
+export default function Home() {
   const router = useRouter();
   const { login } = useAuth();
   const { language, setLanguage, theme, setTheme } = useEcosystem();
@@ -91,15 +91,5 @@ function LandingPageContent() {
         onLoginSuccess={handleLoginSuccess}
       />
     </main>
-  );
-}
-
-export default function Home() {
-  return (
-    <AuthProvider>
-      <EcosystemProvider>
-        <LandingPageContent />
-      </EcosystemProvider>
-    </AuthProvider>
   );
 }

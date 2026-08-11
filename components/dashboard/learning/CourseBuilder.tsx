@@ -1,54 +1,69 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { Plus, Trash2, Video, FileText, HelpCircle, Sparkles, Folder, Check, Save, ArrowLeft, RefreshCw, Link2, Award, ExternalLink } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Plus, Trash2, Video, FileText, HelpCircle, Sparkles, Folder, Check, Save, ArrowLeft, RefreshCw, Link2, Award, ExternalLink, X } from "lucide-react";
 import AutosaveIndicator from "../shared/AutosaveIndicator";
 
 export default function CourseBuilder() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const editTitle = searchParams?.get("title");
   const editTrade = searchParams?.get("trade");
 
   const [courseTitle, setCourseTitle] = useState(editTitle || "");
-  const [trade, setTrade] = useState(editTrade || "CNC Machinist & Programmer");
+  const [tradeSelect, setTradeSelect] = useState(editTrade || "CNC Machinist & Programmer");
+  const [customTrade, setCustomTrade] = useState("");
+  const trade = tradeSelect === "OTHER" ? (customTrade || "Custom Trade") : tradeSelect;
+
   const [description, setDescription] = useState(
     editTitle
       ? `Comprehensive NCVT accredited training syllabus for ${editTitle}. Includes interactive video lectures, Google Drive technical documentation, and mandatory AI exam.`
       : ""
   );
 
-  // Dynamic Resource Links List
-  const [resources, setResources] = useState<{ id: string; title: string; url: string }[]>([
-    { id: "r1", title: "NCVT Shopfloor Manual PDF", url: "https://drive.google.com/file/d/123" }
-  ]);
+  // Dynamic Resource Links List (Blank when creating new, filled when editing)
+  const [resources, setResources] = useState<{ id: string; title: string; url: string }[]>(
+    editTitle
+      ? [{ id: "r1", title: "NCVT Shopfloor Manual PDF", url: "https://drive.google.com/file/d/123" }]
+      : []
+  );
 
-  // Quiz Builder Questions List (defaults to 10)
-  const [quizQuestions, setQuizQuestions] = useState<string[]>([
-    "Explain Fanuc G-Code G01 linear interpolation syntax.",
-    "What is the safety tolerance for G00 rapid traverse motion?",
-    "Describe 3-phase motor Star-Delta starter wiring diagram.",
-    "How to measure shaft diameter using Vernier Micrometer ±0.01mm?",
-    "Explain 5S workplace organisation steps in CNC workshop.",
-    "What is M03 and M05 spindle rotation command?",
-    "How to clear emergency stop alarms on PLC controller?",
-    "What PPE is mandatory for MIG welding operation?",
-    "Write G-Code for facing operation on 50mm mild steel bar.",
-    "How to verify surface roughness using profilometer?",
-  ]);
+  // Quiz Builder Questions List (Blank when creating new, pre-filled when editing)
+  const [quizQuestions, setQuizQuestions] = useState<string[]>(
+    editTitle
+      ? [
+          "Explain Fanuc G-Code G01 linear interpolation syntax.",
+          "What is the safety tolerance for G00 rapid traverse motion?",
+          "Describe 3-phase motor Star-Delta starter wiring diagram.",
+          "How to measure shaft diameter using Vernier Micrometer ±0.01mm?",
+          "Explain 5S workplace organisation steps in CNC workshop.",
+          "What is M03 and M05 spindle rotation command?",
+          "How to clear emergency stop alarms on PLC controller?",
+          "What PPE is mandatory for MIG welding operation?",
+          "Write G-Code for facing operation on 50mm mild steel bar.",
+          "How to verify surface roughness using profilometer?",
+        ]
+      : []
+  );
 
+  // Modules List (Blank when creating new, pre-filled when editing)
   const [modules, setModules] = useState<
     { id: string; title: string; youtubeUrl: string; gdriveUrl: string; autoQuizGenerated: boolean; quizCount: number }[]
-  >([
-    {
-      id: "mod-1",
-      title: editTitle ? `${editTitle} — Hands-on Core Module` : "Fanuc Controller G-Code & M-Code Programming",
-      youtubeUrl: "https://www.youtube.com/watch?v=LXb3EKWsInQ",
-      gdriveUrl: "https://drive.google.com/file/d/123",
-      autoQuizGenerated: true,
-      quizCount: 10
-    },
-  ]);
+  >(
+    editTitle
+      ? [
+          {
+            id: "mod-1",
+            title: `${editTitle} — Hands-on Core Module`,
+            youtubeUrl: "https://www.youtube.com/watch?v=LXb3EKWsInQ",
+            gdriveUrl: "https://drive.google.com/file/d/123",
+            autoQuizGenerated: true,
+            quizCount: 10,
+          },
+        ]
+      : []
+  );
 
   const [savingStatus, setSavingStatus] = useState<"SAVED" | "SAVING" | "ERROR">("SAVED");
   const [lastSaved, setLastSaved] = useState<Date | null>(new Date());
@@ -185,6 +200,15 @@ export default function CourseBuilder() {
 
         <div className="flex items-center gap-3 no-print">
           <AutosaveIndicator status={savingStatus} lastSavedAt={lastSaved} />
+          
+          <button
+            onClick={() => router.push("/institute/courses")}
+            className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-red-500/20 text-slate-300 hover:text-red-300 border border-white/10 hover:border-red-500/30 font-bold text-xs flex items-center gap-1.5 transition-all"
+          >
+            <X className="w-4 h-4" />
+            <span>Cancel Course Creation</span>
+          </button>
+
           <button className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-lg shadow-blue-500/20 flex items-center gap-1.5 transition-all">
             <Save className="w-4 h-4" />
             <span>Publish Course</span>
@@ -217,9 +241,9 @@ export default function CourseBuilder() {
           <div>
             <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Trade Specialization</label>
             <select
-              value={trade}
+              value={tradeSelect}
               onChange={(e) => {
-                setTrade(e.target.value);
+                setTradeSelect(e.target.value);
                 triggerAutosave();
               }}
               className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-400"
@@ -228,7 +252,22 @@ export default function CourseBuilder() {
               <option value="Industrial Electrician & PLC">Industrial Electrician & PLC</option>
               <option value="Fitter & Quality Inspection">Fitter & Quality Inspection</option>
               <option value="Welder & Metal Fabrication">Welder & Metal Fabrication</option>
+              <option value="OTHER">OTHER (Specify Custom Trade)</option>
             </select>
+
+            {tradeSelect === "OTHER" && (
+              <input
+                type="text"
+                required
+                value={customTrade}
+                onChange={(e) => {
+                  setCustomTrade(e.target.value);
+                  triggerAutosave();
+                }}
+                placeholder="Enter custom trade name (e.g. Mechatronics Technician)..."
+                className="w-full mt-2 bg-slate-950 border border-cyan-500/40 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"
+              />
+            )}
           </div>
         </div>
 
@@ -266,48 +305,54 @@ export default function CourseBuilder() {
           </h3>
           <button
             onClick={handleAddResource}
-            className="px-3.5 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold text-xs flex items-center gap-1"
+            className="px-3.5 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold text-xs flex items-center gap-1 hover:bg-cyan-500/30 transition-all"
           >
             <Plus className="w-3.5 h-3.5" /> Add Resource Link
           </button>
         </div>
 
-        <div className="space-y-2">
-          {resources.map((res, idx) => (
-            <div key={res.id} className="flex items-center gap-2">
-              <input
-                type="text"
-                value={res.title}
-                onChange={(e) => {
-                  const updated = [...resources];
-                  updated[idx].title = e.target.value;
-                  setResources(updated);
-                  triggerAutosave();
-                }}
-                placeholder="Resource Title (e.g. NCVT Blueprint Manual)"
-                className="w-1/3 bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white"
-              />
-              <input
-                type="url"
-                value={res.url}
-                onChange={(e) => {
-                  const updated = [...resources];
-                  updated[idx].url = e.target.value;
-                  setResources(updated);
-                  triggerAutosave();
-                }}
-                placeholder="URL (e.g. https://drive.google.com/...)"
-                className="flex-1 bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white"
-              />
-              <button
-                onClick={() => handleRemoveResource(res.id)}
-                className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          ))}
-        </div>
+        {resources.length === 0 ? (
+          <div className="p-4 rounded-2xl bg-white/5 border border-dashed border-white/10 text-center text-xs text-slate-400">
+            No supplementary resources added yet. Click &quot;Add Resource Link&quot; to include Google Drive PDFs or manuals.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {resources.map((res, idx) => (
+              <div key={res.id} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={res.title}
+                  onChange={(e) => {
+                    const updated = [...resources];
+                    updated[idx].title = e.target.value;
+                    setResources(updated);
+                    triggerAutosave();
+                  }}
+                  placeholder="Resource Title (e.g. NCVT Blueprint Manual)"
+                  className="w-1/3 bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white"
+                />
+                <input
+                  type="url"
+                  value={res.url}
+                  onChange={(e) => {
+                    const updated = [...resources];
+                    updated[idx].url = e.target.value;
+                    setResources(updated);
+                    triggerAutosave();
+                  }}
+                  placeholder="URL (e.g. https://drive.google.com/...)"
+                  className="flex-1 bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white"
+                />
+                <button
+                  onClick={() => handleRemoveResource(res.id)}
+                  className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Course Topics & Validated Embeds */}
@@ -326,114 +371,137 @@ export default function CourseBuilder() {
           </button>
         </div>
 
-        {/* Topic Modules List */}
-        <div className="space-y-4">
-          {modules.map((m, idx) => (
-            <div key={m.id} className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
-              <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-black text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">
-                  Topic #{idx + 1}
-                </span>
-                <button
-                  onClick={() => handleDeleteModule(m.id)}
-                  className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs transition-all"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div>
-                <input
-                  type="text"
-                  required
-                  value={m.title}
-                  onChange={(e) => handleModuleChange(m.id, "title", e.target.value)}
-                  placeholder="e.g. Fanuc G-Code Lathe Operation & Precision Tolerances"
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 font-bold"
-                />
-              </div>
-
-              {/* YouTube & Drive Link Embeds with Validation Badges */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <div className="relative">
-                    <Video className="w-4 h-4 text-red-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="url"
-                      value={m.youtubeUrl}
-                      onChange={(e) => handleModuleChange(m.id, "youtubeUrl", e.target.value)}
-                      placeholder="YouTube Video Embed URL (e.g. https://youtube.com/watch?v=...)"
-                      className={`w-full bg-slate-900 border ${isValidYoutubeUrl(m.youtubeUrl) ? "border-white/10 focus:border-red-400" : "border-red-500"} rounded-xl pl-9 pr-3 py-2 text-xs text-white`}
-                    />
-                  </div>
-                  {!isValidYoutubeUrl(m.youtubeUrl) && (
-                    <span className="text-[10px] text-red-400 mt-1 block">⚠️ Please enter a valid YouTube URL (youtube.com or youtu.be)</span>
-                  )}
+        {/* Empty state prompt for modules */}
+        {modules.length === 0 ? (
+          <div className="p-8 rounded-2xl bg-white/5 border border-dashed border-white/15 text-center space-y-2">
+            <Video className="w-8 h-8 text-cyan-400 mx-auto opacity-60" />
+            <p className="text-xs font-bold text-white">Get started by adding your first module</p>
+            <p className="text-[11px] text-slate-400 max-w-sm mx-auto">
+              Add video topic lessons, technical documentation links, and automated AI quizzes.
+            </p>
+            <button
+              onClick={handleAddModule}
+              className="mt-2 px-4 py-2 rounded-xl bg-cyan-500 text-black font-extrabold text-xs shadow-md inline-flex items-center gap-1.5"
+            >
+              <Plus className="w-4 h-4 text-black" /> Add Module Now
+            </button>
+          </div>
+        ) : (
+          /* Topic Modules List */
+          <div className="space-y-4">
+            {modules.map((m, idx) => (
+              <div key={m.id} className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-black text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">
+                    Topic #{idx + 1}
+                  </span>
+                  <button
+                    onClick={() => handleDeleteModule(m.id)}
+                    className="p-1.5 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs transition-all"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
 
                 <div>
-                  <div className="relative">
-                    <Folder className="w-4 h-4 text-cyan-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="url"
-                      value={m.gdriveUrl}
-                      onChange={(e) => handleModuleChange(m.id, "gdriveUrl", e.target.value)}
-                      placeholder="Google Drive Shareable Link (Reading PDF / Docs)"
-                      className={`w-full bg-slate-900 border ${isValidDriveUrl(m.gdriveUrl) ? "border-white/10 focus:border-cyan-400" : "border-red-500"} rounded-xl pl-9 pr-3 py-2 text-xs text-white`}
-                    />
+                  <input
+                    type="text"
+                    required
+                    value={m.title}
+                    onChange={(e) => handleModuleChange(m.id, "title", e.target.value)}
+                    placeholder="e.g. Fanuc G-Code Lathe Operation & Precision Tolerances"
+                    className="w-full bg-slate-900 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-400 font-bold"
+                  />
+                </div>
+
+                {/* YouTube & Drive Link Embeds with Validation Badges */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <div className="relative">
+                      <Video className="w-4 h-4 text-red-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="url"
+                        value={m.youtubeUrl}
+                        onChange={(e) => handleModuleChange(m.id, "youtubeUrl", e.target.value)}
+                        placeholder="YouTube Video Embed URL (e.g. https://youtube.com/watch?v=...)"
+                        className={`w-full bg-slate-900 border ${isValidYoutubeUrl(m.youtubeUrl) ? "border-white/10 focus:border-red-400" : "border-red-500"} rounded-xl pl-9 pr-3 py-2 text-xs text-white`}
+                      />
+                    </div>
+                    {!isValidYoutubeUrl(m.youtubeUrl) && (
+                      <span className="text-[10px] text-red-400 mt-1 block">⚠️ Please enter a valid YouTube URL (youtube.com or youtu.be)</span>
+                    )}
                   </div>
-                  {!isValidDriveUrl(m.gdriveUrl) && (
-                    <span className="text-[10px] text-red-400 mt-1 block">⚠️ Please enter a valid Google Drive or Docs shareable URL</span>
-                  )}
+
+                  <div>
+                    <div className="relative">
+                      <Folder className="w-4 h-4 text-cyan-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="url"
+                        value={m.gdriveUrl}
+                        onChange={(e) => handleModuleChange(m.id, "gdriveUrl", e.target.value)}
+                        placeholder="Google Drive Shareable Link (Reading PDF / Docs)"
+                        className={`w-full bg-slate-900 border ${isValidDriveUrl(m.gdriveUrl) ? "border-white/10 focus:border-cyan-400" : "border-red-500"} rounded-xl pl-9 pr-3 py-2 text-xs text-white`}
+                      />
+                    </div>
+                    {!isValidDriveUrl(m.gdriveUrl) && (
+                      <span className="text-[10px] text-red-400 mt-1 block">⚠️ Please enter a valid Google Drive or Docs shareable URL</span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Scalable Quiz Builder Section (Defaults to 10, expandable to N) */}
+      {/* Scalable Quiz Builder Section */}
       <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4 bg-slate-900/90">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-bold text-amber-300 uppercase tracking-wider flex items-center gap-2">
               <HelpCircle className="w-4 h-4 text-amber-400" /> Scalable Assessment Quiz Builder ({quizQuestions.length} Questions)
             </h3>
-            <p className="text-xs text-slate-400">Defaults to 10 questions. Use 'Add Question' to scale beyond 10 as needed.</p>
+            <p className="text-xs text-slate-400">Add shopfloor questions to test practical knowledge.</p>
           </div>
 
           <button
             onClick={handleAddQuestion}
-            className="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold flex items-center gap-1.5 hover:bg-amber-500/30 transition-all"
           >
             <Plus className="w-4 h-4" /> Add Question #{quizQuestions.length + 1}
           </button>
         </div>
 
-        <div className="space-y-2">
-          {quizQuestions.map((q, idx) => (
-            <div key={idx} className="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/5">
-              <span className="text-xs font-bold text-amber-400 w-8 text-center">#{idx + 1}</span>
-              <input
-                type="text"
-                value={q}
-                onChange={(e) => {
-                  const updated = [...quizQuestions];
-                  updated[idx] = e.target.value;
-                  setQuizQuestions(updated);
-                  triggerAutosave();
-                }}
-                className="flex-1 bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-              />
-              <button
-                onClick={() => handleRemoveQuestion(idx)}
-                className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs"
-              >
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          ))}
-        </div>
+        {quizQuestions.length === 0 ? (
+          <div className="p-4 rounded-2xl bg-white/5 border border-dashed border-white/10 text-center text-xs text-slate-400">
+            No quiz questions added yet. Click &quot;Add Question&quot; to build an assessment.
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {quizQuestions.map((q, idx) => (
+              <div key={idx} className="flex items-center gap-2 p-2 rounded-xl bg-white/5 border border-white/5">
+                <span className="text-xs font-bold text-amber-400 w-8 text-center">#{idx + 1}</span>
+                <input
+                  type="text"
+                  value={q}
+                  onChange={(e) => {
+                    const updated = [...quizQuestions];
+                    updated[idx] = e.target.value;
+                    setQuizQuestions(updated);
+                    triggerAutosave();
+                  }}
+                  className="flex-1 bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                />
+                <button
+                  onClick={() => handleRemoveQuestion(idx)}
+                  className="p-2 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* End-of-Course Institute Certification Generator Settings */}
