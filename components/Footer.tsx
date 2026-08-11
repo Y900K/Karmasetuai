@@ -1,9 +1,14 @@
-"use client";
-
 import React from "react";
 import { Cpu, Heart } from "lucide-react";
+import { Language, translations } from "@/lib/i18n";
 
-export default function Footer() {
+interface FooterProps {
+  language?: Language;
+}
+
+export default function Footer({ language = "hinglish" }: FooterProps) {
+  const t = translations[language] || translations.hinglish;
+
   return (
     <footer className="border-t border-white/10 bg-[#070a12] py-12 text-slate-400 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,10 +26,10 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-slate-400 max-w-sm leading-relaxed">
-              India&apos;s AI-Powered Employability Intelligence Platform connecting technical learners, ITIs, polytechnics, MSMEs, and government through one intelligent workforce ecosystem.
+              {t.footerDesc}
             </p>
             <div className="pt-2 text-[11px] text-slate-500">
-              Presented for MSME Idea Hackathon 6.0 · Founder: Manish Kumar Bhardwaj
+              {t.footerTag} · Presented for MSME Idea Hackathon 6.0 · Founder: Manish Kumar Bhardwaj
             </div>
           </div>
 

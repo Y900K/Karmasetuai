@@ -17,14 +17,15 @@ export default function ProblemSolution({ onOpenAuth, language }: ProblemSolutio
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Section Header Pill & Titles */}
+        {/* Top Section Header Pill & Titles */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-bold uppercase tracking-wider mb-4">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>KarmaSetu AI • 2D Workforce Transformation Map</span>
+            <span>{t.problemTag}</span>
           </div>
 
           <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-            Bridging India&apos;s <span className="gradient-text">Industry Readiness Gap</span>
+            {t.problemHeading}
           </h2>
 
           <p className="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
@@ -37,7 +38,7 @@ export default function ProblemSolution({ onOpenAuth, language }: ProblemSolutio
               className="px-6 py-3 rounded-xl text-xs font-extrabold text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/25 transition-all flex items-center gap-2"
             >
               <GraduationCap className="w-4 h-4" />
-              <span>Explore Student Skill Passport</span>
+              <span>{t.btnStart}</span>
             </button>
           </div>
         </div>
@@ -53,8 +54,8 @@ export default function ProblemSolution({ onOpenAuth, language }: ProblemSolutio
                   <AlertTriangle className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest block">SYSTEM FRICTION</span>
-                  <h3 className="text-lg font-bold text-white uppercase">CURRENT CHALLENGES</h3>
+                  <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest block">{t.systemFrictionTitle}</span>
+                  <h3 className="text-lg font-bold text-white uppercase">{t.systemFrictionSub}</h3>
                 </div>
               </div>
 
@@ -68,33 +69,33 @@ export default function ProblemSolution({ onOpenAuth, language }: ProblemSolutio
               
               <div className="p-4 rounded-2xl bg-white/5 border border-white/5 relative">
                 <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider block mb-1">GAP 01</span>
-                <h4 className="text-sm font-bold text-white">Skill Mismatch</h4>
+                <h4 className="text-sm font-bold text-white">{t.gap1Title}</h4>
                 <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Theory-heavy syllabus disconnected from shop floor automation.
+                  {t.gap1Desc}
                 </p>
               </div>
 
               <div className="p-4 rounded-2xl bg-white/5 border border-white/5 relative">
                 <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block mb-1">GAP 02</span>
-                <h4 className="text-sm font-bold text-white">Hiring Delay</h4>
+                <h4 className="text-sm font-bold text-white">{t.gap2Title}</h4>
                 <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  60-90 day recruitment cycles with unverified resume claims.
+                  {t.gap2Desc}
                 </p>
               </div>
 
               <div className="p-4 rounded-2xl bg-white/5 border border-white/5 relative">
                 <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider block mb-1">GAP 03</span>
-                <h4 className="text-sm font-bold text-white">Duplicate Training</h4>
+                <h4 className="text-sm font-bold text-white">{t.gap3Title}</h4>
                 <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  MSMEs forced to spend 3-6 months retraining fresh graduates.
+                  {t.gap3Desc}
                 </p>
               </div>
 
               <div className="p-4 rounded-2xl bg-white/5 border border-white/5 relative">
                 <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider block mb-1">GAP 04</span>
-                <h4 className="text-sm font-bold text-white">No Shared Data</h4>
+                <h4 className="text-sm font-bold text-white">{t.gap4Title}</h4>
                 <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Siloed records across ITIs, State Missions, and employers.
+                  {t.gap4Desc}
                 </p>
               </div>
 

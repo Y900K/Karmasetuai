@@ -30,8 +30,8 @@ export default function Hero({ onOpenAuth, language }: HeroProps) {
 
         {/* Main Headline */}
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-5xl mx-auto leading-[1.1]">
-          From Learning to Earning <br className="hidden sm:block" />
-          — <span className="gradient-text">Powered by AI</span>
+          {t.heroTitle1} <br className="hidden sm:block" />
+          — <span className="gradient-text">{t.heroTitle2}</span>
         </h1>
 
         {/* Subtitle */}

@@ -20,7 +20,7 @@ function LandingPageContent() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authRole, setAuthRole] = useState("STUDENT");
   const [authMode, setAuthMode] = useState<"login" | "register">("register");
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>("hinglish");
   const [theme, setTheme] = useState("cyberpunk");
 
   const handleOpenAuth = (role = "STUDENT", mode: "login" | "register" = "register") => {
@@ -80,7 +80,7 @@ function LandingPageContent() {
       <ImpactStats onOpenAuth={handleOpenAuth} language={language} />
 
       {/* Modern Footer */}
-      <Footer />
+      <Footer language={language} />
 
       {/* Multi-Role Authentication Modal */}
       <AuthModal
