@@ -10,6 +10,7 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   defaultRole?: string;
+  defaultMode?: "login" | "register";
   onLoginSuccess?: (user: any, role: string) => void;
 }
 
@@ -30,22 +31,22 @@ const ROLES = [
   },
   {
     id: "INDUSTRY",
-    title: "Industry",
-    subtitle: "Practical verification & masterclasses",
+    title: "Expert",
+    subtitle: "Verify CapStone projects",
     icon: UserCheck,
-    btnText: "INDUSTRY EXPERT",
+    btnText: "EXPERT MENTOR",
   },
   {
     id: "EMPLOYER",
     title: "Employer",
-    subtitle: "Zero-retraining candidate hiring",
+    subtitle: "10-day hiring & verified talent",
     icon: Briefcase,
-    btnText: "EMPLOYER",
+    btnText: "EMPLOYER / MSME",
   },
   {
     id: "HR",
-    title: "HR",
-    subtitle: "Team panel & internal hiring control",
+    title: "HR Lead",
+    subtitle: "Recruitment analytics & compliance",
     icon: Shield,
     btnText: "HR MANAGER",
   },
@@ -71,9 +72,10 @@ export default function AuthModal({
   isOpen,
   onClose,
   defaultRole = "STUDENT",
+  defaultMode = "register",
   onLoginSuccess,
 }: AuthModalProps) {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(defaultMode === "login");
   const [selectedRole, setSelectedRole] = useState("STUDENT");
 
   // Common Fields
@@ -103,7 +105,8 @@ export default function AuthModal({
       else if (defaultRole.includes("HR")) setSelectedRole("HR");
       else setSelectedRole("STUDENT");
     }
-  }, [defaultRole]);
+    setIsLogin(defaultMode === "login");
+  }, [defaultRole, defaultMode, isOpen]);
 
   if (!isOpen) return null;
 
@@ -216,7 +219,7 @@ export default function AuthModal({
               <div className="flex items-center gap-2">
                 <span className="text-base font-bold text-white">Karma <span className="text-cyan-400">Setu</span></span>
                 <span className="px-1.5 py-0.5 text-[9px] font-black bg-amber-500/20 border border-amber-500/40 text-amber-300 rounded uppercase">AI</span>
-                <span className="px-2 py-0.5 text-[10px] font-extrabold bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 rounded-full">Supabase Auth</span>
+                <span className="px-2 py-0.5 text-[10px] font-extrabold bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 rounded-full">Secure Portal Authentication</span>
               </div>
             </div>
           </div>

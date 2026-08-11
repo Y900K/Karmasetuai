@@ -36,7 +36,7 @@ export default function AiCurriculumPage() {
         <div>
           <h1 className="text-2xl font-black text-white flex items-center gap-2">
             <Brain className="w-6 h-6 text-blue-400" />
-            <span>NVIDIA NIM AI NCVT Curriculum Gap Analyzer</span>
+            <span>AI NCVT Curriculum Gap Analyzer</span>
           </h1>
           <p className="text-xs text-slate-300 mt-1">
             Compare your ITI syllabus against live shopfloor requirements from Tata Motors, L&T, Havells & MSME plants.

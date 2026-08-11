@@ -19,11 +19,13 @@ function LandingPageContent() {
   const { login } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [authRole, setAuthRole] = useState("STUDENT");
-  const [language, setLanguage] = useState<Language>("hinglish");
+  const [authMode, setAuthMode] = useState<"login" | "register">("register");
+  const [language, setLanguage] = useState<Language>("en");
   const [theme, setTheme] = useState("cyberpunk");
 
-  const handleOpenAuth = (role = "STUDENT") => {
+  const handleOpenAuth = (role = "STUDENT", mode: "login" | "register" = "register") => {
     setAuthRole(role);
+    setAuthMode(mode);
     setAuthOpen(true);
   };
 
@@ -48,13 +50,7 @@ function LandingPageContent() {
 
   return (
     <main
-      className={`min-h-screen text-slate-100 selection:bg-cyan-500 selection:text-black transition-colors ${
-        theme === "electric"
-          ? "bg-[#050e24]"
-          : theme === "contrast"
-          ? "bg-[#000000]"
-          : "bg-[#070b14]"
-      }`}
+      className={`min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] selection:bg-cyan-500 selection:text-black transition-colors duration-300 theme-${theme}`}
     >
       {/* PUBLIC LANDING PAGE (ALL ORIGINAL SECTIONS PRESERVED) */}
       <Navbar
@@ -91,6 +87,7 @@ function LandingPageContent() {
         isOpen={authOpen}
         onClose={() => setAuthOpen(false)}
         defaultRole={authRole}
+        defaultMode={authMode}
         onLoginSuccess={handleLoginSuccess}
       />
     </main>

@@ -64,7 +64,7 @@ export default function EmployerPostJobPage() {
             <span>Post MSME Job & AI JD Generator</span>
           </h1>
           <p className="text-xs text-slate-300 mt-1">
-            Generate professional job descriptions for any trade or custom role with NVIDIA NIM market benchmarks.
+            Generate professional job descriptions for any trade or custom role with AI market benchmarks.
           </p>
         </div>
 
@@ -86,7 +86,7 @@ export default function EmployerPostJobPage() {
         {/* Quick AI Summary Generator */}
         <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-3">
           <span className="text-xs font-extrabold text-amber-300 flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-amber-400" /> 1-CLICK AI JOB DESCRIPTION GENERATOR (NVIDIA NIM)
+            <Sparkles className="w-4 h-4 text-amber-400" /> 1-CLICK AI JOB DESCRIPTION GENERATOR
           </span>
 
           <div className="flex flex-col sm:flex-row gap-2">

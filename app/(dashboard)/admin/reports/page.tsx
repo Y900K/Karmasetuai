@@ -39,7 +39,7 @@ export default function AdminReportsPage() {
             <span>National Compliance Reports & AI Executive Summary</span>
           </h1>
           <p className="text-xs text-slate-300 mt-1">
-            Generate and export MSDE Skill India compliance reports with NVIDIA NIM automated narratives.
+            Generate and export MSDE Skill India compliance reports with automated AI narratives.
           </p>
         </div>
 
@@ -57,7 +57,7 @@ export default function AdminReportsPage() {
       <div className="glass-card p-6 rounded-3xl border border-amber-500/40 space-y-4 bg-slate-900/90">
         <div className="flex items-center justify-between">
           <span className="text-xs font-extrabold text-amber-300 flex items-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-amber-400" /> AI EXECUTIVE NARRATIVE GENERATOR (NVIDIA NIM)
+            <Sparkles className="w-4 h-4 text-amber-400" /> AI EXECUTIVE NARRATIVE GENERATOR
           </span>
 
           <button

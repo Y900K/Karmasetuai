@@ -5,7 +5,7 @@ import { Cpu, Globe, Palette, LogIn, ChevronRight, Menu, X } from "lucide-react"
 import { Language } from "@/lib/i18n";
 
 interface NavbarProps {
-  onOpenAuth: (role?: string) => void;
+  onOpenAuth: (role?: string, mode?: "login" | "register") => void;
   language: Language;
   onLanguageChange: (lang: Language) => void;
   theme: string;
@@ -59,9 +59,8 @@ export default function Navbar({
                 onChange={(e) => onLanguageChange(e.target.value as Language)}
                 className="bg-transparent text-white font-bold cursor-pointer focus:outline-none pr-1"
               >
-                <option value="hinglish" className="bg-slate-900 text-white">IN HINGLISH</option>
                 <option value="en" className="bg-slate-900 text-white">EN ENGLISH</option>
-                <option value="hi" className="bg-slate-900 text-white">HI HINDI (हिंदी)</option>
+                <option value="hinglish" className="bg-slate-900 text-white">IN HINGLISH</option>
               </select>
             </div>
 
@@ -81,7 +80,7 @@ export default function Navbar({
 
             {/* Auth Action Buttons */}
             <button
-              onClick={() => onOpenAuth("STUDENT")}
+              onClick={() => onOpenAuth("STUDENT", "login")}
               className="px-4 py-2 text-xs font-bold text-slate-200 bg-white/5 border border-white/10 hover:border-white/30 rounded-xl transition-all flex items-center gap-1.5 hover:bg-white/10"
             >
               <LogIn className="w-3.5 h-3.5" />
@@ -89,7 +88,7 @@ export default function Navbar({
             </button>
 
             <button
-              onClick={() => onOpenAuth("STUDENT")}
+              onClick={() => onOpenAuth("STUDENT", "register")}
               className="px-5 py-2.5 text-xs font-extrabold text-black bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 rounded-xl shadow-lg shadow-cyan-500/25 transition-all flex items-center gap-1.5 hover:scale-105"
             >
               <span>Register</span>
@@ -116,29 +115,23 @@ export default function Navbar({
             <label className="text-[11px] font-bold text-slate-400 uppercase">Select Language:</label>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => { onLanguageChange("hinglish"); setMobileMenuOpen(false); }}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg border ${language === "hinglish" ? "bg-cyan-500/20 border-cyan-400 text-cyan-300" : "bg-white/5 border-white/10 text-slate-300"}`}
-              >
-                HINGLISH
-              </button>
-              <button
                 onClick={() => { onLanguageChange("en"); setMobileMenuOpen(false); }}
                 className={`flex-1 py-2 text-xs font-bold rounded-lg border ${language === "en" ? "bg-cyan-500/20 border-cyan-400 text-cyan-300" : "bg-white/5 border-white/10 text-slate-300"}`}
               >
                 ENGLISH
               </button>
               <button
-                onClick={() => { onLanguageChange("hi"); setMobileMenuOpen(false); }}
-                className={`flex-1 py-2 text-xs font-bold rounded-lg border ${language === "hi" ? "bg-cyan-500/20 border-cyan-400 text-cyan-300" : "bg-white/5 border-white/10 text-slate-300"}`}
+                onClick={() => { onLanguageChange("hinglish"); setMobileMenuOpen(false); }}
+                className={`flex-1 py-2 text-xs font-bold rounded-lg border ${language === "hinglish" ? "bg-cyan-500/20 border-cyan-400 text-cyan-300" : "bg-white/5 border-white/10 text-slate-300"}`}
               >
-                HINDI
+                HINGLISH
               </button>
             </div>
           </div>
 
           <div className="pt-2 flex flex-col gap-2">
             <button
-              onClick={() => { setMobileMenuOpen(false); onOpenAuth("STUDENT"); }}
+              onClick={() => { setMobileMenuOpen(false); onOpenAuth("STUDENT", "register"); }}
               className="w-full py-3 text-xs font-extrabold text-black bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl text-center"
             >
               Register / Login to Portal

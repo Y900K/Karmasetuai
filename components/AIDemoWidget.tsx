@@ -114,7 +114,7 @@ export default function AIDemoWidget() {
             {loading ? (
               <>
                 <Cpu className="w-5 h-5 animate-spin text-blue-300" />
-                <span>NVIDIA AI is evaluating candidate competencies...</span>
+                <span>AI Engine is evaluating candidate competencies...</span>
               </>
             ) : (
               <>

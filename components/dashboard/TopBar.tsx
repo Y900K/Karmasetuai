@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -43,7 +43,6 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
 
   const languages: { id: Language; label: string; flag: string }[] = [
     { id: "en", label: "English", flag: "🇮🇳" },
-    { id: "hi", label: "हिंदी", flag: "🇮🇳" },
     { id: "hinglish", label: "Hinglish", flag: "🔀" },
   ];
 
@@ -102,15 +101,19 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
     }
   };
 
+  const topBarRef = useRef<HTMLDivElement>(null);
+
   // Close dropdowns on outside click
   useEffect(() => {
-    const handleClickOutside = () => {
-      setNotificationsOpen(false);
-      setLangOpen(false);
-      setThemeOpen(false);
+    const handleClickOutside = (e: MouseEvent) => {
+      if (topBarRef.current && !topBarRef.current.contains(e.target as Node)) {
+        setNotificationsOpen(false);
+        setLangOpen(false);
+        setThemeOpen(false);
+      }
     };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const getPageTitle = () => {
@@ -178,7 +181,7 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
       </div>
 
       {/* Right: Action Bar */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+      <div ref={topBarRef} className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
 
         {/* Global Search Bar (desktop only) */}
         <div className="relative hidden lg:block w-52 xl:w-64">

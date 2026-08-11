@@ -160,7 +160,7 @@ export default function LessonViewer({ lesson, courseTitle, onLessonComplete }: 
         {/* Embedded Video iFrame */}
         <div className="aspect-video w-full rounded-2xl bg-black overflow-hidden border border-white/10 relative">
           <iframe
-            src={lesson.youtubeUrl ? lesson.youtubeUrl.replace("watch?v=", "embed/") : "https://www.youtube.com/embed/dQw4w9WgXcQ"}
+            src={lesson.youtubeUrl ? lesson.youtubeUrl.replace("watch?v=", "embed/") : "https://www.youtube.com/embed/LXb3EKWsInQ"}
             title={lesson.title}
             className="w-full h-full"
             allowFullScreen

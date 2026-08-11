@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ClipboardCheck, Play, Award, Check, Sparkles, CheckCircle2 } from "lucide-react";
+import { ClipboardCheck, Play, Award, Check, Sparkles, CheckCircle2, Video } from "lucide-react";
 
 export default function ExpertVerifyPage() {
   const [verifiedMap, setVerifiedMap] = useState<Record<string, boolean>>({});
@@ -71,8 +71,29 @@ export default function ExpertVerifyPage() {
 
             {/* Video Player & AI Rubric Side by Side */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="aspect-video w-full rounded-2xl bg-black border border-white/10 overflow-hidden">
-                <iframe src={p.videoUrl} title={p.task} className="w-full h-full" allowFullScreen />
+              <div className="aspect-video w-full rounded-2xl bg-gradient-to-tr from-slate-950 via-[#0a1128] to-slate-900 border border-cyan-500/30 overflow-hidden relative p-4 flex flex-col justify-between group">
+                <div className="flex items-center justify-between text-xs z-10">
+                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[10px] font-extrabold uppercase flex items-center gap-1">
+                    <Video className="w-3 h-3 text-cyan-400" /> CapStone Video Submission
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400">1080p HD • Verified Audio/Visual</span>
+                </div>
+
+                <div className="my-auto text-center space-y-2 z-10">
+                  <div className="w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-400 text-cyan-300 mx-auto flex items-center justify-center group-hover:scale-110 transition-all shadow-lg shadow-cyan-500/30">
+                    <Play className="w-6 h-6 ml-1 fill-cyan-400 text-cyan-400" />
+                  </div>
+                  <div className="text-xs font-extrabold text-white">{p.task}</div>
+                  <p className="text-[11px] text-slate-400 max-w-xs mx-auto">Recorded live on Government ITI shopfloor machine by {p.student}</p>
+                </div>
+
+                <div className="flex items-center justify-between text-[10px] text-slate-400 pt-2 border-t border-white/10 z-10">
+                  <span>Trainee: {p.student} ({p.trade})</span>
+                  <span className="text-emerald-400 font-bold">✓ Geo-Fenced ITI Shopfloor Stamp</span>
+                </div>
+
+                {/* Subtle Grid Background */}
+                <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px] opacity-30 pointer-events-none" />
               </div>
 
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">

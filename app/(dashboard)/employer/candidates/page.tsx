@@ -174,7 +174,7 @@ export default function EmployerCandidatesPage() {
               {/* AI Match Explainer Box */}
               <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1">
                 <div className="font-bold text-amber-300 flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-400" /> AI MATCH EXPLAINER (NVIDIA NIM)
+                  <Sparkles className="w-4 h-4 text-amber-400" /> AI MATCH EXPLAINER
                 </div>
                 <p className="text-slate-300 leading-relaxed text-[11px]">{c.matchReason}</p>
               </div>
