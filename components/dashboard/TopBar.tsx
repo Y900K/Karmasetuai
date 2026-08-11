@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/context";
 import { Language } from "@/lib/i18n";
+import { useEcosystem } from "@/lib/context/EcosystemContext";
 
 interface TopBarProps {
   onToggleSidebar?: () => void;
@@ -27,12 +28,9 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
     { id: "3", title: "New Masterclass", desc: "3-Phase PLC Control panel session scheduled for tomorrow", time: "3h ago", icon: BookOpen, color: "text-purple-400", route: "/student/learning", unread: true },
   ]);
 
-  // Language Toggle
-  const [language, setLanguage] = useState<Language>("en");
+  // Language & Theme from EcosystemContext
+  const { language, setLanguage, theme, setTheme } = useEcosystem();
   const [langOpen, setLangOpen] = useState(false);
-
-  // Theme Toggle
-  const [theme, setTheme] = useState("cyberpunk");
   const [themeOpen, setThemeOpen] = useState(false);
 
   const themes = [
@@ -46,42 +44,13 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
     { id: "hinglish", label: "Hinglish", flag: "🔀" },
   ];
 
-  // Load persisted language + theme on mount
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedLang = localStorage.getItem("karmasetu_language") as Language;
-      if (savedLang) setLanguage(savedLang);
-      const savedTheme = localStorage.getItem("karmasetu_theme");
-      if (savedTheme) setTheme(savedTheme);
-    }
-  }, []);
-
-  // Apply theme class to dashboard root
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const root = document.getElementById("dashboard-root");
-      if (root) {
-        root.classList.remove("theme-cyberpunk", "theme-electric", "theme-contrast");
-        root.classList.add(`theme-${theme}`);
-      }
-    }
-  }, [theme]);
-
   const handleLanguageChange = (lang: Language) => {
     setLanguage(lang);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("karmasetu_language", lang);
-      window.dispatchEvent(new Event("storage"));
-    }
     setLangOpen(false);
   };
 
   const handleThemeChange = (t: string) => {
     setTheme(t);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("karmasetu_theme", t);
-      window.dispatchEvent(new Event("storage"));
-    }
     setThemeOpen(false);
   };
 

@@ -6,6 +6,9 @@ import { FileText, Download, Sparkles, RefreshCw, Printer } from "lucide-react";
 export default function AdminReportsPage() {
   const [generating, setGenerating] = useState(false);
   const [executiveSummary, setExecutiveSummary] = useState<string | null>(null);
+  const [quarter, setQuarter] = useState("Q2 2026");
+  const [district, setDistrict] = useState("Gautam Buddha Nagar (Noida)");
+  const [itiCount, setItiCount] = useState("127");
 
   const handleGenerateSummary = async () => {
     setGenerating(true);
@@ -14,7 +17,7 @@ export default function AdminReportsPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt: "Generate a 1-page executive narrative summary for Skill India Q2 2026 workforce compliance: 127 ITIs, 84.2% placement rate, top district Noida (92%)."
+          prompt: `Generate an executive narrative summary for Skill India ${quarter} workforce compliance across ${itiCount} ITIs in ${district} cluster.`
         })
       });
       const data = await res.json();
@@ -55,25 +58,69 @@ export default function AdminReportsPage() {
 
       {/* AI Summary Generator Action */}
       <div className="glass-card p-6 rounded-3xl border border-amber-500/40 space-y-4 bg-slate-900/90">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between border-b border-white/10 pb-3">
           <span className="text-xs font-extrabold text-amber-300 flex items-center gap-1.5">
             <Sparkles className="w-4 h-4 text-amber-400" /> AI EXECUTIVE NARRATIVE GENERATOR
           </span>
+        </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Target Period</label>
+            <select
+              value={quarter}
+              onChange={(e) => setQuarter(e.target.value)}
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+            >
+              <option value="Q2 2026">Q2 2026 (Current)</option>
+              <option value="Q1 2026">Q1 2026 (Historical)</option>
+              <option value="Q3 2026 Projection">Q3 2026 Projection</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Focus Cluster / District</label>
+            <input
+              type="text"
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Active ITIs Count</label>
+            <input
+              type="text"
+              value={itiCount}
+              onChange={(e) => setItiCount(e.target.value)}
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end pt-2">
           <button
             onClick={handleGenerateSummary}
             disabled={generating}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-cyan-400 text-black font-extrabold text-xs shadow-md flex items-center gap-1.5 transition-all"
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-cyan-400 text-black font-extrabold text-xs shadow-md flex items-center gap-1.5 transition-all hover:scale-102"
           >
             {generating ? <RefreshCw className="w-4 h-4 animate-spin text-black" /> : <Sparkles className="w-4 h-4 text-black" />}
-            <span>Generate Executive Summary</span>
+            <span>Generate Custom AI Summary Narrative</span>
           </button>
         </div>
 
-        {executiveSummary && (
-          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs text-slate-200 leading-relaxed font-sans animate-fade-in">
-            <p className="font-bold text-white mb-1">Executive Summary Narrative (Q2 2026):</p>
-            {executiveSummary}
+        {generating && (
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 text-xs text-amber-300 font-bold text-center flex items-center justify-center gap-2">
+            <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
+            <span>Synthesizing MSDE Skill India Compliance Narrative for {district}...</span>
+          </div>
+        )}
+
+        {executiveSummary && !generating && (
+          <div className="p-4 rounded-2xl bg-white/5 border border-amber-500/30 text-xs text-slate-200 leading-relaxed font-sans animate-fade-in space-y-2">
+            <p className="font-bold text-amber-300">Executive Summary Narrative ({quarter} • {district}):</p>
+            <div className="whitespace-pre-wrap">{executiveSummary}</div>
           </div>
         )}
       </div>

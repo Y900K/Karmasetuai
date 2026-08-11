@@ -13,15 +13,15 @@ import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
 import { Language } from "@/lib/i18n";
 import { AuthProvider, useAuth } from "@/lib/auth/context";
+import { EcosystemProvider, useEcosystem } from "@/lib/context/EcosystemContext";
 
 function LandingPageContent() {
   const router = useRouter();
   const { login } = useAuth();
+  const { language, setLanguage, theme, setTheme } = useEcosystem();
   const [authOpen, setAuthOpen] = useState(false);
   const [authRole, setAuthRole] = useState("STUDENT");
   const [authMode, setAuthMode] = useState<"login" | "register">("register");
-  const [language, setLanguage] = useState<Language>("hinglish");
-  const [theme, setTheme] = useState("cyberpunk");
 
   const handleOpenAuth = (role = "STUDENT", mode: "login" | "register" = "register") => {
     setAuthRole(role);
@@ -97,7 +97,9 @@ function LandingPageContent() {
 export default function Home() {
   return (
     <AuthProvider>
-      <LandingPageContent />
+      <EcosystemProvider>
+        <LandingPageContent />
+      </EcosystemProvider>
     </AuthProvider>
   );
 }

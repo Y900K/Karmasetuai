@@ -17,6 +17,7 @@ export default function ExpertMasterclassPage() {
   const [time, setTime] = useState("");
   const [link, setLink] = useState("");
   const [saveStatus, setSaveStatus] = useState<"SAVED" | "SAVING" | "ERROR">("SAVED");
+  const [liveStreamModal, setLiveStreamModal] = useState<any>(null);
 
   const handleCreateSession = (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,13 +151,54 @@ export default function ExpertMasterclassPage() {
                 </div>
               </div>
 
-              <button className="px-4 py-2 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-extrabold text-xs transition-all shadow-md">
-                Launch Live Stream ➔
+              <button
+                onClick={() => setLiveStreamModal(s)}
+                className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs transition-all shadow-md flex items-center gap-1.5"
+              >
+                <Video className="w-3.5 h-3.5" />
+                <span>Launch Live Stream</span>
               </button>
             </div>
           ))}
         </div>
       </div>
+
+      {/* Live Stream Room Modal */}
+      {liveStreamModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="glass-card max-w-xl w-full p-6 rounded-3xl border border-purple-500/40 bg-[#090d1a] space-y-4 shadow-2xl relative animate-fade-in">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <span className="text-xs font-extrabold text-purple-300 uppercase flex items-center gap-2">
+                <Video className="w-4 h-4 text-purple-400" /> LIVE MASTERCLASS WORKSHOP ROOM
+              </span>
+              <button
+                onClick={() => setLiveStreamModal(null)}
+                className="text-xs text-slate-400 hover:text-white font-bold px-2 py-1 bg-white/5 rounded-lg border border-white/10"
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <div className="aspect-video w-full rounded-2xl bg-black border border-purple-500/30 flex flex-col items-center justify-center p-6 text-center space-y-3 relative overflow-hidden">
+              <div className="w-14 h-14 rounded-full bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center animate-pulse">
+                <Video className="w-7 h-7" />
+              </div>
+
+              <div className="space-y-1 z-10">
+                <div className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-extrabold uppercase inline-block">
+                  ⏳ Stream Status: Scheduled Live Broadcast (Coming Soon)
+                </div>
+                <h4 className="text-base font-extrabold text-white">{liveStreamModal.title}</h4>
+                <p className="text-xs text-slate-400">Scheduled for {liveStreamModal.date} at {liveStreamModal.time}</p>
+              </div>
+
+              <p className="text-[11px] text-slate-400 max-w-md z-10">
+                The interactive HD video broadcast stream room opens 15 minutes before the session starts for registered ITI trainees.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

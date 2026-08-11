@@ -75,32 +75,54 @@ export default function AiCurriculumPage() {
         <button
           onClick={handleAnalyze}
           disabled={loading}
-          className="px-5 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 text-black font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all"
+          className="px-5 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-400 hover:opacity-90 text-black font-extrabold text-xs flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all hover:scale-102"
         >
           {loading ? <RefreshCw className="w-4 h-4 animate-spin text-black" /> : <Sparkles className="w-4 h-4 text-black" />}
           <span>Run AI Curriculum Gap Analysis</span>
         </button>
       </div>
 
+      {loading && (
+        <div className="glass-card p-6 rounded-3xl border border-blue-500/30 text-center py-8 text-xs text-blue-300 font-bold flex items-center justify-center gap-2">
+          <RefreshCw className="w-4 h-4 animate-spin text-blue-400" />
+          <span>Analyzing NCVT Syllabus against Tata Motors & Havells Shopfloor Benchmarks...</span>
+        </div>
+      )}
+
       {/* Results Panel */}
-      {result && (
-        <div className="glass-card p-6 rounded-3xl border border-blue-500/40 space-y-4 bg-slate-900/90 animate-fade-in">
+      {result && !loading && (
+        <div className="glass-card p-6 rounded-3xl border border-blue-500/40 space-y-6 bg-slate-900/90 animate-fade-in">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <span className="text-xs font-extrabold text-blue-300 flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> AI GAP ANALYSIS REPORT
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" /> AI CURRICULUM GAP REPORT ({trade})
             </span>
             <span className="text-sm font-black text-emerald-400">{result.industryCoveragePercent}% Industry Coverage</span>
           </div>
 
+          {result.identifiedGaps && result.identifiedGaps.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold text-amber-300 uppercase flex items-center gap-1">
+                <AlertTriangle className="w-3.5 h-3.5 text-amber-400" /> Identified Curriculum Gaps
+              </h4>
+              <div className="space-y-1.5">
+                {result.identifiedGaps.map((gap: string, i: number) => (
+                  <div key={i} className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-slate-200">
+                    ⚠️ {gap}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-white uppercase">Recommended Syllabus Additions</h4>
+            <h4 className="text-xs font-bold text-white uppercase">Recommended Syllabus Additions & Lab Modules</h4>
             {result.recommendedSyllabusAdditions?.map((add: any, idx: number) => (
               <div key={idx} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex justify-between items-center text-xs">
                 <div>
                   <div className="font-bold text-white">{add.topic}</div>
                   <div className="text-slate-400 text-[11px] mt-0.5">Target Standard: {add.targetIndustryStandard}</div>
                 </div>
-                <span className="px-2.5 py-1 rounded bg-blue-500/20 text-blue-300 font-extrabold">
+                <span className="px-2.5 py-1 rounded bg-blue-500/20 text-blue-300 font-extrabold flex-shrink-0 ml-3">
                   {add.practicalLabHours} Hours Lab
                 </span>
               </div>
