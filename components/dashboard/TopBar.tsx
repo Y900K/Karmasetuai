@@ -28,6 +28,27 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
     { id: "3", title: "New Masterclass", desc: "3-Phase PLC Control panel session scheduled for tomorrow", time: "3h ago", icon: BookOpen, color: "text-purple-400", route: "/student/learning", unread: true },
   ]);
 
+  // Load persisted notification read status
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedRead = localStorage.getItem("karmasetu_notifications_read");
+      if (savedRead) {
+        try {
+          const readIds: string[] = JSON.parse(savedRead);
+          setNotifications((prev) =>
+            prev.map((n) => (readIds.includes(n.id) ? { ...n, unread: false } : n))
+          );
+        } catch (e) {}
+      }
+    }
+  }, []);
+
+  const saveReadStatus = (readIds: string[]) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("karmasetu_notifications_read", JSON.stringify(readIds));
+    }
+  };
+
   // Language & Theme from EcosystemContext
   const { language, setLanguage, theme, setTheme } = useEcosystem();
   const [langOpen, setLangOpen] = useState(false);
@@ -58,12 +79,13 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
 
   const markAllRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
+    saveReadStatus(notifications.map((n) => n.id));
   };
 
   const handleNotificationClick = (n: typeof notifications[0]) => {
-    setNotifications((prev) =>
-      prev.map((item) => (item.id === n.id ? { ...item, unread: false } : item))
-    );
+    const updated = notifications.map((item) => (item.id === n.id ? { ...item, unread: false } : item));
+    setNotifications(updated);
+    saveReadStatus(updated.filter((item) => !item.unread).map((item) => item.id));
     setNotificationsOpen(false);
     if (n.route) {
       router.push(n.route);

@@ -6,7 +6,7 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { prompt, trade, language } = body;
+    const { prompt, trade, language, thinkDeeper } = body;
 
     if (!prompt) {
       return NextResponse.json({ error: "Prompt is required" }, { status: 400 });
@@ -14,20 +14,19 @@ export async function POST(req: Request) {
 
     const targetLang = language || "hinglish";
 
-    const systemPrompt = `You are Buddy AI, an encouraging and highly intelligent AI career buddy for ITI, Polytechnic, and MSME manufacturing trainees in India.
-Your task is to answer trainee questions about technical trades, MSME salaries, interview tips, and practical certifications.
+    const systemPrompt = thinkDeeper
+      ? `You are Buddy AI in 'Think Deeper' reasoning mode. Provide a structured, multi-step analytical explanation for ITI & MSME engineering trainees in India. Include step 1, step 2, step 3 breakdown.
+Language: ${targetLang === "hi" ? "Hindi (हिंदी)" : targetLang === "en" ? "English" : "Hinglish (Devanagari Hindi words + English technical terms)"}.
+Length: 100 to 180 words.`
+      : `You are Buddy AI, an encouraging AI career buddy for ITI, Polytechnic, and MSME manufacturing trainees in India.
+Answer in 50-100 words. Language: ${targetLang === "hi" ? "Hindi (हिंदी)" : targetLang === "en" ? "English" : "Hinglish (Devanagari Hindi words + English technical terms)"}.`;
 
-STRICT CONSTRAINTS:
-1. Length: Exactly between 50 and 100 words.
-2. Language: Answer in ${targetLang === "hi" ? "Hindi (हिंदी)" : targetLang === "en" ? "English" : "Hinglish (mix of conversational Hindi & English written in Latin script)"}.
-3. Tone: Friendly, direct, encouraging, and highly specific to the trainee's question.`;
-
-    const userQuery = `Trainee Trade: ${trade || "CNC Machinist"}. Trainee Question: "${prompt}". Please provide a helpful answer in 50 to 100 words in ${targetLang}.`;
+    const userQuery = `Trainee Trade: ${trade || "CNC Machinist"}. Trainee Question: "${prompt}". Provide a helpful answer.`;
 
     const rawResult = await callNvidiaAI(userQuery, systemPrompt, {
       jsonMode: false,
       temperature: 0.4,
-      maxTokens: 250,
+      maxTokens: thinkDeeper ? 450 : 250,
     });
 
     let textResponse = "";

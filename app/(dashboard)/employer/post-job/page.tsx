@@ -198,7 +198,21 @@ export default function EmployerPostJobPage() {
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Job Description Content</label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="text-xs font-bold text-slate-300 uppercase">Job Description Content</label>
+            {jdDescription && (
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(jdDescription);
+                  alert("Copied full Job Description to clipboard!");
+                }}
+                className="text-xs text-cyan-400 hover:text-cyan-300 font-extrabold flex items-center gap-1 bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/30"
+              >
+                <span>📋 Copy to Clipboard</span>
+              </button>
+            )}
+          </div>
           <textarea
             rows={6}
             value={jdDescription}

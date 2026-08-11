@@ -28,6 +28,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
     INSTITUTE: "/institute",
     INDUSTRY: "/expert",
     EMPLOYER: "/employer",
+    HR: "/hr",
     NATIONAL: "/admin",
   };
 
@@ -100,6 +101,18 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
         { labelKey: "navSettings", label: "Company Profile", href: "/employer/settings", icon: Settings },
       ],
     },
+    HR: {
+      title: "HR Manager",
+      color: "text-indigo-400",
+      bg: "bg-indigo-500/10",
+      border: "border-indigo-500/30",
+      items: [
+        { labelKey: "navDashboard", label: "HR Regional Dashboard", href: "/hr", icon: LayoutDashboard },
+        { labelKey: "navInstitutesDirectory", label: "Institutes Directory", href: "/admin/institutes", icon: Landmark },
+        { labelKey: "navComplianceReports", label: "Compliance Reports", href: "/admin/reports", icon: FileText },
+        { labelKey: "navCandidates", label: "Candidate Audits", href: "/employer/candidates", icon: Users },
+      ],
+    },
     NATIONAL: {
       title: "National Governance",
       color: "text-amber-400",
@@ -122,6 +135,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
     { id: "INSTITUTE", label: "Institute" },
     { id: "INDUSTRY", label: "Expert" },
     { id: "EMPLOYER", label: "Employer" },
+    { id: "HR", label: "HR Manager" },
     { id: "NATIONAL", label: "Admin" },
   ];
 

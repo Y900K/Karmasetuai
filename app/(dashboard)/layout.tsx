@@ -7,6 +7,7 @@ import TopBar from "@/components/dashboard/TopBar";
 import AnalyticsSmartSidebar from "@/components/dashboard/shared/AnalyticsSmartSidebar";
 import { AuthProvider, useAuth } from "@/lib/auth/context";
 import { EcosystemProvider, useEcosystem } from "@/lib/context/EcosystemContext";
+import FloatingBuddyAI from "@/components/dashboard/shared/FloatingBuddyAI";
 import { BarChart3 } from "lucide-react";
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
@@ -80,6 +81,9 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
         isOpen={analyticsOpen}
         onClose={() => setAnalyticsOpen(false)}
       />
+
+      {/* Floating Buddy AI Assistant Widget */}
+      <FloatingBuddyAI />
     </div>
   );
 }

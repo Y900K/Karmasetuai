@@ -2,17 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { Bot, Send, Sparkles, RefreshCw, User, Globe, MessageSquare, Compass } from "lucide-react";
-import { Language } from "@/lib/i18n";
+import { useEcosystem } from "@/lib/context/EcosystemContext";
 
 export default function AiMentorPage() {
-  const [language, setLanguage] = useState<Language>("hinglish");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedLang = (localStorage.getItem("karmasetu_language") as Language) || "hinglish";
-      setLanguage(savedLang);
-    }
-  }, []);
+  const { language } = useEcosystem();
 
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([
     {

@@ -168,3 +168,43 @@ body {
     transform: none;
   }
 }
+
+/* Scoped Print Media Styles */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  .no-print,
+  aside,
+  header,
+  nav,
+  button,
+  .glass-card:has(button:not(.printable-button)) {
+    display: none !important;
+  }
+
+  .printable-area {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    color: #000000 !important;
+    background: transparent !important;
+  }
+
+  .glass-card {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+  }
+
+  h1, h2, h3, h4, h5, h6, p, td, th, span {
+    color: #000000 !important;
+  }
+}
+

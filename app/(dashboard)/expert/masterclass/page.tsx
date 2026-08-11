@@ -1,21 +1,22 @@
 "use client";
 
 import React, { useState } from "react";
-import { Video, Calendar, Users, Plus, Sparkles, CheckCircle2, Clock } from "lucide-react";
+import { Video, Calendar, Clock, Users, Plus, Sparkles, Folder, Download } from "lucide-react";
 import AutosaveIndicator from "@/components/dashboard/shared/AutosaveIndicator";
 
 export default function ExpertMasterclassPage() {
   const [sessions, setSessions] = useState([
-    { id: "m1", title: "Fanuc CNC G-Code Optimization & Cycle Time Reduction", trade: "CNC Machinist", date: "2026-08-15", time: "11:00 AM IST", attendees: 48, status: "UPCOMING" },
-    { id: "m2", title: "3-Phase Motor Diagnostics & VFD Control Circuits", trade: "Industrial Electrician", date: "2026-08-12", time: "02:00 PM IST", attendees: 62, status: "UPCOMING" },
-    { id: "m3", title: "Precision Micrometer Calibration & ISO Shopfloor Tolerances", trade: "Quality Inspector", date: "2026-08-08", time: "04:00 PM IST", attendees: 85, status: "COMPLETED" },
+    { id: "m1", title: "Fanuc Lathe Machine G-Code Optimization & Live Machining", trade: "CNC Machinist", date: "2026-08-15", time: "11:00 AM IST", attendees: 142, status: "UPCOMING", youtubeLiveUrl: "https://www.youtube.com/embed/LXb3EKWsInQ", gdriveNotesUrl: "https://drive.google.com/file/d/123" },
+    { id: "m2", title: "3-Phase Motor Diagnostics & VFD Control Circuits", trade: "Industrial Electrician", date: "2026-08-12", time: "02:00 PM IST", attendees: 62, status: "UPCOMING", youtubeLiveUrl: "https://www.youtube.com/embed/S_8nB4sT798", gdriveNotesUrl: "https://drive.google.com/file/d/456" },
+    { id: "m3", title: "Precision Micrometer Calibration & ISO Shopfloor Tolerances", trade: "Quality Inspector", date: "2026-08-08", time: "04:00 PM IST", attendees: 85, status: "COMPLETED", youtubeLiveUrl: "https://www.youtube.com/embed/LXb3EKWsInQ", gdriveNotesUrl: "https://drive.google.com/file/d/789" },
   ]);
 
   const [title, setTitle] = useState("");
   const [trade, setTrade] = useState("CNC Machinist");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [link, setLink] = useState("");
+  const [youtubeLiveUrl, setYoutubeLiveUrl] = useState("");
+  const [gdriveNotesUrl, setGdriveNotesUrl] = useState("");
   const [saveStatus, setSaveStatus] = useState<"SAVED" | "SAVING" | "ERROR">("SAVED");
   const [liveStreamModal, setLiveStreamModal] = useState<any>(null);
 
@@ -31,19 +32,22 @@ export default function ExpertMasterclassPage() {
       time: time || "11:00 AM IST",
       attendees: 0,
       status: "UPCOMING",
+      youtubeLiveUrl: youtubeLiveUrl || "https://www.youtube.com/embed/LXb3EKWsInQ",
+      gdriveNotesUrl: gdriveNotesUrl || "https://drive.google.com/file/d/123",
     };
 
     setSessions([newSession, ...sessions]);
     setTitle("");
     setDate("");
     setTime("");
-    setLink("");
+    setYoutubeLiveUrl("");
+    setGdriveNotesUrl("");
     setSaveStatus("SAVING");
     setTimeout(() => setSaveStatus("SAVED"), 500);
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in printable-area">
       
       {/* Header */}
       <div className="glass-card p-6 rounded-3xl border border-purple-500/30 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4">
@@ -53,79 +57,99 @@ export default function ExpertMasterclassPage() {
             <span>Industry 4.0 Masterclass Manager</span>
           </h1>
           <p className="text-xs text-slate-300 mt-1">
-            Schedule live practical workshop demonstrations for ITI trainees across India.
+            Schedule live practical workshop demonstrations & attach Google Drive supplementary notes for ITI trainees across India.
           </p>
         </div>
 
         <AutosaveIndicator status={saveStatus} />
       </div>
 
-      {/* Schedule Masterclass Form */}
-      <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4 bg-slate-900/90">
-        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-          <Sparkles className="w-4 h-4 text-purple-400" /> Schedule Live Masterclass Session
-        </h3>
+      {/* Schedule Form */}
+      <form onSubmit={handleCreateSession} className="glass-card p-6 rounded-3xl border border-white/10 space-y-4 bg-slate-900/90 no-print">
+        <h3 className="text-sm font-bold text-white uppercase tracking-wider">Schedule New Masterclass Session</h3>
 
-        <form onSubmit={handleCreateSession} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Session Title</label>
-              <input
-                type="text"
-                required
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Advanced TIG Welding & Argon Shielding Technique"
-                className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Target Trade</label>
-              <select
-                value={trade}
-                onChange={(e) => setTrade(e.target.value)}
-                className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
-              >
-                <option value="CNC Machinist">CNC Machinist & Programmer</option>
-                <option value="Industrial Electrician">Industrial Electrician</option>
-                <option value="Mechanical Fitter">Mechanical Fitter & Assembly</option>
-                <option value="TIG/MIG Welder">TIG/MIG Welder</option>
-                <option value="Quality Inspector">QA/QC Quality Inspector</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Date</label>
-              <input
-                type="date"
-                required
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Time & Duration</label>
-              <input
-                type="text"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                placeholder="e.g. 11:00 AM IST (60 Minutes)"
-                className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
-              />
-            </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Session Title</label>
+            <input
+              type="text"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Fanuc Lathe G-Code Optimization & Real-Time Machining"
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+            />
           </div>
 
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Target Trade Specialization</label>
+            <select
+              value={trade}
+              onChange={(e) => setTrade(e.target.value)}
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+            >
+              <option value="CNC Machinist">CNC Machinist & Programmer</option>
+              <option value="Industrial Electrician">Industrial Electrician & PLC</option>
+              <option value="Fitter">Fitter & Assembly</option>
+              <option value="Welder">Welder & Fabrication</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Scheduled Date</label>
+            <input
+              type="date"
+              required
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Scheduled Time (IST)</label>
+            <input
+              type="text"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              placeholder="e.g. 11:00 AM IST"
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">YouTube Live Broadcast URL</label>
+            <input
+              type="url"
+              value={youtubeLiveUrl}
+              onChange={(e) => setYoutubeLiveUrl(e.target.value)}
+              placeholder="e.g. https://www.youtube.com/watch?v=LXb3EKWsInQ"
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Google Drive Supplementary Notes Link</label>
+            <input
+              type="url"
+              value={gdriveNotesUrl}
+              onChange={(e) => setGdriveNotesUrl(e.target.value)}
+              placeholder="e.g. https://drive.google.com/file/d/123..."
+              className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-400"
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end pt-2">
           <button
             type="submit"
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white font-extrabold text-xs shadow-lg shadow-purple-500/20 flex items-center gap-1.5 transition-all hover:scale-102"
+            className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs shadow-lg shadow-purple-500/20 flex items-center gap-1.5 transition-all"
           >
-            <Plus className="w-4 h-4 text-white" /> Schedule Masterclass
+            <Plus className="w-4 h-4" />
+            <span>Publish Masterclass Event</span>
           </button>
-        </form>
-      </div>
+        </div>
+      </form>
 
       {/* Scheduled Masterclasses List */}
       <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4 bg-slate-900/90">
@@ -151,50 +175,75 @@ export default function ExpertMasterclassPage() {
                 </div>
               </div>
 
-              <button
-                onClick={() => setLiveStreamModal(s)}
-                className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs transition-all shadow-md flex items-center gap-1.5"
-              >
-                <Video className="w-3.5 h-3.5" />
-                <span>Launch Live Stream</span>
-              </button>
+              <div className="flex items-center gap-2">
+                {s.gdriveNotesUrl && (
+                  <a
+                    href={s.gdriveNotesUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-all"
+                  >
+                    <Folder className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>Download Notes</span>
+                  </a>
+                )}
+
+                <button
+                  onClick={() => setLiveStreamModal(s)}
+                  className="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs transition-all shadow-md flex items-center gap-1.5"
+                >
+                  <Video className="w-3.5 h-3.5" />
+                  <span>Launch Live Stream</span>
+                </button>
+              </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Live Stream Room Modal */}
+      {/* Live Stream Room Modal with Embed Player & Notes Button */}
       {liveStreamModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="glass-card max-w-xl w-full p-6 rounded-3xl border border-purple-500/40 bg-[#090d1a] space-y-4 shadow-2xl relative animate-fade-in">
+          <div className="glass-card max-w-2xl w-full p-6 rounded-3xl border border-purple-500/40 bg-[#090d1a] space-y-4 shadow-2xl relative animate-fade-in">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <span className="text-xs font-extrabold text-purple-300 uppercase flex items-center gap-2">
-                <Video className="w-4 h-4 text-purple-400" /> LIVE MASTERCLASS WORKSHOP ROOM
+                <Video className="w-4 h-4 text-purple-400" /> LIVE MASTERCLASS WORKSHOP STREAM
               </span>
               <button
                 onClick={() => setLiveStreamModal(null)}
-                className="text-xs text-slate-400 hover:text-white font-bold px-2 py-1 bg-white/5 rounded-lg border border-white/10"
+                className="text-xs text-slate-400 hover:text-white font-bold px-2.5 py-1 bg-white/5 rounded-lg border border-white/10"
               >
                 ✕ Close
               </button>
             </div>
 
-            <div className="aspect-video w-full rounded-2xl bg-black border border-purple-500/30 flex flex-col items-center justify-center p-6 text-center space-y-3 relative overflow-hidden">
-              <div className="w-14 h-14 rounded-full bg-purple-500/20 border border-purple-400 text-purple-300 flex items-center justify-center animate-pulse">
-                <Video className="w-7 h-7" />
-              </div>
+            <div className="aspect-video w-full rounded-2xl bg-black border border-purple-500/30 overflow-hidden relative">
+              <iframe
+                src={liveStreamModal.youtubeLiveUrl || "https://www.youtube.com/embed/LXb3EKWsInQ"}
+                title={liveStreamModal.title}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
 
-              <div className="space-y-1 z-10">
-                <div className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px] font-extrabold uppercase inline-block">
-                  ⏳ Stream Status: Scheduled Live Broadcast (Coming Soon)
-                </div>
-                <h4 className="text-base font-extrabold text-white">{liveStreamModal.title}</h4>
+            <div className="flex items-center justify-between pt-2 border-t border-white/10">
+              <div>
+                <h4 className="text-sm font-extrabold text-white">{liveStreamModal.title}</h4>
                 <p className="text-xs text-slate-400">Scheduled for {liveStreamModal.date} at {liveStreamModal.time}</p>
               </div>
 
-              <p className="text-[11px] text-slate-400 max-w-md z-10">
-                The interactive HD video broadcast stream room opens 15 minutes before the session starts for registered ITI trainees.
-              </p>
+              {liveStreamModal.gdriveNotesUrl && (
+                <a
+                  href={liveStreamModal.gdriveNotesUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 text-black font-extrabold text-xs shadow-md flex items-center gap-1.5"
+                >
+                  <Download className="w-4 h-4 text-black" />
+                  <span>Download Notes (Google Drive)</span>
+                </a>
+              )}
             </div>
           </div>
         </div>
