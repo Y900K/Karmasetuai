@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 
-const IS_DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
-
 export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
@@ -14,21 +12,41 @@ export async function POST(req: Request) {
       );
     }
 
-    const supabase = createAdminClient();
+    const cleanEmail = email.trim().toLowerCase();
 
-    // 1. Try standard Supabase Auth Sign In
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    // 1. Quick Demo Account Login (@karmasetu.ai)
+    // Instant 1-click access for showcase demo credentials
+    if (cleanEmail.endsWith("@karmasetu.ai")) {
+      let role = "STUDENT";
+      if (cleanEmail.includes("institute")) role = "INSTITUTE";
+      else if (cleanEmail.includes("expert")) role = "INDUSTRY";
+      else if (cleanEmail.includes("employer")) role = "EMPLOYER";
+      else if (cleanEmail.includes("hr")) role = "HR";
+      else if (cleanEmail.includes("admin")) role = "NATIONAL";
 
-    if (!authError && authData?.user) {
-      // Set auth cookie for middleware session validation
+      const DEMO_NAMES: Record<string, string> = {
+        STUDENT: "Rajesh Kumar",
+        INSTITUTE: "Govt ITI Director",
+        INDUSTRY: "Vikram Malhotra",
+        EMPLOYER: "Tata Motors Plant HR",
+        HR: "National HR Lead",
+        NATIONAL: "MSDE Governance Lead",
+      };
+
+      const demoName = DEMO_NAMES[role] || `${role} User`;
+
       const response = NextResponse.json({
         success: true,
-        user: authData.user,
-        message: "Signed in successfully!",
+        user: {
+          id: "demo-user-" + role.toLowerCase(),
+          email: cleanEmail,
+          full_name: demoName,
+          user_metadata: { full_name: demoName, role: role },
+        },
+        role: role,
+        message: `Welcome to KarmaSetu AI ${role} Portal!`,
       });
+
       response.cookies.set("karmasetu_auth_active", "true", {
         httpOnly: false,
         secure: process.env.NODE_ENV === "production",
@@ -36,52 +54,35 @@ export async function POST(req: Request) {
         maxAge: 60 * 60 * 24 * 7, // 7 days
         path: "/",
       });
+
       return response;
     }
 
-    // 2. Demo Mode Fallback — ONLY if explicitly enabled via env flag
-    if (IS_DEMO_MODE) {
-      const isDemoAccount = email.endsWith("@karmasetu.ai");
-      if (isDemoAccount) {
-        // Determine demo role from email
-        let role = "STUDENT";
-        if (email.includes("institute")) role = "INSTITUTE";
-        else if (email.includes("expert")) role = "INDUSTRY";
-        else if (email.includes("employer")) role = "EMPLOYER";
-        else if (email.includes("hr")) role = "HR";
-        else if (email.includes("admin")) role = "NATIONAL";
+    // 2. Real Registered User — Authenticate against Supabase Auth DB
+    const supabase = createAdminClient();
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email: cleanEmail,
+      password,
+    });
 
-        const DEMO_NAMES: Record<string, string> = {
-          STUDENT: "Rajesh Kumar",
-          INSTITUTE: "Govt ITI Director",
-          INDUSTRY: "Vikram Malhotra",
-          EMPLOYER: "Tata Motors Plant HR",
-          HR: "National HR Lead",
-          NATIONAL: "MSDE Governance Lead",
-        };
+    if (!authError && authData?.user) {
+      const userRole = authData.user.user_metadata?.role || "STUDENT";
+      const response = NextResponse.json({
+        success: true,
+        user: authData.user,
+        role: userRole,
+        message: "Signed in successfully!",
+      });
 
-        const demoName = DEMO_NAMES[role] || `${role} User`;
+      response.cookies.set("karmasetu_auth_active", "true", {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      });
 
-        const response = NextResponse.json({
-          success: true,
-          user: {
-            id: "demo-user-" + role.toLowerCase(),
-            email: email,
-            full_name: demoName,
-            user_metadata: { full_name: demoName, role: role },
-          },
-          role: role,
-          message: `Welcome to KarmaSetu AI ${role} Portal!`,
-        });
-        response.cookies.set("karmasetu_auth_active", "true", {
-          httpOnly: false,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "lax",
-          maxAge: 60 * 60 * 24 * 7,
-          path: "/",
-        });
-        return response;
-      }
+      return response;
     }
 
     return NextResponse.json(

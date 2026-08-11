@@ -110,14 +110,49 @@ export default function AuthModal({
 
   if (!isOpen) return null;
 
-  const handleDemoLogin = (demoRole: string, demoEmail: string) => {
+  const handleDemoLogin = async (demoRole: string, demoEmail: string) => {
     setEmail(demoEmail);
     setPassword("password123");
     setIsLogin(true);
+    setLoading(true);
     setMessage({
       type: "info",
-      text: `Loaded demo credentials for ${demoRole}. Click Sign In to access portal.`,
+      text: `Signing in as ${demoRole}...`,
     });
+
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: demoEmail, password: "password123" }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Demo login failed.");
+      }
+
+      const userObj = data.user || { email: demoEmail, full_name: demoEmail.split("@")[0] };
+      const roleReturned = data.role || selectedRole;
+
+      setMessage({
+        type: "success",
+        text: data.message || `Welcome to KarmaSetu AI ${roleReturned} Portal!`,
+      });
+
+      setTimeout(() => {
+        if (onLoginSuccess) {
+          onLoginSuccess(userObj, roleReturned);
+        } else {
+          onClose();
+        }
+      }, 500);
+    } catch (err: any) {
+      console.error(err);
+      setMessage({ type: "error", text: err.message || "Authentication failed." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const currentRoleObj = ROLES.find((r) => r.id === selectedRole) || ROLES[0];
