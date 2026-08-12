@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FileText, Download, Sparkles, RefreshCw, FileJson, FileSpreadsheet } from "lucide-react";
+import { FileText, Download, Sparkles, RefreshCw, FileSpreadsheet } from "lucide-react";
 import { exportToCSV } from "@/lib/utils/export";
 
 export default function AdminReportsPage() {
@@ -39,18 +39,7 @@ export default function AdminReportsPage() {
     }
   };
 
-  const handleDownloadJSON = () => {
-    const blob = new Blob(
-      [JSON.stringify({ quarter, district, itiCount, reports: complianceReports }, null, 2)],
-      { type: "application/json" }
-    );
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `compliance_data_${quarter.replace(/\s/g, "_")}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+
 
   const handleDownloadNarrative = () => {
     if (!executiveSummary) return;
@@ -86,12 +75,7 @@ export default function AdminReportsPage() {
           >
             <FileSpreadsheet className="w-4 h-4 text-black" /> Export CSV
           </button>
-          <button
-            onClick={handleDownloadJSON}
-            className="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-cyan-500/20"
-          >
-            <FileJson className="w-4 h-4 text-black" /> Export JSON
-          </button>
+
           {executiveSummary && (
             <button
               onClick={handleDownloadNarrative}

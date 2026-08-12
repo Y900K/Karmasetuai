@@ -54,7 +54,7 @@ export default function AiMentorPage() {
           ...newMsgs,
           {
             role: "assistant",
-            content: "Noida aur Pune ke MSME plants me CNC Machinist passouts ki starting salary ₹22,000 se ₹32,000/month hoti hai. Fanuc G-Code aur Micrometer calibration test clear karne par 30% higher stipend offer milta hai!"
+            content: data.response || "Buddy AI is processing your question. Please try again in a moment — I'm here to help! 🤝"
           }
         ]);
       }
@@ -63,12 +63,13 @@ export default function AiMentorPage() {
         ...newMsgs,
         {
           role: "assistant",
-          content: "Buddy AI service active. Focus on mastering precision tolerances to boost your employer match score!"
+          content: "Connection issue detected. Please check your internet and try again. Buddy AI is always ready to help! 🔄"
         }
       ]);
     } finally {
       setLoading(false);
     }
+
   };
 
   return (

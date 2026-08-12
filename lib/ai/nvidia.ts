@@ -108,7 +108,7 @@ function generateMockAIResponse(prompt: string, systemPrompt: string = "", jsonM
 
   // If non-JSON text response requested (e.g. Buddy AI chat)
   if (!jsonMode) {
-    return "";
+    return generateTextFallback(prompt);
   }
 
   // 1. Job Description Generator for MSME Employers (Custom & Standard Roles)
@@ -299,4 +299,76 @@ function generateMockAIResponse(prompt: string, systemPrompt: string = "", jsonM
       "Execute 1 live industrial CapStone project verified by Master Mentor."
     ]
   };
+}
+
+/**
+ * Generate contextually relevant text response for non-JSON Buddy AI chat
+ * when the NVIDIA API is unavailable or returns no API key.
+ */
+function generateTextFallback(prompt: string): string {
+  const p = prompt.toLowerCase();
+
+  if (p.includes("data management") || p.includes("computer") || p.includes("database") || p.includes("software") || p.includes("copa")) {
+    return "Data Management का मतलब है डिजिटल जानकारी को तरीके से Organize, Store और Process करना। ITI COPA & Computer Ops में SQL Database, Excel Macros और Shopfloor ERP entry सबसे ज़रूरी skills हैं। TCS, Infosys BPO और MSME IT hubs में ₹22,000-₹30,000/month stipend मिलता है!";
+  }
+
+  if (p.includes("cad") || p.includes("cam") || p.includes("autocad") || p.includes("solidworks") || p.includes("design")) {
+    return "CAD (AutoCAD, SolidWorks) 2D/3D component design के लिए और CAM सॉफ्टवेयर DXF files से automatic CNC G-Code toolpaths बनाने के लिए use होता है। CAD/CAM Draftsman role के लिए MSME R&D units में ₹25,000 से ₹35,000/month starting salary मिलती है!";
+  }
+
+  if (p.includes("quality") || p.includes("qc") || p.includes("inspection") || p.includes("cmm")) {
+    return "Quality Control (QC) का काम shopfloor components की dimensional accuracy और ±0.01mm tolerance चेक करना है। Vernier Micrometer, CMM machine operation और ISO 9001 audit सीखकर Tier-1 MSME plants में QC Inspector role हासिल करें!";
+  }
+
+  if (p.includes("salary") || p.includes("earning") || p.includes("pay") || p.includes("stipend")) {
+    return "Noida, Pune और Haridwar के MSME manufacturing plants में CNC Machinist passouts की starting salary ₹22,000 से ₹32,000/month होती है। अगर आपका Skill Passport JobReady Index 85+ score है, तो 30% higher package मिलता है!";
+  }
+
+  if (p.includes("weld") || p.includes("tig") || p.includes("mig") || p.includes("arc")) {
+    return "Welding trade में TIG & MIG gas welding सबसे इन-डिमांड है। NDT X-Ray Radiography passed welders को L&T, BHEL और MSME export plants में 35% higher salary पैकेज मिलता है!";
+  }
+
+  if (p.includes("electrician") || p.includes("plc") || p.includes("motor") || p.includes("vfd")) {
+    return "Industrial Electrician के लिए 3-Phase Star-Delta Motor Control, VFD Speed Control और PLC Sensor wiring सबसे high-salary skills हैं। KarmaSetu का 15-hour PLC module complete करके 90+ Score पाएँ!";
+  }
+
+  if (p.includes("lathe") || p.includes("g-code") || p.includes("gcode") || p.includes("cnc") || p.includes("fanuc")) {
+    return "CNC Lathe में G00 (Rapid Feed), G01 (Cut), G02/G03 (Circular Arcs) और Fanuc Offsets मुख्य हैं। Fanuc Lathe G-Code module complete करने से JobReady Index 94+ हो जाता है!";
+  }
+
+  if (p.includes("micrometer") || p.includes("vernier") || p.includes("caliper") || p.includes("tolerance")) {
+    return "Precision Micrometer का least count 0.01mm (10 microns) होता है। ±0.01mm tolerance test pass करने पर Bosch और Tier-1 MSME plants में Quality Inspector role के लिए direct matching मिलती है!";
+  }
+
+  if (p.includes("safety") || p.includes("5s") || p.includes("ppe") || p.includes("hazard")) {
+    return "5S Methodology (Sort, Set in Order, Shine, Standardize, Sustain) और ISO 45001 Safety Protocol फॉलो करने से MSME plants में Zero Accident environment बनता है और Recruiters priority hiring देते हैं!";
+  }
+
+  if (p.includes("score") || p.includes("index") || p.includes("improve") || p.includes("boost")) {
+    return "अपना JobReady Index score 90+ boost करने के लिए 3 steps follow करें: 1) Fanuc G-Code simulation module complete करें, 2) Precision micrometer ±0.01mm tolerance test clear करें, और 3) 5S Safety exam submit करें!";
+  }
+
+  if (p.includes("course") || p.includes("match") || p.includes("lms") || p.includes("short-term")) {
+    return "Highest MSME job match देने वाला course है 'Fanuc CNC Lathe G-Code Programming & PLC Sensor Diagnostics'। इस 15-hour bridge course को complete करने पर आपका JobReady Index score 62 से बढ़कर 94 हो जाता है!";
+  }
+
+  if (p.includes("cutting tool") || p.includes("insert") || p.includes("carbide") || p.includes("drill")) {
+    return "Cutting Tools (Tungsten Carbide Inserts, End Mills) CNC machining में metal removal के लिए use होते हैं। Correct Cutting Speed (Vc), Feed Rate और Coolant flow से tool life 40% बढ़ती है और Surface Finish Ra < 0.8µm मिलती है!";
+  }
+
+  if (p.includes("hr") || p.includes("recruiter") || p.includes("hire") || p.includes("interview")) {
+    return "HR Recruiter का मुख्य काम MSME manufacturing plants के लिए verified ITI candidates को screen करना, shopfloor interview schedule करना और JobReady Index 80+ उम्मीदवारों को direct offer letter issue करना होता है!";
+  }
+
+  if (p === "hi" || p === "hello" || p.includes("namaste") || p.includes("kaise ho")) {
+    return "नमस्ते Trainee Buddy! मैं आपका 24/7 Buddy AI guide हूँ। CNC Machinist में career growth, MSME salary packages या JobReady Index 90+ boost करने के बारे में कोई भी सवाल पूछें!";
+  }
+
+  // AI-related questions
+  if (p.includes("ai") || p.includes("artificial intelligence") || p.includes("machine learning")) {
+    return "AI (Artificial Intelligence) modern manufacturing में quality prediction, predictive maintenance और automated inspection के लिए use होती है। KarmaSetu AI platform आपके skills को Industry 4.0 standards से match करता है और MSME employers से direct connect करता है!";
+  }
+
+  // Default contextual response
+  return "नमस्ते Trainee Buddy! Technical trade में best career growth के लिए KarmaSetu के 4-Step learning flow (Video ➔ Technical Guide ➔ 10-Q AI Exam ➔ Verified Skill Passport) को complete करें। इससे आपका practical score verify होगा और top MSMEs direct offer देंगी!";
 }

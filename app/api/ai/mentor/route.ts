@@ -30,7 +30,7 @@ Answer in 50-100 words. Language: ${targetLang === "hi" ? "Hindi (हिंद�
     });
 
     let textResponse = "";
-    if (typeof rawResult === "string" && rawResult.length > 20) {
+    if (typeof rawResult === "string" && rawResult.length > 5) {
       textResponse = rawResult;
     } else {
       textResponse = getDiverseFallbackResponse(prompt, trade, targetLang);

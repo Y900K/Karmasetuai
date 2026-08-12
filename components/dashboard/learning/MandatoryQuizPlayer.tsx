@@ -44,8 +44,8 @@ export default function MandatoryQuizPlayer({ questions, topicTitle, onQuizCompl
       const userAns = answers[q.id] || "";
 
       if (q.type === "MCQ") {
-        const correct = q.correctAnswer || "A";
-        if (userAns.startsWith(correct) || userAns === correct) {
+        const correctFull = q.correctAnswer || "";
+        if (userAns === correctFull) {
           earnedPoints += q.points || 10;
         }
       } else if (q.type === "WRITTEN") {
@@ -158,8 +158,8 @@ export default function MandatoryQuizPlayer({ questions, topicTitle, onQuizCompl
       <div className="space-y-6">
         {questions.map((q, idx) => {
           const userAns = answers[q.id];
-          const correctOpt = q.correctAnswer || "A";
-          const isCorrect = userAns && (userAns.startsWith(correctOpt) || userAns === correctOpt);
+          const correctFull = q.correctAnswer || "";
+          const isCorrect = userAns && userAns === correctFull;
 
           return (
             <div key={q.id || idx} className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
@@ -178,7 +178,7 @@ export default function MandatoryQuizPlayer({ questions, topicTitle, onQuizCompl
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                     {q.options.map((opt, oIdx) => {
                       const isSelected = answers[q.id] === opt;
-                      const isThisCorrect = opt.startsWith(correctOpt);
+                      const isThisCorrect = opt === correctFull;
 
                       let borderStyle = "bg-slate-900/60 border-white/10 text-slate-300 hover:border-white/30";
                       if (isSelected) {
@@ -209,10 +209,10 @@ export default function MandatoryQuizPlayer({ questions, topicTitle, onQuizCompl
                     <div className={`p-3 rounded-xl text-xs space-y-1 ${isCorrect ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-300" : "bg-amber-500/10 border border-amber-500/30 text-amber-300"}`}>
                       <div className="font-extrabold flex items-center gap-1.5">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                        Correct Answer Key: Option ({correctOpt})
+                        Correct Answer Key: {correctFull}
                       </div>
                       <p className="text-[11px] text-slate-300">
-                        Explanation: Option {correctOpt} represents the standard Industry 4.0 shopfloor procedure for {topicTitle}.
+                        Explanation: {correctFull} represents the standard Industry 4.0 shopfloor procedure for {topicTitle}.
                       </p>
                     </div>
                   )}

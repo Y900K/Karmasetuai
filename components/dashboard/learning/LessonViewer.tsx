@@ -53,17 +53,18 @@ export default function LessonViewer({ lesson, courseTitle, onLessonComplete }: 
 
   // Generate 10-Question Fallback Quiz if not present
   const defaultQuestions: QuizQuestion[] = [
-    { id: "q1", type: "MCQ", question: "What is the primary G-Code command for rapid linear positioning?", options: ["A. G00", "B. G01", "C. G02", "D. G03"], correctAnswer: "A", points: 10 },
-    { id: "q2", type: "MCQ", question: "Which spindle speed command sets RPM directly?", options: ["A. M03 S1200", "B. G96 S200", "C. M08", "D. G28"], correctAnswer: "A", points: 10 },
-    { id: "q3", type: "MCQ", question: "What tolerance measurement standard is specified in ISO 9001 precision machining?", options: ["A. ±0.01mm", "B. ±1.0mm", "C. ±5.0mm", "D. ±0.5mm"], correctAnswer: "A", points: 10 },
-    { id: "q4", type: "MCQ", question: "Which 5S step focuses on systematic workplace organization?", options: ["A. Seiton (Set in Order)", "B. Seiri (Sort)", "C. Seiso (Shine)", "D. Shitsuke (Sustain)"], correctAnswer: "A", points: 10 },
-    { id: "q5", type: "MCQ", question: "In Fanuc lathe controllers, what does M30 signify?", options: ["A. End of program & reset", "B. Coolant ON", "C. Spindle Stop", "D. Tool Change"], correctAnswer: "A", points: 10 },
-    { id: "q6", type: "MCQ", question: "What tool offset geometry axis measures workpiece diameter on CNC lathe?", options: ["A. X-axis", "B. Z-axis", "C. Y-axis", "D. C-axis"], correctAnswer: "A", points: 10 },
-    { id: "q7", type: "MCQ", question: "Which PPE item is mandatory during metal cutting operations?", options: ["A. Safety Glasses / Goggles", "B. Ring", "C. Loose Scarf", "D. Headphones"], correctAnswer: "A", points: 10 },
+    { id: "q1", type: "MCQ", question: "What is the primary G-Code command for rapid linear positioning?", options: ["A. G01", "B. G02", "C. G00", "D. G03"], correctAnswer: "C. G00", points: 10 },
+    { id: "q2", type: "MCQ", question: "Which spindle speed command sets RPM directly?", options: ["A. G96 S200", "B. M03 S1200", "C. M08", "D. G28"], correctAnswer: "B. M03 S1200", points: 10 },
+    { id: "q3", type: "MCQ", question: "What tolerance measurement standard is specified in ISO 9001 precision machining?", options: ["A. ±1.0mm", "B. ±5.0mm", "C. ±0.5mm", "D. ±0.01mm"], correctAnswer: "D. ±0.01mm", points: 10 },
+    { id: "q4", type: "MCQ", question: "Which 5S step focuses on systematic workplace organization?", options: ["A. Seiri (Sort)", "B. Seiton (Set in Order)", "C. Seiso (Shine)", "D. Shitsuke (Sustain)"], correctAnswer: "B. Seiton (Set in Order)", points: 10 },
+    { id: "q5", type: "MCQ", question: "In Fanuc lathe controllers, what does M30 signify?", options: ["A. Coolant ON", "B. Tool Change", "C. End of program & reset", "D. Spindle Stop"], correctAnswer: "C. End of program & reset", points: 10 },
+    { id: "q6", type: "MCQ", question: "What tool offset geometry axis measures workpiece diameter on CNC lathe?", options: ["A. Z-axis", "B. Y-axis", "C. C-axis", "D. X-axis"], correctAnswer: "D. X-axis", points: 10 },
+    { id: "q7", type: "MCQ", question: "Which PPE item is mandatory during metal cutting operations?", options: ["A. Ring", "B. Safety Glasses / Goggles", "C. Loose Scarf", "D. Headphones"], correctAnswer: "B. Safety Glasses / Goggles", points: 10 },
     { id: "q8", type: "WRITTEN", question: "Describe the emergency stop (E-STOP) protocol on a live CNC lathe during chatter.", writtenRubric: "Press E-STOP, isolate power, inspect tool insert and workpiece clamping.", points: 10 },
     { id: "q9", type: "WRITTEN", question: "Explain how to verify zero point offset (G54) using a touch probe or micrometer.", writtenRubric: "Touch face, input Z0 in geometry offset, verify with test pass.", points: 10 },
     { id: "q10", type: "WRITTEN", question: "Outline 3 daily preventive maintenance checks for hydraulic chuck pressure.", writtenRubric: "Check gauge PSI, inspect oil level, clean jaw serrations.", points: 10 },
   ];
+
 
   const questionsToUse = lesson.quizQuestions && lesson.quizQuestions.length >= 10 ? lesson.quizQuestions : defaultQuestions;
 

@@ -17,6 +17,7 @@ Return strictly JSON matching this structure:
   "trade": string,
   "coveredTopics": string[],
   "missingIndustry40Skills": string[],
+  "identifiedGaps": string[],
   "recommendedSyllabusAdditions": [
     {
       "topic": string,
@@ -26,6 +27,7 @@ Return strictly JSON matching this structure:
     }
   ]
 }`;
+
 
     const userPrompt = `Trade: "${trade || "Electrician"}". Target Employers: "${(targetCompanies || ["Tata Motors", "Havells"]).join(", ")}". Current Syllabus Overview: "${syllabus || "Standard 2-Year NCVT Electrical Trade Syllabus"}".`;
 

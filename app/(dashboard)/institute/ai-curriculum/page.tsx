@@ -71,14 +71,35 @@ export default function AiCurriculumPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
 
-  const activeBrainmapConfig = TRADE_BRAINMAP_CONFIGS[tradeSelect] || TRADE_BRAINMAP_CONFIGS["OTHER"];
+  const defaultConfig = TRADE_BRAINMAP_CONFIGS[tradeSelect] || TRADE_BRAINMAP_CONFIGS["OTHER"];
 
-  const [selectedNode, setSelectedNode] = useState<{ name: string; desc: string; hours: number; prereq: string }>({
+  // Dynamic brainmap nodes — start with defaults, update with AI results
+  const [aiNodes, setAiNodes] = useState<BrainmapNode[] | null>(null);
+  const [isAiUpdated, setIsAiUpdated] = useState(false);
+
+  const activeBrainmapNodes = aiNodes || defaultConfig.nodes;
+  const activeRootSub = defaultConfig.rootSub;
+
+  const [selectedNode, setSelectedNode] = useState<{ name: string; desc: string; hours: number; prereq: string; isAiGenerated?: boolean }>({
     name: "Fanuc DXF Import",
     desc: "Direct CAD/CAM DXF file import to Fanuc controller for automatic toolpath generation.",
     hours: 15,
-    prereq: "G-Code / PLC Control Logic"
+    prereq: "G-Code / PLC Control Logic",
+    isAiGenerated: false
   });
+
+  // Reset AI nodes when trade changes
+  const handleTradeChange = (newTrade: string) => {
+    setTradeSelect(newTrade);
+    setAiNodes(null);
+    setIsAiUpdated(false);
+    setResult(null);
+  };
+
+  const handleResetToDefault = () => {
+    setAiNodes(null);
+    setIsAiUpdated(false);
+  };
 
   const handleAnalyze = async () => {
     setLoading(true);
@@ -91,6 +112,38 @@ export default function AiCurriculumPage() {
       const data = await res.json();
       if (data.success && data.data) {
         setResult(data.data);
+
+        // Dynamically generate brainmap nodes from AI recommendations
+        const recommendations = data.data.recommendedSyllabusAdditions || [];
+        const missingSkills = data.data.missingIndustry40Skills || [];
+        
+        if (recommendations.length > 0) {
+          const colorClasses = [
+            "bg-cyan-500/30 border-cyan-400 text-white shadow-cyan-500/30",
+            "bg-amber-500/30 border-amber-400 text-white shadow-amber-500/30",
+            "bg-purple-500/30 border-purple-400 text-white shadow-purple-500/30",
+            "bg-emerald-500/30 border-emerald-400 text-white shadow-emerald-500/30",
+          ];
+
+          const newNodes: BrainmapNode[] = recommendations.slice(0, 4).map((rec: any, idx: number) => ({
+            name: rec.topic || `AI Skill Module ${idx + 1}`,
+            sub: rec.urgency || "AI Recommended",
+            desc: `${rec.topic} — Target: ${rec.targetIndustryStandard || "Industry 4.0 Standard"}. ${missingSkills[idx] ? `Addresses gap: ${missingSkills[idx]}` : ""}`,
+            hours: rec.practicalLabHours || 20,
+            prereq: idx < 2 ? "NCVT Core" : (recommendations[idx - 2]?.topic || "Previous Module"),
+            colorClass: colorClasses[idx % colorClasses.length],
+          }));
+
+          // Pad to 4 nodes if fewer than 4 recommendations
+          while (newNodes.length < 4) {
+            const fallback = defaultConfig.nodes[newNodes.length];
+            if (fallback) newNodes.push(fallback);
+            else break;
+          }
+
+          setAiNodes(newNodes);
+          setIsAiUpdated(true);
+        }
       }
     } catch (e) {
       console.error(e);
@@ -122,7 +175,7 @@ export default function AiCurriculumPage() {
             <label className="block text-xs font-bold text-slate-300 uppercase mb-1">Select Trade Specialization</label>
             <select
               value={tradeSelect}
-              onChange={(e) => setTradeSelect(e.target.value)}
+              onChange={(e) => handleTradeChange(e.target.value)}
               className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-blue-400"
             >
               <option value="CNC Machinist">CNC Machinist & Programmer</option>
@@ -176,9 +229,20 @@ export default function AiCurriculumPage() {
       <div className="glass-card p-6 rounded-3xl border border-purple-500/30 space-y-4 bg-slate-900/90">
         <div className="flex items-center justify-between border-b border-white/10 pb-3">
           <span className="text-xs font-extrabold text-purple-300 uppercase flex items-center gap-2">
-            <GitFork className="w-4 h-4 text-purple-400" /> INTERACTIVE SKILL DEPENDENCY BRAINMAP ({trade})
+            <GitFork className="w-4 h-4 text-purple-400" /> 
+            {isAiUpdated ? "🔄 AI-UPDATED" : "DEFAULT"} SKILL DEPENDENCY BRAINMAP ({trade})
           </span>
-          <span className="text-xs text-slate-400 font-mono">Click Nodes to Inspect Skill Dependencies</span>
+          <div className="flex items-center gap-2">
+            {isAiUpdated && (
+              <button
+                onClick={handleResetToDefault}
+                className="px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-[10px] font-bold text-slate-400 hover:text-white border border-white/10 transition-all no-print"
+              >
+                Reset to Default
+              </button>
+            )}
+            <span className="text-xs text-slate-400 font-mono">Click Nodes to Inspect Skill Dependencies</span>
+          </div>
         </div>
 
         <div className="relative w-full h-64 bg-[#060a17] rounded-2xl border border-purple-500/20 p-4 flex items-center justify-between overflow-hidden">
@@ -194,54 +258,58 @@ export default function AiCurriculumPage() {
 
           {/* Node 1: Root Syllabus */}
           <div
-            onClick={() => setSelectedNode({ name: "NCVT Core Syllabus", desc: `Base accredited NCVT 2-year ${trade} curriculum.`, hours: 200, prereq: "Secondary Education" })}
+            onClick={() => setSelectedNode({ name: "NCVT Core Syllabus", desc: `Base accredited NCVT 2-year ${trade} curriculum.`, hours: 200, prereq: "Secondary Education", isAiGenerated: false })}
             className={`z-10 p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name.includes("NCVT") ? "bg-blue-500/30 border-blue-400 text-white shadow-lg shadow-blue-500/30" : "bg-blue-500/10 border-blue-500/30 text-blue-300"}`}
           >
             <div className="font-extrabold">NCVT Core</div>
-            <div className="text-[10px] text-slate-400">{activeBrainmapConfig.rootSub}</div>
+            <div className="text-[10px] text-slate-400">{activeRootSub}</div>
           </div>
 
           {/* Node 2 & 3: Intermediate Skills */}
           <div className="z-10 flex flex-col gap-12">
             <div
-              onClick={() => setSelectedNode({ name: activeBrainmapConfig.nodes[0].name, desc: activeBrainmapConfig.nodes[0].desc, hours: activeBrainmapConfig.nodes[0].hours, prereq: activeBrainmapConfig.nodes[0].prereq })}
-              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name === activeBrainmapConfig.nodes[0].name ? "bg-cyan-500/30 border-cyan-400 text-white shadow-lg shadow-cyan-500/30" : activeBrainmapConfig.nodes[0].colorClass}`}
+              onClick={() => setSelectedNode({ name: activeBrainmapNodes[0].name, desc: activeBrainmapNodes[0].desc, hours: activeBrainmapNodes[0].hours, prereq: activeBrainmapNodes[0].prereq, isAiGenerated: isAiUpdated })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs relative ${selectedNode.name === activeBrainmapNodes[0].name ? "bg-cyan-500/30 border-cyan-400 text-white shadow-lg shadow-cyan-500/30" : activeBrainmapNodes[0].colorClass}`}
             >
-              <div className="font-extrabold">{activeBrainmapConfig.nodes[0].name}</div>
-              <div className="text-[10px] text-slate-400">{activeBrainmapConfig.nodes[0].sub}</div>
+              {isAiUpdated && <span className="absolute -top-2 -right-2 text-[8px] bg-purple-500 text-white px-1.5 py-0.5 rounded-full font-bold">AI</span>}
+              <div className="font-extrabold text-[11px] max-w-[120px] truncate">{activeBrainmapNodes[0].name}</div>
+              <div className="text-[10px] text-slate-400">{activeBrainmapNodes[0].sub}</div>
             </div>
 
             <div
-              onClick={() => setSelectedNode({ name: activeBrainmapConfig.nodes[1].name, desc: activeBrainmapConfig.nodes[1].desc, hours: activeBrainmapConfig.nodes[1].hours, prereq: activeBrainmapConfig.nodes[1].prereq })}
-              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name === activeBrainmapConfig.nodes[1].name ? "bg-amber-500/30 border-amber-400 text-white shadow-lg shadow-amber-500/30" : activeBrainmapConfig.nodes[1].colorClass}`}
+              onClick={() => setSelectedNode({ name: activeBrainmapNodes[1].name, desc: activeBrainmapNodes[1].desc, hours: activeBrainmapNodes[1].hours, prereq: activeBrainmapNodes[1].prereq, isAiGenerated: isAiUpdated })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs relative ${selectedNode.name === activeBrainmapNodes[1].name ? "bg-amber-500/30 border-amber-400 text-white shadow-lg shadow-amber-500/30" : activeBrainmapNodes[1].colorClass}`}
             >
-              <div className="font-extrabold">{activeBrainmapConfig.nodes[1].name}</div>
-              <div className="text-[10px] text-slate-400">{activeBrainmapConfig.nodes[1].sub}</div>
+              {isAiUpdated && <span className="absolute -top-2 -right-2 text-[8px] bg-purple-500 text-white px-1.5 py-0.5 rounded-full font-bold">AI</span>}
+              <div className="font-extrabold text-[11px] max-w-[120px] truncate">{activeBrainmapNodes[1].name}</div>
+              <div className="text-[10px] text-slate-400">{activeBrainmapNodes[1].sub}</div>
             </div>
           </div>
 
           {/* Node 4 & 5: Advanced Industry 4.0 Additions */}
           <div className="z-10 flex flex-col gap-12">
             <div
-              onClick={() => setSelectedNode({ name: activeBrainmapConfig.nodes[2].name, desc: activeBrainmapConfig.nodes[2].desc, hours: activeBrainmapConfig.nodes[2].hours, prereq: activeBrainmapConfig.nodes[2].prereq })}
-              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name === activeBrainmapConfig.nodes[2].name ? "bg-purple-500/30 border-purple-400 text-white shadow-lg shadow-purple-500/30" : activeBrainmapConfig.nodes[2].colorClass}`}
+              onClick={() => setSelectedNode({ name: activeBrainmapNodes[2].name, desc: activeBrainmapNodes[2].desc, hours: activeBrainmapNodes[2].hours, prereq: activeBrainmapNodes[2].prereq, isAiGenerated: isAiUpdated })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs relative ${selectedNode.name === activeBrainmapNodes[2].name ? "bg-purple-500/30 border-purple-400 text-white shadow-lg shadow-purple-500/30" : activeBrainmapNodes[2].colorClass}`}
             >
-              <div className="font-extrabold">{activeBrainmapConfig.nodes[2].name}</div>
-              <div className="text-[10px] text-slate-400">{activeBrainmapConfig.nodes[2].sub}</div>
+              {isAiUpdated && <span className="absolute -top-2 -right-2 text-[8px] bg-purple-500 text-white px-1.5 py-0.5 rounded-full font-bold">AI</span>}
+              <div className="font-extrabold text-[11px] max-w-[120px] truncate">{activeBrainmapNodes[2].name}</div>
+              <div className="text-[10px] text-slate-400">{activeBrainmapNodes[2].sub}</div>
             </div>
 
             <div
-              onClick={() => setSelectedNode({ name: activeBrainmapConfig.nodes[3].name, desc: activeBrainmapConfig.nodes[3].desc, hours: activeBrainmapConfig.nodes[3].hours, prereq: activeBrainmapConfig.nodes[3].prereq })}
-              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs ${selectedNode.name === activeBrainmapConfig.nodes[3].name ? "bg-emerald-500/30 border-emerald-400 text-white shadow-lg shadow-emerald-500/30" : activeBrainmapConfig.nodes[3].colorClass}`}
+              onClick={() => setSelectedNode({ name: activeBrainmapNodes[3].name, desc: activeBrainmapNodes[3].desc, hours: activeBrainmapNodes[3].hours, prereq: activeBrainmapNodes[3].prereq, isAiGenerated: isAiUpdated })}
+              className={`p-3 rounded-2xl border cursor-pointer transition-all hover:scale-105 text-center text-xs relative ${selectedNode.name === activeBrainmapNodes[3].name ? "bg-emerald-500/30 border-emerald-400 text-white shadow-lg shadow-emerald-500/30" : activeBrainmapNodes[3].colorClass}`}
             >
-              <div className="font-extrabold">{activeBrainmapConfig.nodes[3].name}</div>
-              <div className="text-[10px] text-slate-400">{activeBrainmapConfig.nodes[3].sub}</div>
+              {isAiUpdated && <span className="absolute -top-2 -right-2 text-[8px] bg-purple-500 text-white px-1.5 py-0.5 rounded-full font-bold">AI</span>}
+              <div className="font-extrabold text-[11px] max-w-[120px] truncate">{activeBrainmapNodes[3].name}</div>
+              <div className="text-[10px] text-slate-400">{activeBrainmapNodes[3].sub}</div>
             </div>
           </div>
 
           {/* Node 6: End Goal JobReady Index */}
           <div
-            onClick={() => setSelectedNode({ name: "JobReady 94+ Index", desc: "Verified Skill Passport threshold unlocking immediate 10-day direct hiring matches.", hours: 300, prereq: "All Modules Verified" })}
+            onClick={() => setSelectedNode({ name: "JobReady 94+ Index", desc: "Verified Skill Passport threshold unlocking immediate 10-day direct hiring matches.", hours: 300, prereq: "All Modules Verified", isAiGenerated: false })}
             className="z-10 p-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-400 text-black text-center text-xs font-black shadow-lg shadow-emerald-500/30 cursor-pointer hover:scale-105 transition-all"
           >
             <div>JOBREADY 94+</div>
@@ -253,7 +321,14 @@ export default function AiCurriculumPage() {
         {selectedNode && (
           <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2 text-xs">
             <div className="flex justify-between items-center">
-              <span className="font-extrabold text-white text-sm">Node Details: {selectedNode.name}</span>
+              <span className="font-extrabold text-white text-sm flex items-center gap-2">
+                Node Details: {selectedNode.name}
+                {selectedNode.isAiGenerated && (
+                  <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[9px] font-bold uppercase animate-pulse">
+                    🔄 AI-Generated Recommendation
+                  </span>
+                )}
+              </span>
               <span className="px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold">
                 {selectedNode.hours} Lab Hours Required
               </span>
@@ -309,3 +384,4 @@ export default function AiCurriculumPage() {
     </div>
   );
 }
+

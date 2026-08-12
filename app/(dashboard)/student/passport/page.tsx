@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CreditCard, Download, Shield, Award, CheckCircle2, QrCode, Printer, Cpu } from "lucide-react";
 import CertificateModal from "@/components/dashboard/learning/CertificateModal";
 
 export default function StudentPassportPage() {
   const [selectedCert, setSelectedCert] = useState<any>(null);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const sampleCertificates = [
     {
@@ -31,8 +32,18 @@ export default function StudentPassportPage() {
     },
   ];
 
+  const handlePrint = () => {
+    setIsPrinting(true);
+    // Small delay to let React re-render with print class before triggering print
+    setTimeout(() => {
+      window.print();
+      // Remove print mode after print dialog closes
+      setTimeout(() => setIsPrinting(false), 500);
+    }, 100);
+  };
+
   return (
-    <div className="space-y-6 animate-fade-in printable-area">
+    <div className={`space-y-6 animate-fade-in ${isPrinting ? "passport-print-mode" : "printable-area"}`}>
       
       {/* Header */}
       <div className="glass-card p-6 rounded-3xl border border-cyan-500/30 bg-slate-900/90 flex flex-wrap items-center justify-between gap-4">
@@ -47,7 +58,7 @@ export default function StudentPassportPage() {
         </div>
 
         <button
-          onClick={() => window.print()}
+          onClick={handlePrint}
           className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-cyan-500/20 no-print"
         >
           <Printer className="w-4 h-4 text-black" /> Print / PDF Skill Passport
@@ -131,7 +142,7 @@ export default function StudentPassportPage() {
 
               <button
                 onClick={() => setSelectedCert(c)}
-                className="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-extrabold text-xs transition-all"
+                className="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-extrabold text-xs transition-all no-print"
               >
                 View / Print Certificate 📜
               </button>

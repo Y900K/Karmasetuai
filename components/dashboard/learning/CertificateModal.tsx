@@ -18,11 +18,11 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#040711]/90 backdrop-blur-xl overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#040711]/90 backdrop-blur-xl overflow-y-auto certificate-print-mode">
       <div className="glass-card w-full max-w-2xl p-6 sm:p-8 rounded-3xl border border-amber-500/40 relative shadow-2xl bg-[#070b16] my-auto animate-fade-in">
         
         {/* Header Actions */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
+        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6 no-print">
           <div className="flex items-center gap-2">
             <Award className="w-6 h-6 text-amber-400" />
             <span className="text-sm font-extrabold text-white uppercase tracking-wider">Skill Passport Verified Certificate</span>
@@ -46,7 +46,7 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
         </div>
 
         {/* Certificate Card Printable Canvas */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-slate-900 via-[#0b1329] to-slate-950 border-2 border-amber-500/50 space-y-6 text-center relative overflow-hidden shadow-inner">
+        <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-slate-900 via-[#0b1329] to-slate-950 border-2 border-amber-500/50 space-y-6 text-center relative overflow-hidden shadow-inner certificate-print-area">
           
           {/* Background Branding Watermark */}
           <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">

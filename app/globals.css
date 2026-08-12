@@ -171,11 +171,19 @@ body {
 
 /* Scoped Print Media Styles */
 @media print {
+  /* Reset page background */
   body {
     background: #ffffff !important;
+    background-image: none !important;
     color: #000000 !important;
   }
 
+  @page {
+    margin: 10mm;
+    size: A4 portrait;
+  }
+
+  /* Hide everything by default during print */
   .no-print,
   aside,
   header,
@@ -184,7 +192,82 @@ body {
     display: none !important;
   }
 
-  .printable-area {
+  /* === Certificate-Only Print Mode === */
+  /* When printing from certificate modal, hide entire page except certificate */
+  body:has(.certificate-print-mode) * {
+    visibility: hidden;
+  }
+
+  body:has(.certificate-print-mode) .certificate-print-mode,
+  body:has(.certificate-print-mode) .certificate-print-mode * {
+    visibility: visible;
+  }
+
+  body:has(.certificate-print-mode) .certificate-print-mode {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 15mm;
+    box-sizing: border-box;
+  }
+
+  .certificate-print-area {
+    background: linear-gradient(135deg, #0f172a, #1e293b) !important;
+    border: 3px solid #d97706 !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .certificate-print-area * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .certificate-print-area h2,
+  .certificate-print-area span,
+  .certificate-print-area p,
+  .certificate-print-area div {
+    color: inherit !important;
+  }
+
+  /* === Passport Print Mode === */
+  body:has(.passport-print-mode) #dashboard-root > .hidden,
+  body:has(.passport-print-mode) #dashboard-root > div:first-child,
+  body:has(.passport-print-mode) [class*="TopBar"],
+  body:has(.passport-print-mode) [class*="Sidebar"],
+  body:has(.passport-print-mode) [class*="FloatingBuddy"],
+  body:has(.passport-print-mode) [class*="AnalyticsSmart"] {
+    display: none !important;
+  }
+
+  .passport-print-mode {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .passport-print-mode .glass-card {
+    background: linear-gradient(135deg, #0f172a, #1e293b) !important;
+    border: 2px solid #06b6d4 !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    page-break-inside: avoid;
+  }
+
+  .passport-print-mode .glass-card * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Generic printable-area fallback for other pages */
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) {
     display: block !important;
     width: 100% !important;
     margin: 0 !important;
@@ -195,7 +278,7 @@ body {
     background: #ffffff !important;
   }
 
-  .glass-card {
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) .glass-card {
     background: #ffffff !important;
     border: 1px solid #cbd5e1 !important;
     color: #000000 !important;
@@ -204,7 +287,17 @@ body {
     -webkit-backdrop-filter: none !important;
   }
 
-  h1, h2, h3, h4, h5, h6, p, td, th, span, div {
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) h1,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) h2,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) h3,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) h4,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) h5,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) h6,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) p,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) td,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) th,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) span,
+  .printable-area:not(.passport-print-mode):not(.certificate-print-mode) div {
     color: #000000 !important;
   }
 }

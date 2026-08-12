@@ -59,10 +59,10 @@ export default function FloatingBuddyAI() {
       if (data.success && data.response) {
         setMessages([...newMsgs, { role: "assistant", content: data.response, mode: currentMode }]);
       } else {
-        setMessages([...newMsgs, { role: "assistant", content: "Noida and Pune MSME hubs offer starting stipends of ₹22,000 to ₹32,000/month for verified CNC & PLC trainees.", mode: currentMode }]);
+        setMessages([...newMsgs, { role: "assistant", content: data.response || "Buddy AI is processing — please retry your question! 🤝", mode: currentMode }]);
       }
     } catch (e) {
-      setMessages([...newMsgs, { role: "assistant", content: "Buddy AI assistant active. Keep practicing G-Code precision calibration!", mode: currentMode }]);
+      setMessages([...newMsgs, { role: "assistant", content: "Connection issue — please try again. Buddy AI is here to help! 🔄", mode: currentMode }]);
     } finally {
       setLoading(false);
     }
