@@ -172,8 +172,19 @@ function getDiverseFallbackResponse(prompt: string, trade: string, lang: string)
     return `Industrial Electrician के लिए 3-Phase Star-Delta Motor Control, VFD Speed Control और PLC Sensor wiring सबसे high-salary skills हैं। KarmaSetu का 15-hour PLC module complete करके 90+ Score पाएँ!`;
   }
 
-  // G-Code, Lathe & CNC Machine
-  if (p.includes("lathe") || p.includes("g-code") || p.includes("gcode") || p.includes("cnc") || p.includes("fanuc") || p.includes("m-code")) {
+  // What is CNC / CNC Definition
+  if (p.includes("what is cnc") || p === "cnc" || p.includes("cnc definition") || p.includes("cnc Machine")) {
+    if (lang === "hi") {
+      return `CNC का मतलब Computer Numerical Control है। यह एक ऑटोमेटेड मैन्युफैक्चरिंग प्रक्रिया है जहाँ कंप्यूटर प्रोग्रामिंग (G-Code) के जरिए Lathe और Milling मशीनों को ±0.01mm सूक्ष्म शुद्धता से कंट्रोल किया जाता है।`;
+    }
+    if (lang === "en") {
+      return `CNC stands for Computer Numerical Control. It is an automated manufacturing process where computer software dictates the movement of machine tools (lathes, mills) to fabricate metal parts with high precision (±0.01mm tolerance).`;
+    }
+    return `CNC का मतलब है Computer Numerical Control। यह एक स्वचालित विनिर्माण (Automated Manufacturing) प्रक्रिया है जहाँ कंप्यूटर प्रोग्रामिंग (G-Code) के जरिए Lathe, Milling और Router मशीनों को ±0.01mm सूक्ष्मतम शुद्धता (Precision Tolerance) से कंट्रोल किया जाता है।`;
+  }
+
+  // G-Code, Lathe & CNC Machine Commands
+  if (p.includes("lathe") || p.includes("g-code") || p.includes("gcode") || p.includes("fanuc") || p.includes("m-code")) {
     if (lang === "hi") {
       return `सीएनसी लेथ मशीन में G00 (Rapid Transit), G01 (Linear Cut), G02/G03 (Arc Interpolation) और M03 (Spindle Clockwise) बेसिक प्रोग्रामिंग कमांड्स हैं। फानुक कंट्रोलर पर वर्कशॉप सिमुलेशन पूरा करके आपका जॉबरेडी इंडेक्स तुरंत 94 हो जाता है।`;
     }
@@ -182,6 +193,7 @@ function getDiverseFallbackResponse(prompt: string, trade: string, lang: string)
     }
     return `CNC Lathe में G00 (Rapid Feed), G01 (Cut), G02/G03 (Circular Arcs) और Fanuc Offsets मुख्य हैं। Fanuc Lathe G-Code module complete करने से JobReady Index 94+ हो जाता है!`;
   }
+
 
   // Precision Instruments & Micrometer
   if (p.includes("micrometer") || p.includes("vernier") || p.includes("caliper") || p.includes("tolerance") || p.includes("gauge")) {

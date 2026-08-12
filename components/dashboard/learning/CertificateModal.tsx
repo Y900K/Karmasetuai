@@ -17,6 +17,120 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
     window.print();
   };
 
+  const handleDownloadPNG = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1200;
+    canvas.height = 800;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Background Gradient
+    const bgGrad = ctx.createLinearGradient(0, 0, 1200, 800);
+    bgGrad.addColorStop(0, "#070b16");
+    bgGrad.addColorStop(0.5, "#0f172a");
+    bgGrad.addColorStop(1, "#070b16");
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 1200, 800);
+
+    // Border
+    ctx.strokeStyle = "#d97706";
+    ctx.lineWidth = 8;
+    ctx.strokeRect(30, 30, 1140, 740);
+
+    ctx.strokeStyle = "rgba(6, 182, 212, 0.4)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(40, 40, 1120, 720);
+
+    // Header Title
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 36px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("KARMASETU AI", 600, 110);
+
+    ctx.fillStyle = "#f59e0b";
+    ctx.font = "bold 14px sans-serif";
+    ctx.fillText("NATIONAL AI WORKFORCE INTELLIGENCE PLATFORM • INDIA", 600, 140);
+
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "16px sans-serif";
+    ctx.fillText("THIS VERIFIED CERTIFICATE OF PRACTICAL MASTERY IS AWARDED TO", 600, 220);
+
+    // Student Name
+    ctx.fillStyle = "#fcd34d";
+    ctx.font = "bold 44px sans-serif";
+    ctx.fillText(certificate.studentName || "Rajesh Kumar", 600, 290);
+
+    // Underline
+    ctx.strokeStyle = "rgba(217, 119, 6, 0.4)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(350, 310);
+    ctx.lineTo(850, 310);
+    ctx.stroke();
+
+    // Course
+    ctx.fillStyle = "#cbd5e1";
+    ctx.font = "16px sans-serif";
+    ctx.fillText("For successfully completing all Video Lectures, Reading Modules & passing mandatory exam for:", 600, 370);
+
+    // Course Title Box
+    ctx.fillStyle = "rgba(6, 182, 212, 0.15)";
+    ctx.fillRect(300, 400, 600, 60);
+    ctx.strokeStyle = "rgba(6, 182, 212, 0.5)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(300, 400, 600, 60);
+
+    ctx.fillStyle = "#67e8f9";
+    ctx.font = "bold 22px sans-serif";
+    ctx.fillText(certificate.courseTitle || "CNC Lathe Fanuc G-Code Programming", 600, 438);
+
+    // Metadata Stats Box
+    ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+    ctx.fillRect(150, 520, 900, 90);
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+    ctx.strokeRect(150, 520, 900, 90);
+
+    // Score
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "bold 12px sans-serif";
+    ctx.fillText("FINAL EXAM SCORE", 300, 550);
+    ctx.fillStyle = "#34d399";
+    ctx.font = "bold 28px sans-serif";
+    ctx.fillText(`${certificate.quizScore}%`, 300, 590);
+
+    // Cert ID
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "bold 12px sans-serif";
+    ctx.fillText("CERTIFICATE ID", 600, 550);
+    ctx.fillStyle = "#fcd34d";
+    ctx.font = "bold 22px sans-serif";
+    ctx.fillText(certificate.certificateCode, 600, 590);
+
+    // Date
+    ctx.fillStyle = "#94a3b8";
+    ctx.font = "bold 12px sans-serif";
+    ctx.fillText("ISSUED DATE", 900, 550);
+    ctx.fillStyle = "#e2e8f0";
+    ctx.font = "bold 20px sans-serif";
+    ctx.fillText(new Date(certificate.issuedAt || Date.now()).toLocaleDateString(), 900, 590);
+
+    // Bottom Seals
+    ctx.fillStyle = "#34d399";
+    ctx.font = "bold 14px sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("✓ NCVT / Industry 4.0 Verified", 160, 680);
+
+    ctx.fillStyle = "#67e8f9";
+    ctx.textAlign = "right";
+    ctx.fillText("🛡️ Tamper-Proof Digital Credential", 1040, 680);
+
+    // Trigger Download
+    const link = document.createElement("a");
+    link.download = `KarmaSetu_Certificate_${certificate.certificateCode}.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#040711]/90 backdrop-blur-xl overflow-y-auto certificate-print-mode">
       <div className="glass-card w-full max-w-2xl p-6 sm:p-8 rounded-3xl border border-amber-500/40 relative shadow-2xl bg-[#070b16] my-auto animate-fade-in">
@@ -30,10 +144,17 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
 
           <div className="flex items-center gap-2">
             <button
+              onClick={handleDownloadPNG}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-cyan-500 hover:opacity-90 text-xs font-black text-black flex items-center gap-1.5 transition-all shadow-md"
+            >
+              <Download className="w-3.5 h-3.5 text-black" /> Download PNG
+            </button>
+
+            <button
               onClick={handlePrint}
               className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white flex items-center gap-1.5 transition-all"
             >
-              <Printer className="w-3.5 h-3.5" /> Print / Save PDF
+              <Printer className="w-3.5 h-3.5" /> Print 1-Page PDF
             </button>
 
             <button
@@ -44,6 +165,7 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
             </button>
           </div>
         </div>
+
 
         {/* Certificate Card Printable Canvas */}
         <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-slate-900 via-[#0b1329] to-slate-950 border-2 border-amber-500/50 space-y-6 text-center relative overflow-hidden shadow-inner certificate-print-area">

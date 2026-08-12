@@ -305,70 +305,92 @@ function generateMockAIResponse(prompt: string, systemPrompt: string = "", jsonM
  * Generate contextually relevant text response for non-JSON Buddy AI chat
  * when the NVIDIA API is unavailable or returns no API key.
  */
-function generateTextFallback(prompt: string): string {
-  const p = prompt.toLowerCase();
+function generateTextFallback(rawPrompt: string): string {
+  // Extract ONLY the actual user question if wrapped inside prompt templates
+  let userQuestion = rawPrompt;
+  const match = rawPrompt.match(/Trainee Question:\s*"([^"]+)"/i) || rawPrompt.match(/User Question:\s*"([^"]+)"/i);
+  if (match && match[1]) {
+    userQuestion = match[1];
+  }
+  
+  const p = userQuestion.toLowerCase().trim();
 
-  if (p.includes("data management") || p.includes("computer") || p.includes("database") || p.includes("software") || p.includes("copa")) {
-    return "Data Management का मतलब है डिजिटल जानकारी को तरीके से Organize, Store और Process करना। ITI COPA & Computer Ops में SQL Database, Excel Macros और Shopfloor ERP entry सबसे ज़रूरी skills हैं। TCS, Infosys BPO और MSME IT hubs में ₹22,000-₹30,000/month stipend मिलता है!";
+  // 1. HR, Recruiter & Hiring questions
+  if (p.includes("hr") || p.includes("recruiter") || p.includes("recruitment") || p.includes("hire") || p.includes("hiring") || p.includes("interview")) {
+    return "HR Recruiter (Talent Acquisition) MSME plants और कंपनियों के लिए ITI & Polytechnic उम्मीदवारों को शॉर्टलिस्ट करता है, practical trade test कंडक्ट करता है और JobReady Index™ 80+ उम्मीदवारों को direct offer letter जारी करता है!";
   }
 
-  if (p.includes("cad") || p.includes("cam") || p.includes("autocad") || p.includes("solidworks") || p.includes("design")) {
-    return "CAD (AutoCAD, SolidWorks) 2D/3D component design के लिए और CAM सॉफ्टवेयर DXF files से automatic CNC G-Code toolpaths बनाने के लिए use होता है। CAD/CAM Draftsman role के लिए MSME R&D units में ₹25,000 से ₹35,000/month starting salary मिलती है!";
+  // 2. What is CNC / CNC definition questions
+  if (p.includes("what is cnc") || p === "cnc" || p.includes("cnc machine") || p.includes("computer numerical control")) {
+    return "CNC का मतलब है Computer Numerical Control। यह एक स्वचालित विनिर्माण (Automated Manufacturing) प्रक्रिया है जहाँ कंप्यूटर प्रोग्रामिंग (G-Code) के जरिए Lathe, Milling और Router मशीनों को ±0.01mm सूक्ष्म शुद्धता (Precision Tolerance) से कंट्रोल किया जाता है।";
   }
 
-  if (p.includes("quality") || p.includes("qc") || p.includes("inspection") || p.includes("cmm")) {
-    return "Quality Control (QC) का काम shopfloor components की dimensional accuracy और ±0.01mm tolerance चेक करना है। Vernier Micrometer, CMM machine operation और ISO 9001 audit सीखकर Tier-1 MSME plants में QC Inspector role हासिल करें!";
+  // 3. Data Management, Computer, Software & COPA
+  if (p.includes("data management") || p.includes("computer") || p.includes("database") || p.includes("software") || p.includes("copa") || p.includes("python")) {
+    return "Data Management का मतलब है डिजिटल डेटा को सुरक्षित Store, Organize और Process करना। ITI COPA & Computer Ops में SQL Database, Excel Macros और Shopfloor ERP Entry की भारी मांग है। MSME IT hubs में ₹22,000-₹30,000/month stipend मिलता है!";
   }
 
-  if (p.includes("salary") || p.includes("earning") || p.includes("pay") || p.includes("stipend")) {
-    return "Noida, Pune और Haridwar के MSME manufacturing plants में CNC Machinist passouts की starting salary ₹22,000 से ₹32,000/month होती है। अगर आपका Skill Passport JobReady Index 85+ score है, तो 30% higher package मिलता है!";
+  // 4. CAD/CAM & 3D Drafting
+  if (p.includes("cad") || p.includes("cam") || p.includes("autocad") || p.includes("solidworks") || p.includes("design") || p.includes("drafting")) {
+    return "CAD (AutoCAD, SolidWorks) 2D/3D component designs बनाने के लिए और CAM सॉफ्टवेयर DXF files से automatic CNC toolpaths (G-Code) जनरेट करने के लिए इस्तेमाल होता है। CAD/CAM Draftsman को MSME R&D units में ₹25,000-₹35,000/month starting package मिलता है!";
   }
 
+  // 5. Quality Control & Inspection
+  if (p.includes("quality") || p.includes("qc") || p.includes("inspection") || p.includes("cmm") || p.includes("qa")) {
+    return "Quality Control (QC) का काम shopfloor components की dimensional accuracy और ±0.01mm tolerance जांचना है। Vernier Caliper, Micrometer, CMM machine और 7 QC Tools सीखकर Tier-1 MSME plants में QC Inspector पद पाएं!";
+  }
+
+  // 6. Salary & Stipends
+  if (p.includes("salary") || p.includes("earning") || p.includes("pay") || p.includes("stipend") || p.includes("package")) {
+    return "Noida, Pune और Haridwar के MSME manufacturing plants में ITI & Polytechnic passouts की starting salary ₹22,000 से ₹34,000/month होती है। Skill Passport में 85+ JobReady Index™ होने पर 30% higher package मिलता है!";
+  }
+
+  // 7. Welding & Fabrication
   if (p.includes("weld") || p.includes("tig") || p.includes("mig") || p.includes("arc")) {
-    return "Welding trade में TIG & MIG gas welding सबसे इन-डिमांड है। NDT X-Ray Radiography passed welders को L&T, BHEL और MSME export plants में 35% higher salary पैकेज मिलता है!";
+    return "Welding trade में TIG (Argon Gas Shielded) और MIG (CO2) processes सबसे इन-डिमांड हैं। ISO 3834 certified और NDT X-Ray Radiography passed welders को L&T, BHEL और Defense plants में ₹35,000+ salary मिलती है!";
   }
 
-  if (p.includes("electrician") || p.includes("plc") || p.includes("motor") || p.includes("vfd")) {
-    return "Industrial Electrician के लिए 3-Phase Star-Delta Motor Control, VFD Speed Control और PLC Sensor wiring सबसे high-salary skills हैं। KarmaSetu का 15-hour PLC module complete करके 90+ Score पाएँ!";
+  // 8. Industrial Electrician, PLC & Motors
+  if (p.includes("electrician") || p.includes("plc") || p.includes("motor") || p.includes("vfd") || p.includes("wiring")) {
+    return "Industrial Electrician 3-Phase Star-Delta Motor Control, VFD Speed Control और PLC Sensor wiring handle करता है। KarmaSetu का 15-hour PLC diagnostic module complete करके Havells & Dixon Tech में direct preference पाएं!";
   }
 
-  if (p.includes("lathe") || p.includes("g-code") || p.includes("gcode") || p.includes("cnc") || p.includes("fanuc")) {
-    return "CNC Lathe में G00 (Rapid Feed), G01 (Cut), G02/G03 (Circular Arcs) और Fanuc Offsets मुख्य हैं। Fanuc Lathe G-Code module complete करने से JobReady Index 94+ हो जाता है!";
+  // 9. Precision Micrometer & Gauges
+  if (p.includes("micrometer") || p.includes("vernier") || p.includes("caliper") || p.includes("tolerance") || p.includes("gauge")) {
+    return "Precision Micrometer का Least Count 0.01mm (10 microns) होता है। ±0.01mm tolerance clear करने पर Bosch और Tier-1 MSME plants में Quality Inspector role के लिए direct matching मिलती है!";
   }
 
-  if (p.includes("micrometer") || p.includes("vernier") || p.includes("caliper") || p.includes("tolerance")) {
-    return "Precision Micrometer का least count 0.01mm (10 microns) होता है। ±0.01mm tolerance test pass करने पर Bosch और Tier-1 MSME plants में Quality Inspector role के लिए direct matching मिलती है!";
-  }
-
+  // 10. 5S & Workplace Safety
   if (p.includes("safety") || p.includes("5s") || p.includes("ppe") || p.includes("hazard")) {
-    return "5S Methodology (Sort, Set in Order, Shine, Standardize, Sustain) और ISO 45001 Safety Protocol फॉलो करने से MSME plants में Zero Accident environment बनता है और Recruiters priority hiring देते हैं!";
+    return "5S Methodology (Sort, Set in Order, Shine, Standardize, Sustain) और ISO 45001 Safety Protocol फॉलो करने से MSME plants में Zero-Accident environment बनता है और Recruiters priority hiring देते हैं!";
   }
 
+  // 11. G-Code, Fanuc & Lathe Commands
+  if (p.includes("g-code") || p.includes("gcode") || p.includes("fanuc") || p.includes("lathe") || p.includes("m-code")) {
+    return "CNC Lathe में G00 (Rapid Feed), G01 (Cut), G02/G03 (Circular Arcs) और M30 (Program End) मुख्य प्रोग्रामिंग कमांड्स हैं। Fanuc Lathe G-Code module complete करने से JobReady Index™ 94+ हो जाता है!";
+  }
+
+  // 12. Score & JobReady Index
   if (p.includes("score") || p.includes("index") || p.includes("improve") || p.includes("boost")) {
-    return "अपना JobReady Index score 90+ boost करने के लिए 3 steps follow करें: 1) Fanuc G-Code simulation module complete करें, 2) Precision micrometer ±0.01mm tolerance test clear करें, और 3) 5S Safety exam submit करें!";
+    return "अपना JobReady Index™ score 90+ boost करने के लिए 3 steps follow करें: 1) Fanuc G-Code simulation module complete करें, 2) Precision micrometer ±0.01mm tolerance test clear करें, और 3) 5S Safety exam submit करें!";
   }
 
+  // 13. Courses & LMS Modules
   if (p.includes("course") || p.includes("match") || p.includes("lms") || p.includes("short-term")) {
-    return "Highest MSME job match देने वाला course है 'Fanuc CNC Lathe G-Code Programming & PLC Sensor Diagnostics'। इस 15-hour bridge course को complete करने पर आपका JobReady Index score 62 से बढ़कर 94 हो जाता है!";
+    return "Highest MSME job match देने वाला course है 'Fanuc CNC Lathe G-Code Programming & PLC Sensor Diagnostics'। इस 15-hour bridge course को complete करने पर आपका JobReady Index™ score 62 से बढ़कर 94 हो जाता है!";
   }
 
-  if (p.includes("cutting tool") || p.includes("insert") || p.includes("carbide") || p.includes("drill")) {
-    return "Cutting Tools (Tungsten Carbide Inserts, End Mills) CNC machining में metal removal के लिए use होते हैं। Correct Cutting Speed (Vc), Feed Rate और Coolant flow से tool life 40% बढ़ती है और Surface Finish Ra < 0.8µm मिलती है!";
+  // 14. Greetings
+  if (p === "hi" || p === "hello" || p.includes("namaste") || p.includes("kaise ho") || p.includes("good morning")) {
+    return "नमस्ते Trainee Buddy! मैं आपका 24/7 Buddy AI guide हूँ। ITI & Polytechnic career growth, MSME salary packages या JobReady Index 90+ boost करने के बारे में कोई भी सवाल पूछें!";
   }
 
-  if (p.includes("hr") || p.includes("recruiter") || p.includes("hire") || p.includes("interview")) {
-    return "HR Recruiter का मुख्य काम MSME manufacturing plants के लिए verified ITI candidates को screen करना, shopfloor interview schedule करना और JobReady Index 80+ उम्मीदवारों को direct offer letter issue करना होता है!";
-  }
-
-  if (p === "hi" || p === "hello" || p.includes("namaste") || p.includes("kaise ho")) {
-    return "नमस्ते Trainee Buddy! मैं आपका 24/7 Buddy AI guide हूँ। CNC Machinist में career growth, MSME salary packages या JobReady Index 90+ boost करने के बारे में कोई भी सवाल पूछें!";
-  }
-
-  // AI-related questions
+  // 15. AI questions
   if (p.includes("ai") || p.includes("artificial intelligence") || p.includes("machine learning")) {
-    return "AI (Artificial Intelligence) modern manufacturing में quality prediction, predictive maintenance और automated inspection के लिए use होती है। KarmaSetu AI platform आपके skills को Industry 4.0 standards से match करता है और MSME employers से direct connect करता है!";
+    return "AI (Artificial Intelligence) modern manufacturing में quality prediction, predictive maintenance और automated inspection के लिए इस्तेमाल होती है। KarmaSetu AI आपके practical skills को 10-day direct hiring matches में बदलता है!";
   }
 
-  // Default contextual response
-  return "नमस्ते Trainee Buddy! Technical trade में best career growth के लिए KarmaSetu के 4-Step learning flow (Video ➔ Technical Guide ➔ 10-Q AI Exam ➔ Verified Skill Passport) को complete करें। इससे आपका practical score verify होगा और top MSMEs direct offer देंगी!";
+  // Generic intelligent fallback based on user's actual question
+  return `Trainee Buddy, "${userQuestion}" का उत्तर: Technical trade mastery के लिए KarmaSetu के 4-Step learning path (Video ➔ Technical Guide ➔ 10-Q AI Exam ➔ Verified Skill Passport) को फॉलो करें। इससे आपका verified score 90+ होगा और top MSMEs direct hire करेंगी!`;
 }
+
