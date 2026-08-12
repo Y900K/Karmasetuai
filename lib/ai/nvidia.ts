@@ -268,6 +268,85 @@ function generateMockAIResponse(prompt: string, systemPrompt: string = "", jsonM
     };
   }
 
+  // 6. Candidate Ranking Engine
+  if (sys.includes("candidate ranking") || sys.includes("rankedcandidates") || p.includes("candidates pool")) {
+    return {
+      rankedCandidates: [
+        {
+          candidateId: "cand-1",
+          candidateName: "Rajesh Kumar",
+          matchScorePercentage: 96,
+          rankReasoning: "Verified 96% in Fanuc G-Code & Micrometer ±0.01mm Calibration. Zero retraining required.",
+          keyMatchingSkills: ["Fanuc G-Code", "Micrometer Calibration", "5S Industrial Safety"],
+          recommendedAction: "ISSUE_OFFER"
+        },
+        {
+          candidateId: "cand-2",
+          candidateName: "Priya Sharma",
+          matchScorePercentage: 91,
+          rankReasoning: "Strong 3-Phase Electrical & VFD Drive setup skills. Passes MSME 10-day direct hiring criteria.",
+          keyMatchingSkills: ["PLC Wiring", "3-Phase Motor Control", "VFD Calibration"],
+          recommendedAction: "ISSUE_OFFER"
+        },
+        {
+          candidateId: "cand-3",
+          candidateName: "Amit Patel",
+          matchScorePercentage: 84,
+          rankReasoning: "TIG/MIG Welding certified with ISO 3834 compliance. High shopfloor safety score.",
+          keyMatchingSkills: ["TIG/MIG Welding", "Blueprint Reading", "Safety PPE"],
+          recommendedAction: "INTERVIEW"
+        }
+      ]
+    };
+  }
+
+  // 7. Written Quiz Answer Evaluation
+  if (sys.includes("written answer") || sys.includes("evaluator") || p.includes("rubric")) {
+    return {
+      score: 9,
+      isPass: true,
+      feedback: "Demonstrates excellent practical knowledge of shopfloor safety isolation, emergency stop protocols, and component clamping.",
+      keyConceptsMatched: ["Safety Isolation", "Emergency Stop", "Precision Clamping"]
+    };
+  }
+
+  // 8. Quiz Generator
+  if (sys.includes("quiz generation") || sys.includes("quiz generator") || p.includes("generate a 10-question")) {
+    return {
+      topic: prompt.split('"')[1] || "CNC Lathe Operations",
+      trade: "CNC Machinist",
+      questions: [
+        { id: "q1", type: "MCQ", question: "What is the primary G-Code for rapid linear positioning?", options: ["A. G01", "B. G02", "C. G00", "D. G03"], correctAnswer: "C. G00", points: 10 },
+        { id: "q2", type: "MCQ", question: "Which spindle speed command sets direct RPM?", options: ["A. G96 S200", "B. M03 S1200", "C. M08", "D. G28"], correctAnswer: "B. M03 S1200", points: 10 },
+        { id: "q3", type: "MCQ", question: "What tolerance precision standard is expected in Tier-1 MSME machining?", options: ["A. ±1.0mm", "B. ±5.0mm", "C. ±0.5mm", "D. ±0.01mm"], correctAnswer: "D. ±0.01mm", points: 10 },
+        { id: "q4", type: "MCQ", question: "Which 5S step focuses on workplace organization?", options: ["A. Seiri (Sort)", "B. Seiton (Set in Order)", "C. Seiso (Shine)", "D. Shitsuke (Sustain)"], correctAnswer: "B. Seiton (Set in Order)", points: 10 },
+        { id: "q5", type: "MCQ", question: "In Fanuc controllers, what does M30 signify?", options: ["A. Coolant ON", "B. Tool Change", "C. End of program & reset", "D. Spindle Stop"], correctAnswer: "C. End of program & reset", points: 10 },
+        { id: "q6", type: "MCQ", question: "Which axis measures workpiece diameter on a CNC Lathe?", options: ["A. Z-axis", "B. Y-axis", "C. C-axis", "D. X-axis"], correctAnswer: "D. X-axis", points: 10 },
+        { id: "q7", type: "MCQ", question: "Which PPE item is mandatory during chip cutting?", options: ["A. Ring", "B. Safety Glasses / Goggles", "C. Loose Scarf", "D. Headphones"], correctAnswer: "B. Safety Glasses / Goggles", points: 10 },
+        { id: "q8", type: "WRITTEN", question: "Describe emergency stop (E-STOP) protocol during chatter.", writtenRubric: "Press E-STOP, isolate power, inspect tool insert and clamping.", points: 10 },
+        { id: "q9", type: "WRITTEN", question: "Explain zero point offset (G54) calibration method.", writtenRubric: "Touch face, input Z0 in geometry offset, test pass.", points: 10 },
+        { id: "q10", type: "WRITTEN", question: "Outline 3 daily preventive maintenance checks for chuck pressure.", writtenRubric: "Check gauge PSI, inspect oil level, clean jaw serrations.", points: 10 }
+      ]
+    };
+  }
+
+  // 9. Resume Parsing
+  if (sys.includes("resume parser") || sys.includes("resume") || p.includes("parse the following resume")) {
+    return {
+      fullName: "Rajesh Kumar",
+      email: "rajesh.kumar@karmasetu.ai",
+      phone: "+91 98765 43210",
+      trade: "CNC Machinist & Programmer",
+      instituteName: "Govt ITI Lucknow",
+      passingYear: 2026,
+      skills: ["Fanuc G-Code Programming", "Micrometer Calibration ±0.01mm", "5S Workplace Safety", "Blueprint Reading"],
+      certifications: ["NCVT CNC Trade Certificate", "Industry 4.0 Skill Passport"],
+      experienceYears: "2 Years Practical Shopfloor",
+      summary: "Qualified CNC Machinist specializing in Fanuc G-Code programming and precision micrometer tolerance inspection."
+    };
+  }
+
+
   // 6. Default Candidate JobReady Index Evaluation
   const tradeMatch = prompt.match(/CNC|Electrician|Fitter|Welder|Quality|Tool|Die|Machinist/i);
   const trade = tradeMatch ? tradeMatch[0] : "CNC Machinist";

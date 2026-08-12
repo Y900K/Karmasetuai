@@ -193,8 +193,8 @@ body {
   }
 
   /* === Certificate-Only Print Mode === */
-  /* Hide dashboard root completely so document height is strictly 1 page */
-  body:has(.certificate-print-mode) #dashboard-root,
+  /* Hide dashboard root completely so document height is strictly 1 landscape page */
+  body:has(.certificate-print-mode) > #dashboard-root,
   body:has(.certificate-print-mode) > div:not(.certificate-print-mode) {
     display: none !important;
   }
@@ -208,39 +208,40 @@ body {
     padding: 0 !important;
   }
 
-  body:has(.certificate-print-mode) .certificate-print-mode {
+  .certificate-print-mode {
     position: fixed !important;
     inset: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    max-height: 100vh !important;
-    padding: 10mm !important;
     margin: 0 !important;
+    padding: 15px !important;
     background: #070b16 !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     box-sizing: border-box !important;
-    overflow: hidden !important;
-    page-break-before: avoid !important;
-    page-break-after: avoid !important;
-    page-break-inside: avoid !important;
+    z-index: 999999 !important;
+    visibility: visible !important;
   }
 
   .certificate-print-area {
+    visibility: visible !important;
+    width: 100% !important;
+    max-width: 900px !important;
+    margin: auto !important;
     background: linear-gradient(135deg, #0f172a, #1e293b) !important;
     border: 3px solid #d97706 !important;
     color: #ffffff !important;
     box-shadow: none !important;
-    max-height: 90vh !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
     page-break-inside: avoid !important;
     page-break-before: avoid !important;
     page-break-after: avoid !important;
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
   }
 
   .certificate-print-area * {
+    visibility: visible !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
@@ -251,6 +252,7 @@ body {
   .certificate-print-area div {
     color: inherit !important;
   }
+
 
 
   /* === Passport Print Mode === */

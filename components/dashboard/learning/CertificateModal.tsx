@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
-import { Award, CheckCircle2, Download, Printer, Shield, Sparkles, X, Cpu } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { Award, CheckCircle2, Download, Printer, Shield, Sparkles, X, Cpu, FileText } from "lucide-react";
 import { Certificate } from "@/lib/courses/types";
 
 interface CertificateModalProps {
@@ -11,7 +12,13 @@ interface CertificateModalProps {
 }
 
 export default function CertificateModal({ isOpen, onClose, certificate }: CertificateModalProps) {
-  if (!isOpen || !certificate) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !certificate || !mounted) return null;
 
   const handlePrint = () => {
     window.print();
@@ -131,8 +138,8 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
     link.click();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#040711]/90 backdrop-blur-xl overflow-y-auto certificate-print-mode">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#040711]/90 backdrop-blur-xl overflow-y-auto certificate-print-mode">
       <div className="glass-card w-full max-w-2xl p-6 sm:p-8 rounded-3xl border border-amber-500/40 relative shadow-2xl bg-[#070b16] my-auto animate-fade-in">
         
         {/* Header Actions */}
@@ -165,7 +172,6 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
             </button>
           </div>
         </div>
-
 
         {/* Certificate Card Printable Canvas */}
         <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-slate-900 via-[#0b1329] to-slate-950 border-2 border-amber-500/50 space-y-6 text-center relative overflow-hidden shadow-inner certificate-print-area">
@@ -241,6 +247,8 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
+
