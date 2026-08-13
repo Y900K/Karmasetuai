@@ -1,10 +1,17 @@
 import { NextResponse } from "next/server";
 import { callNvidiaAI } from "@/lib/ai/nvidia";
+import { checkRateLimit, rateLimitResponse } from "@/lib/security/rateLimit";
 
 export const maxDuration = 30; // Max 30s to stay well under Vercel Hobby 60s limit
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || "anonymous";
+    const rl = checkRateLimit(`demo-${ip}`, 20, 60000);
+    if (!rl.success) {
+      return rateLimitResponse(rl.reset);
+    }
+
     const body = await req.json();
     const { trade, bioSkills } = body;
 
