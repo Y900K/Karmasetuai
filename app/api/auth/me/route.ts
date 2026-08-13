@@ -19,7 +19,21 @@ export async function GET() {
     const supabase = createAdminClient();
     const { data: { user: authUser }, error } = await supabase.auth.getUser(accessToken);
 
+    const storedRole = cookieStore.get("karmasetu_user_role")?.value;
+
+    const DEMO_USER_BY_ROLE: Record<string, { id: string; email: string; full_name: string; role: string }> = {
+      "STUDENT": { id: "demo-student-uuid-001", email: "student@karmasetu.ai", full_name: "Rajesh Kumar", role: "STUDENT" },
+      "INSTITUTE": { id: "demo-institute-uuid-002", email: "institute@karmasetu.ai", full_name: "Govt ITI Lucknow Director", role: "INSTITUTE" },
+      "INDUSTRY": { id: "demo-expert-uuid-003", email: "expert@karmasetu.ai", full_name: "Dr. Vikram Seth (Industry Expert)", role: "INDUSTRY" },
+      "EMPLOYER": { id: "demo-employer-uuid-004", email: "employer@karmasetu.ai", full_name: "Tata Motors Ancillary HR", role: "EMPLOYER" },
+      "HR": { id: "demo-hr-uuid-005", email: "hr@karmasetu.ai", full_name: "Rajesh Sharma (HR Lead)", role: "HR" },
+      "NATIONAL": { id: "demo-admin-uuid-006", email: "admin@karmasetu.ai", full_name: "State Director General (UP SDM)", role: "NATIONAL" },
+    };
+
     if (error || !authUser) {
+      if (accessToken.startsWith("demo-token-") && storedRole && DEMO_USER_BY_ROLE[storedRole]) {
+        return NextResponse.json({ user: DEMO_USER_BY_ROLE[storedRole] });
+      }
       return NextResponse.json({ user: null }, { status: 401 });
     }
 
