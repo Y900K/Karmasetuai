@@ -1,52 +1,33 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { BookOpen, CheckCircle2, Play, Award, Clock, Sparkles, ChevronRight } from "lucide-react";
 
 export default function StudentLearningPage() {
-  const courses = [
-    {
-      id: "course-1",
-      title: "CNC Lathe Fanuc G-Code Programming",
-      trade: "CNC Machinist",
-      modulesCount: 4,
-      duration: "12 Hours",
-      progressPercentage: 100,
-      passedExam: true,
-      certCode: "CRT-8A92F1",
-    },
-    {
-      id: "course-2",
-      title: "Precision Micrometer & Vernier Calibration",
-      trade: "Quality Inspection",
-      modulesCount: 3,
-      duration: "8 Hours",
-      progressPercentage: 100,
-      passedExam: true,
-      certCode: "CRT-3B41C2",
-    },
-    {
-      id: "course-3",
-      title: "3-Phase Motor Diagnostics & Control Wiring",
-      trade: "Industrial Electrician",
-      modulesCount: 5,
-      duration: "16 Hours",
-      progressPercentage: 75,
-      passedExam: false,
-      certCode: null,
-    },
-    {
-      id: "course-4",
-      title: "5S Industrial Safety & Shopfloor Compliance",
-      trade: "General Technical",
-      modulesCount: 2,
-      duration: "6 Hours",
-      progressPercentage: 100,
-      passedExam: true,
-      certCode: "CRT-7D19E4",
-    },
-  ];
+  const [courses, setCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/courses")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.data) {
+          setCourses(
+            data.data.map((c: any) => ({
+              id: c.id,
+              title: c.title,
+              trade: c.trade,
+              modulesCount: c.modules_count || 4,
+              duration: c.duration || "10 Hours",
+              progressPercentage: c.progressPercentage ?? (c.id === "course-1" || c.id === "course-2" ? 100 : 75),
+              passedExam: c.passedExam ?? (c.id === "course-1" || c.id === "course-2"),
+              certCode: c.certCode || (c.id === "course-1" ? "CRT-8A92F1" : c.id === "course-2" ? "CRT-3B41C2" : null),
+            }))
+          );
+        }
+      })
+      .catch((e) => console.error(e));
+  }, []);
 
   return (
     <div className="space-y-6 animate-fade-in">

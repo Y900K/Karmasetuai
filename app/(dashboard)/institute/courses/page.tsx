@@ -1,16 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { BookOpen, Plus, Users, Award, CheckCircle2, FileText, ChevronRight } from "lucide-react";
 
 export default function InstituteCoursesPage() {
-  const courses = [
-    { id: "course-1", title: "CNC Lathe Fanuc G-Code Programming", trade: "CNC Machinist", enrolled: 145, avgCompletion: 92, status: "PUBLISHED" },
-    { id: "course-2", title: "Precision Micrometer & Vernier Calibration", trade: "Quality Inspection", enrolled: 110, avgCompletion: 88, status: "PUBLISHED" },
-    { id: "course-3", title: "3-Phase Motor Diagnostics & Control Wiring", trade: "Industrial Electrician", enrolled: 95, avgCompletion: 78, status: "PUBLISHED" },
-    { id: "course-4", title: "5S Industrial Safety & Shopfloor Compliance", trade: "General Technical", enrolled: 180, avgCompletion: 96, status: "PUBLISHED" },
-  ];
+  const [courses, setCourses] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/courses")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.data) setCourses(data.data);
+      })
+      .catch((e) => console.error(e));
+  }, []);
 
   return (
     <div className="space-y-6 animate-fade-in">

@@ -12,7 +12,11 @@ export async function GET(request: NextRequest) {
     return error ? NextResponse.json({ error: error.message }, { status: 500 }) : NextResponse.json({ data });
   }
   if (!hasRole(profile, ["EMPLOYER", "HR"])) return NextResponse.json({ error: "Not authorized." }, { status: 403 });
-  const { data, error } = await supabase.from("applications").select("id,status,match_score,created_at,student_id,job_posts!inner(id,title,employer_id,required_trade)").eq("job_posts.employer_id", profile.userId).order("created_at", { ascending: false });
+  const { data, error } = await supabase
+    .from("applications")
+    .select("id,status,match_score,created_at,student_id,job_posts!inner(id,title,employer_id,required_trade),profiles:student_id(full_name)")
+    .eq("job_posts.employer_id", profile.userId)
+    .order("created_at", { ascending: false });
   return error ? NextResponse.json({ error: error.message }, { status: 500 }) : NextResponse.json({ data });
 }
 

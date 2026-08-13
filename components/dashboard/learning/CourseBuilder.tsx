@@ -181,6 +181,39 @@ export default function CourseBuilder() {
     }
   };
 
+  const handlePublishCourse = async () => {
+    if (!courseTitle) {
+      alert("Please enter a Course Title before publishing.");
+      return;
+    }
+    setSavingStatus("SAVING");
+    try {
+      const res = await fetch("/api/courses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: courseTitle,
+          trade,
+          description,
+          modules,
+          resources,
+          quizQuestions,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSavingStatus("SAVED");
+        router.push("/institute/courses");
+      } else {
+        alert(data.error || "Failed to publish course.");
+        setSavingStatus("ERROR");
+      }
+    } catch (e) {
+      console.error(e);
+      setSavingStatus("ERROR");
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in printable-area">
       
@@ -209,7 +242,10 @@ export default function CourseBuilder() {
             <span>Cancel Course Creation</span>
           </button>
 
-          <button className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-lg shadow-blue-500/20 flex items-center gap-1.5 transition-all">
+          <button
+            onClick={handlePublishCourse}
+            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs shadow-lg shadow-blue-500/20 flex items-center gap-1.5 transition-all"
+          >
             <Save className="w-4 h-4" />
             <span>Publish Course</span>
           </button>
