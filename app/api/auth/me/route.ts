@@ -23,11 +23,11 @@ export async function GET() {
 
     const DEMO_USER_BY_ROLE: Record<string, { id: string; email: string; full_name: string; role: string }> = {
       "STUDENT": { id: "demo-student-uuid-001", email: "student@karmasetu.ai", full_name: "Rajesh Kumar", role: "STUDENT" },
-      "INSTITUTE": { id: "demo-institute-uuid-002", email: "institute@karmasetu.ai", full_name: "Govt ITI Lucknow Director", role: "INSTITUTE" },
-      "INDUSTRY": { id: "demo-expert-uuid-003", email: "expert@karmasetu.ai", full_name: "Dr. Vikram Seth (Industry Expert)", role: "INDUSTRY" },
+      "INSTITUTE": { id: "demo-institute-uuid-002", email: "institute@karmasetu.ai", full_name: "Govt ITI Lucknow & Expert Faculty", role: "INSTITUTE" },
       "EMPLOYER": { id: "demo-employer-uuid-004", email: "employer@karmasetu.ai", full_name: "Tata Motors Ancillary HR", role: "EMPLOYER" },
-      "HR": { id: "demo-hr-uuid-005", email: "hr@karmasetu.ai", full_name: "Rajesh Sharma (HR Lead)", role: "HR" },
-      "NATIONAL": { id: "demo-admin-uuid-006", email: "admin@karmasetu.ai", full_name: "State Director General (UP SDM)", role: "NATIONAL" },
+      "HR": { id: "demo-hr-uuid-005", email: "hr@karmasetu.ai", full_name: "Rajesh Sharma (HR & System Admin)", role: "HR" },
+      "INDUSTRY": { id: "demo-expert-uuid-003", email: "institute@karmasetu.ai", full_name: "Govt ITI Lucknow & Expert Faculty", role: "INSTITUTE" },
+      "NATIONAL": { id: "demo-admin-uuid-006", email: "hr@karmasetu.ai", full_name: "Rajesh Sharma (HR & System Admin)", role: "HR" },
     };
 
     if (error || !authUser) {
@@ -42,10 +42,10 @@ export async function GET() {
     const DEMO_EMAIL_ROLES: Record<string, string> = {
       "student@karmasetu.ai": "STUDENT",
       "institute@karmasetu.ai": "INSTITUTE",
-      "expert@karmasetu.ai": "INDUSTRY",
+      "expert@karmasetu.ai": "INSTITUTE",
       "employer@karmasetu.ai": "EMPLOYER",
       "hr@karmasetu.ai": "HR",
-      "admin@karmasetu.ai": "NATIONAL",
+      "admin@karmasetu.ai": "HR",
     };
 
     const userEmail = authUser.email?.toLowerCase() || "";

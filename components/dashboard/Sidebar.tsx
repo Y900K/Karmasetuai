@@ -38,7 +38,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
   // Role Configuration & Navigation Links
   const roleConfigs: Record<string, { title: string; color: string; bg: string; border: string; items: any[] }> = {
     STUDENT: {
-      title: "Student Portal",
+      title: "Student & Trainee",
       color: "text-cyan-400",
       bg: "bg-cyan-500/10",
       border: "border-cyan-500/30",
@@ -53,36 +53,25 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       ],
     },
     INSTITUTE: {
-      title: "NCVT Institute",
+      title: "Institute & Expert",
       color: "text-blue-400",
       bg: "bg-blue-500/10",
       border: "border-blue-500/30",
       items: [
         { labelKey: "navDashboard", label: "Dashboard", href: "/institute", icon: LayoutDashboard },
         { labelKey: "navStudentRoster", label: "Student Roster", href: "/institute/students", icon: Users },
-        { labelKey: "navPlacementsReport", label: "Placements Report", href: "/institute/placements", icon: TrendingUp },
         { labelKey: "navCourseManager", label: "Course Manager", href: "/institute/courses", icon: BookOpen },
         { labelKey: "navCreateCourse", label: "Create Course", href: "/institute/courses/create", icon: FilePlus, badge: "New" },
-        { labelKey: "navBatchAnalytics", label: "Batch Analytics", href: "/institute/analytics", icon: BarChart3, badge: "Live" },
         { labelKey: "navCurriculumAnalyzer", label: "AI Curriculum Analyzer", href: "/institute/ai-curriculum", icon: Brain, badge: "AI" },
+        { labelKey: "navMasterclasses", label: "Expert Masterclasses", href: "/expert/masterclass", icon: Video, badge: "Expert" },
+        { labelKey: "navVerifyCapstone", label: "Verify Capstone", href: "/expert/verify", icon: ClipboardCheck, badge: "Rubric" },
+        { labelKey: "navPlacementsReport", label: "Placements Report", href: "/institute/placements", icon: TrendingUp },
+        { labelKey: "navBatchAnalytics", label: "Batch Analytics", href: "/institute/analytics", icon: BarChart3, badge: "Live" },
         { labelKey: "navSettings", label: "Settings", href: "/institute/settings", icon: Settings },
       ],
     },
-    INDUSTRY: {
-      title: "Master Mentor",
-      color: "text-purple-400",
-      bg: "bg-purple-500/10",
-      border: "border-purple-500/30",
-      items: [
-        { labelKey: "navDashboard", label: "Dashboard", href: "/expert", icon: LayoutDashboard },
-        { labelKey: "navVerifyCapstone", label: "Verify Capstone", href: "/expert/verify", icon: ClipboardCheck, badge: "AI Rubric" },
-        { labelKey: "navMasterclasses", label: "Masterclasses", href: "/expert/masterclass", icon: Video },
-        { labelKey: "navUploadContent", label: "Upload Content", href: "/expert/content", icon: Upload },
-        { labelKey: "navProfile", label: "My Profile", href: "/expert/profile", icon: User },
-      ],
-    },
     EMPLOYER: {
-      title: "MSME Employer",
+      title: "Employer & MSME",
       color: "text-emerald-400",
       bg: "bg-emerald-500/10",
       border: "border-emerald-500/30",
@@ -96,31 +85,24 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       ],
     },
     HR: {
-      title: "HR Manager",
-      color: "text-indigo-400",
-      bg: "bg-indigo-500/10",
-      border: "border-indigo-500/30",
-      items: [
-        { labelKey: "navDashboard", label: "HR Regional Dashboard", href: "/hr", icon: LayoutDashboard },
-        { labelKey: "navInstitutesDirectory", label: "Institutes Directory", href: "/hr/institutes", icon: Landmark },
-        { labelKey: "navComplianceReports", label: "Compliance Reports", href: "/hr/reports", icon: FileText },
-        { labelKey: "navCandidates", label: "Candidate Audits", href: "/hr/candidates", icon: Users },
-      ],
-    },
-    NATIONAL: {
-      title: "National Governance",
+      title: "HR & System Admin",
       color: "text-amber-400",
       bg: "bg-amber-500/10",
       border: "border-amber-500/30",
       items: [
-        { labelKey: "navNationalKPIs", label: "National KPIs", href: "/admin", icon: LayoutDashboard },
-        { labelKey: "navSkillHeatmap", label: "AI Regional Heatmap", href: "/admin/analytics", icon: MapPin, badge: "AI" },
-        { labelKey: "navInstitutesDirectory", label: "Institutes Directory", href: "/admin/institutes", icon: Landmark },
-        { labelKey: "navComplianceReports", label: "Compliance Reports", href: "/admin/reports", icon: FileText },
-        { labelKey: "navSettings", label: "Admin Settings", href: "/admin/settings", icon: Settings },
+        { labelKey: "navDashboard", label: "HR & Admin Dashboard", href: "/hr", icon: LayoutDashboard },
+        { labelKey: "navCandidates", label: "Candidate Talent Radar", href: "/hr/candidates", icon: Users },
+        { labelKey: "navInstitutesDirectory", label: "Institutes Directory", href: "/hr/institutes", icon: Landmark },
+        { labelKey: "navComplianceReports", label: "Compliance & System Audit", href: "/hr/reports", icon: FileText },
+        { labelKey: "navSkillHeatmap", label: "National AI Heatmap", href: "/admin/analytics", icon: MapPin, badge: "AI" },
+        { labelKey: "navSettings", label: "System Settings", href: "/admin/settings", icon: Settings },
       ],
     },
   };
+
+  // Backwards compatibility mappings for legacy roles
+  roleConfigs.INDUSTRY = roleConfigs.INSTITUTE;
+  roleConfigs.NATIONAL = roleConfigs.HR;
 
   const activeConfig = roleConfigs[currentRole] || roleConfigs.STUDENT;
 

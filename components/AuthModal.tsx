@@ -18,55 +18,39 @@ interface AuthModalProps {
 const ROLES = [
   {
     id: "STUDENT",
-    title: "Student",
-    subtitle: "Skill Passport & JobReady Index",
+    title: "Student & Trainee",
+    subtitle: "Skill Passport & JobReady Index™",
     icon: GraduationCap,
     btnText: "STUDENT",
   },
   {
     id: "INSTITUTE",
-    title: "Institute",
-    subtitle: "Batch tracking & placement dashboard",
+    title: "Institute & Expert",
+    subtitle: "Curriculum, Masterclasses & Placements",
     icon: Landmark,
-    btnText: "INSTITUTE",
-  },
-  {
-    id: "INDUSTRY",
-    title: "Expert",
-    subtitle: "Verify CapStone projects",
-    icon: UserCheck,
-    btnText: "EXPERT MENTOR",
+    btnText: "INSTITUTE & EXPERT",
   },
   {
     id: "EMPLOYER",
-    title: "Employer",
-    subtitle: "10-day hiring & verified talent",
+    title: "Employer & MSME",
+    subtitle: "AI Candidate Ranking & 10-day Hiring",
     icon: Briefcase,
     btnText: "EMPLOYER / MSME",
   },
   {
     id: "HR",
-    title: "HR Lead",
-    subtitle: "Recruitment analytics & compliance",
+    title: "HR & System Admin",
+    subtitle: "Workforce Analytics & System Governance",
     icon: Shield,
-    btnText: "HR MANAGER",
-  },
-  {
-    id: "NATIONAL",
-    title: "National",
-    subtitle: "District skill heatmaps & government",
-    icon: Flag,
-    btnText: "NATIONAL ADMIN",
+    btnText: "HR & SYSTEM ADMIN",
   },
 ];
 
 const DEMO_CREDENTIALS = [
-  { role: "Student", roleId: "STUDENT", email: "student@karmasetu.ai", icon: GraduationCap, color: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10" },
-  { role: "Institute", roleId: "INSTITUTE", email: "institute@karmasetu.ai", icon: Landmark, color: "text-blue-400 border-blue-500/30 bg-blue-500/10" },
-  { role: "Expert Mentor", roleId: "INDUSTRY", email: "expert@karmasetu.ai", icon: UserCheck, color: "text-purple-400 border-purple-500/30 bg-purple-500/10" },
-  { role: "Employer / MSME", roleId: "EMPLOYER", email: "employer@karmasetu.ai", icon: Briefcase, color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" },
-  { role: "HR Manager", roleId: "HR", email: "hr@karmasetu.ai", icon: Shield, color: "text-amber-400 border-amber-500/30 bg-amber-500/10" },
-  { role: "Admin", roleId: "NATIONAL", email: "admin@karmasetu.ai", icon: Flag, color: "text-pink-400 border-pink-500/30 bg-pink-500/10" },
+  { role: "Student / Trainee", roleId: "STUDENT", email: "student@karmasetu.ai", icon: GraduationCap, color: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10 hover:border-cyan-400" },
+  { role: "Institute & Expert", roleId: "INSTITUTE", email: "institute@karmasetu.ai", icon: Landmark, color: "text-blue-400 border-blue-500/30 bg-blue-500/10 hover:border-blue-400" },
+  { role: "Employer & MSME", roleId: "EMPLOYER", email: "employer@karmasetu.ai", icon: Briefcase, color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10 hover:border-emerald-400" },
+  { role: "HR & System Admin", roleId: "HR", email: "hr@karmasetu.ai", icon: Shield, color: "text-amber-400 border-amber-500/30 bg-amber-500/10 hover:border-amber-400" },
 ];
 
 export default function AuthModal({

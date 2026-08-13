@@ -17,13 +17,13 @@ export async function POST(req: Request) {
       },
       "institute@karmasetu.ai": {
         id: "demo-institute-uuid-002",
-        full_name: "Govt ITI Lucknow Director",
+        full_name: "Govt ITI Lucknow & Expert Faculty",
         role: "INSTITUTE",
       },
       "expert@karmasetu.ai": {
         id: "demo-expert-uuid-003",
-        full_name: "Dr. Vikram Seth (Industry Expert)",
-        role: "INDUSTRY",
+        full_name: "Govt ITI Lucknow & Expert Faculty",
+        role: "INSTITUTE",
       },
       "employer@karmasetu.ai": {
         id: "demo-employer-uuid-004",
@@ -32,13 +32,13 @@ export async function POST(req: Request) {
       },
       "hr@karmasetu.ai": {
         id: "demo-hr-uuid-005",
-        full_name: "Rajesh Sharma (HR Lead)",
+        full_name: "Rajesh Sharma (HR & System Admin)",
         role: "HR",
       },
       "admin@karmasetu.ai": {
         id: "demo-admin-uuid-006",
-        full_name: "State Director General (UP SDM)",
-        role: "NATIONAL",
+        full_name: "Rajesh Sharma (HR & System Admin)",
+        role: "HR",
       },
     };
 
