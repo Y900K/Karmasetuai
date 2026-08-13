@@ -45,10 +45,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div
       id="dashboard-root"
-      className={`min-h-screen bg-[var(--bg-primary)] text-slate-100 flex font-sans selection:bg-cyan-500 selection:text-black overflow-x-hidden relative transition-colors duration-300 theme-${theme}`}
+      className={`h-screen max-h-screen w-screen bg-[var(--bg-primary)] text-slate-100 flex font-sans selection:bg-cyan-500 selection:text-black overflow-hidden relative transition-colors duration-300 theme-${theme}`}
     >
-      {/* Desktop Sidebar — always visible on md+ */}
-      <div className="hidden md:block sticky top-0 h-screen z-30 flex-shrink-0">
+      {/* Desktop Sidebar — 100% Fixed App Shell Sidebar */}
+      <div className="hidden md:block h-full z-30 flex-shrink-0">
         <Sidebar currentRole={currentRole} />
       </div>
 
@@ -61,7 +61,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             onClick={() => setSidebarOpen(false)}
           />
           {/* Drawer */}
-          <div className="relative z-50 animate-slide-in-left">
+          <div className="relative z-50 animate-slide-in-left h-full">
             <Sidebar
               currentRole={currentRole}
               isOpen={sidebarOpen}
@@ -71,8 +71,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       )}
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+      {/* Main Content Area — Dedicated Independent Scrollable Column */}
+      <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
         <TopBar
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           onToggleAnalytics={() => setAnalyticsOpen(!analyticsOpen)}
