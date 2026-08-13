@@ -66,7 +66,8 @@ export async function GET(request: NextRequest) {
     const query = supabase
       .from("job_posts")
       .select("*")
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(100);
 
     const isEmployer = profile && hasRole(profile, ["EMPLOYER", "HR"]);
     const { data, error } = isEmployer

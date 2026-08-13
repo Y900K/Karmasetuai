@@ -1,15 +1,19 @@
 /**
- * KarmaSetu AI — Deep Multi-Format Data Exportation Suite
- * Supports CSV, JSON, TSV (Excel Ready), Structured Text Summaries & Printable Document view.
+ * KarmaSetu AI — Memory-Safe Huge-Data Multi-Format Exportation Engine
+ * Processes massive datasets in memory chunks to prevent V8 memory heap spikes.
  */
+
+const CHUNK_SIZE = 2500;
 
 export function exportToCSV(filename: string, data: Record<string, any>[]) {
   if (!data || !data.length) return;
 
   const headers = Object.keys(data[0]);
-  const csvRows = [
-    headers.join(","),
-    ...data.map((row) =>
+  const chunks: string[] = [headers.join(",") + "\n"];
+
+  for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+    const slice = data.slice(i, i + CHUNK_SIZE);
+    const chunkRows = slice.map((row) =>
       headers
         .map((header) => {
           const val = row[header] ?? "";
@@ -17,58 +21,71 @@ export function exportToCSV(filename: string, data: Record<string, any>[]) {
           return `"${escaped}"`;
         })
         .join(",")
-    ),
-  ];
+    );
+    chunks.push(chunkRows.join("\n") + "\n");
+  }
 
-  downloadBlob(csvRows.join("\n"), `${sanitizeFilename(filename)}_${getFormattedDate()}.csv`, "text/csv;charset=utf-8;");
+  downloadBlobChunks(chunks, `${sanitizeFilename(filename)}_${getFormattedDate()}.csv`, "text/csv;charset=utf-8;");
 }
 
 export function exportToJSON(filename: string, data: Record<string, any>[]) {
   if (!data || !data.length) return;
   const jsonContent = JSON.stringify(data, null, 2);
-  downloadBlob(jsonContent, `${sanitizeFilename(filename)}_${getFormattedDate()}.json`, "application/json;charset=utf-8;");
+  downloadBlobChunks([jsonContent], `${sanitizeFilename(filename)}_${getFormattedDate()}.json`, "application/json;charset=utf-8;");
 }
 
 export function exportToTSV(filename: string, data: Record<string, any>[]) {
   if (!data || !data.length) return;
 
   const headers = Object.keys(data[0]);
-  const tsvRows = [
-    headers.join("\t"),
-    ...data.map((row) =>
+  const chunks: string[] = [headers.join("\t") + "\n"];
+
+  for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+    const slice = data.slice(i, i + CHUNK_SIZE);
+    const chunkRows = slice.map((row) =>
       headers
         .map((header) => {
           const val = row[header] ?? "";
           return typeof val === "object" ? JSON.stringify(val) : String(val).replace(/\t/g, " ");
         })
         .join("\t")
-    ),
-  ];
+    );
+    chunks.push(chunkRows.join("\n") + "\n");
+  }
 
-  downloadBlob(tsvRows.join("\n"), `${sanitizeFilename(filename)}_${getFormattedDate()}.tsv`, "text/tab-separated-values;charset=utf-8;");
+  downloadBlobChunks(chunks, `${sanitizeFilename(filename)}_${getFormattedDate()}.tsv`, "text/tab-separated-values;charset=utf-8;");
 }
 
 export function exportToFormattedText(filename: string, title: string, data: Record<string, any>[]) {
   if (!data || !data.length) return;
 
-  const lines = [
-    `====================================================================`,
-    `KarmaSetu AI — ${title.toUpperCase()}`,
-    `Generated On: ${new Date().toLocaleString()}`,
-    `Total Records: ${data.length}`,
-    `====================================================================\n`,
+  const chunks: string[] = [
+    `====================================================================\n` +
+    `KarmaSetu AI — ${title.toUpperCase()}\n` +
+    `Generated On: ${new Date().toLocaleString()}\n` +
+    `Total Records: ${data.length}\n` +
+    `====================================================================\n\n`
   ];
 
-  data.forEach((item, index) => {
-    lines.push(`--- Record #${index + 1} ---`);
-    Object.entries(item).forEach(([key, val]) => {
-      const formattedVal = typeof val === "object" ? JSON.stringify(val) : String(val);
-      lines.push(`${key}: ${formattedVal}`);
-    });
-    lines.push("");
-  });
+  for (let i = 0; i < data.length; i += CHUNK_SIZE) {
+    const slice = data.slice(i, i + CHUNK_SIZE);
+    const lines: string[] = [];
 
-  downloadBlob(lines.join("\n"), `${sanitizeFilename(filename)}_${getFormattedDate()}.txt`, "text/plain;charset=utf-8;");
+    slice.forEach((item, index) => {
+      lines.push(`--- Record #${i + index + 1} ---`);
+      if (item && typeof item === "object") {
+        Object.entries(item).forEach(([key, val]) => {
+          const formattedVal = typeof val === "object" ? JSON.stringify(val) : String(val ?? "");
+          lines.push(`${key}: ${formattedVal}`);
+        });
+      }
+      lines.push("");
+    });
+
+    chunks.push(lines.join("\n") + "\n");
+  }
+
+  downloadBlobChunks(chunks, `${sanitizeFilename(filename)}_${getFormattedDate()}.txt`, "text/plain;charset=utf-8;");
 }
 
 export function triggerPrintableDocument() {
@@ -77,8 +94,8 @@ export function triggerPrintableDocument() {
   }
 }
 
-function downloadBlob(content: string, filename: string, mimeType: string) {
-  const blob = new Blob([content], { type: mimeType });
+function downloadBlobChunks(chunks: string[], filename: string, mimeType: string) {
+  const blob = new Blob(chunks, { type: mimeType });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;

@@ -59,7 +59,8 @@ export async function GET(request: NextRequest) {
         .from("applications")
         .select("*, job_posts(*)")
         .eq("student_id", profile.userId)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(100);
 
       if (!error && data && data.length > 0) {
         return NextResponse.json({ data });
@@ -68,7 +69,8 @@ export async function GET(request: NextRequest) {
       const { data, error } = await supabase
         .from("applications")
         .select("*, job_posts(*)")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(100);
 
       if (!error && data && data.length > 0) {
         return NextResponse.json({ data });

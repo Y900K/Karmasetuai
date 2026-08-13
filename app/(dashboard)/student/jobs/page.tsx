@@ -57,6 +57,9 @@ function StudentJobsContent() {
     loadJobs();
   }, []);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 9;
+
   const filtered = jobs.filter((j) => {
     const matchSearch =
       !filters.search ||
@@ -66,6 +69,9 @@ function StudentJobsContent() {
       j.location.toLowerCase().includes(filters.search.toLowerCase());
     return matchSearch;
   });
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
+  const paginatedJobs = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   const handleOpenApplyModal = (job: Job) => {
     setSelectedJobForApply(job);
@@ -152,7 +158,7 @@ function StudentJobsContent() {
         <div className="p-8 text-center text-slate-400 animate-pulse text-xs">Loading live job matches...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((job) => {
+          {paginatedJobs.map((job) => {
             const hasApplied = appliedJobIds.has(job.id);
             const userScore = students[0]?.jobReadyIndex || 88.5;
             const isEligible = userScore >= (job.min_job_ready_score || 75);
@@ -236,6 +242,35 @@ function StudentJobsContent() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-900/90 border border-white/10 text-xs no-print">
+          <span className="text-slate-400 font-semibold">
+            Showing <strong className="text-white">{((currentPage - 1) * 9) + 1}</strong> - <strong className="text-white">{Math.min(currentPage * 9, filtered.length)}</strong> of <strong className="text-cyan-400">{filtered.length}</strong> Jobs
+          </span>
+
+          <div className="flex items-center gap-2">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              className="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              Previous
+            </button>
+
+            <span className="font-extrabold text-amber-300 px-2">Page {currentPage} of {totalPages}</span>
+
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              className="px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+            >
+              Next
+            </button>
+          </div>
         </div>
       )}
 
