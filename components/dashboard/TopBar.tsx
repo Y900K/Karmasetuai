@@ -163,8 +163,8 @@ export default function TopBar({ onToggleSidebar, onToggleAnalytics }: TopBarPro
           <Menu className="w-5 h-5" />
         </button>
 
-        <h1 className="text-xs sm:text-sm md:text-base font-extrabold text-white flex items-center gap-2 truncate">
-          <span className="truncate">{getPageTitle()}</span>
+        <h1 className="text-xs sm:text-sm md:text-base font-extrabold text-white flex items-center gap-2 min-w-0">
+          <span className="truncate max-w-[160px] sm:max-w-none" title={getPageTitle()}>{getPageTitle()}</span>
           <span className="hidden sm:inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 flex-shrink-0">
             {role}
           </span>

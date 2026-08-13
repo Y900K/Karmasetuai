@@ -48,7 +48,7 @@ export default function FilterBar({
             value={filters.search}
             onChange={(e) => onUpdate({ search: e.target.value })}
             placeholder={placeholder}
-            className="w-full bg-slate-950 border border-white/10 rounded-2xl pl-10 pr-8 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+            className="w-full bg-slate-950 border border-white/10 rounded-2xl pl-10 pr-8 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus-visible:ring-2 focus-visible:ring-cyan-400"
           />
           {filters.search && (
             <button

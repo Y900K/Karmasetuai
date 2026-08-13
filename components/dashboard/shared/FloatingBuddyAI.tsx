@@ -81,7 +81,7 @@ export default function FloatingBuddyAI() {
   }
 
   return (
-    <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 no-print ${minimized ? "w-72 h-14" : "w-80 sm:w-96 h-[460px]"} glass-card rounded-3xl border border-purple-500/40 bg-[#080d1e]/95 shadow-2xl flex flex-col justify-between overflow-hidden`}>
+    <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 no-print ${minimized ? "w-72 h-14" : "w-[calc(100vw-48px)] sm:w-96 h-[460px] max-h-[calc(100vh-100px)]"} glass-card rounded-3xl border border-purple-500/40 bg-[#080d1e]/95 shadow-2xl flex flex-col justify-between overflow-hidden`}>
       {/* Widget Header */}
       <div className="p-3.5 border-b border-white/10 flex items-center justify-between bg-slate-900/90">
         <div className="flex items-center gap-2">

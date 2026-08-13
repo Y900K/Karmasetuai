@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/context";
 import { useEcosystem } from "@/lib/context/EcosystemContext";
+import { ROLE_ROUTES, ALL_ROLES } from "@/lib/constants";
 
 interface SidebarProps {
   currentRole: string;
@@ -23,14 +24,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
   const { user, logout, switchRole } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
 
-  const roleRoutes: Record<string, string> = {
-    STUDENT: "/student",
-    INSTITUTE: "/institute",
-    INDUSTRY: "/expert",
-    EMPLOYER: "/employer",
-    HR: "/hr",
-    NATIONAL: "/admin",
-  };
+  const roleRoutes = ROLE_ROUTES;
 
   const handleSwitchRole = (rId: string) => {
     switchRole(rId);
@@ -108,9 +102,9 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       border: "border-indigo-500/30",
       items: [
         { labelKey: "navDashboard", label: "HR Regional Dashboard", href: "/hr", icon: LayoutDashboard },
-        { labelKey: "navInstitutesDirectory", label: "Institutes Directory", href: "/admin/institutes", icon: Landmark },
-        { labelKey: "navComplianceReports", label: "Compliance Reports", href: "/admin/reports", icon: FileText },
-        { labelKey: "navCandidates", label: "Candidate Audits", href: "/employer/candidates", icon: Users },
+        { labelKey: "navInstitutesDirectory", label: "Institutes Directory", href: "/hr/institutes", icon: Landmark },
+        { labelKey: "navComplianceReports", label: "Compliance Reports", href: "/hr/reports", icon: FileText },
+        { labelKey: "navCandidates", label: "Candidate Audits", href: "/hr/candidates", icon: Users },
       ],
     },
     NATIONAL: {
@@ -130,14 +124,8 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
 
   const activeConfig = roleConfigs[currentRole] || roleConfigs.STUDENT;
 
-  const demoRoles = [
-    { id: "STUDENT", label: "Student" },
-    { id: "INSTITUTE", label: "Institute" },
-    { id: "INDUSTRY", label: "Expert" },
-    { id: "EMPLOYER", label: "Employer" },
-    { id: "HR", label: "HR Manager" },
-    { id: "NATIONAL", label: "Admin" },
-  ];
+  const demoRoles = ALL_ROLES;
+  const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
 
   const handleNavClick = () => {
     // Auto-close sidebar on mobile when a nav link is clicked
@@ -193,7 +181,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
         </div>
 
         {/* Demo Switcher Quick Menu */}
-        {!collapsed && (
+        {!collapsed && isDemoMode && (
           <div className="p-3 border-b border-white/10 bg-slate-900/50">
             <div className="text-[9px] font-extrabold text-slate-400 uppercase mb-1.5 flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-amber-400" /> SWITCH PORTAL DEMO

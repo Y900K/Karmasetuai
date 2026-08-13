@@ -18,6 +18,16 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
     setMounted(true);
   }, []);
 
+  // P2-10: Escape key to close modal
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen || !certificate || !mounted) return null;
 
   const handlePrint = () => {

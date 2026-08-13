@@ -5,6 +5,7 @@ import {
   X, Cpu, GraduationCap, Landmark, UserCheck, Briefcase, Shield, Flag,
   Mail, Lock, Phone, Building, Award, ChevronRight, Sparkles, CheckCircle2
 } from "lucide-react";
+import { SELF_REGISTERABLE_ROLES } from "@/lib/constants";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -103,10 +104,21 @@ export default function AuthModal({
       else if (defaultRole.includes("EMPLOYER")) setSelectedRole("EMPLOYER");
       else if (defaultRole.includes("INDUSTRY")) setSelectedRole("INDUSTRY");
       else if (defaultRole.includes("HR")) setSelectedRole("HR");
+      else if (defaultRole.includes("NATIONAL") || defaultRole.includes("SUPER_ADMIN")) setSelectedRole("NATIONAL");
       else setSelectedRole("STUDENT");
     }
     setIsLogin(defaultMode === "login");
   }, [defaultRole, defaultMode, isOpen]);
+
+  // P2-10: Escape key to close modal
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -239,7 +251,7 @@ export default function AuthModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#040711]/85 backdrop-blur-xl overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#040711]/85 backdrop-blur-xl overflow-y-auto" role="dialog" aria-modal="true" aria-label="Authentication">
       <div className="glass-card w-full max-w-2xl p-5 sm:p-7 rounded-3xl border border-cyan-500/30 relative shadow-2xl my-auto animate-fade-in bg-[#070b16]/95">
         
         {/* Header Bar */}
@@ -261,7 +273,8 @@ export default function AuthModal({
 
           <button
             onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:border-white/30 text-slate-400 hover:text-white flex items-center justify-center transition-all"
+            aria-label="Close authentication dialog"
+            className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 hover:border-white/30 text-slate-400 hover:text-white flex items-center justify-center transition-all focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
           >
             <X className="w-5 h-5" />
           </button>
@@ -298,37 +311,37 @@ export default function AuthModal({
         {isLogin ? (
           /* SIGN IN MODE */
           <div className="space-y-6">
-            
-            {/* 1-Click Quick Demo Credentials Panel */}
-            <div className="p-4 rounded-2xl bg-slate-900/90 border border-amber-500/30 space-y-3">
-              <div className="flex items-center justify-between text-xs font-extrabold text-amber-300">
-                <span className="flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  QUICK DEMO CREDENTIALS (1-CLICK LOGIN)
-                </span>
-                <span className="text-[10px] text-slate-400 font-mono">Password: KarmaSetuDemo!2026</span>
-              </div>
+            {/* P0-4: Only show demo credentials in demo mode */}
+            {process.env.NEXT_PUBLIC_DEMO_MODE === "true" && (
+              <div className="p-4 rounded-2xl bg-slate-900/90 border border-amber-500/30 space-y-3">
+                <div className="flex items-center justify-between text-xs font-extrabold text-amber-300">
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    QUICK DEMO CREDENTIALS (1-CLICK LOGIN)
+                  </span>
+                </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {DEMO_CREDENTIALS.map((cred, idx) => {
-                  const CredIcon = cred.icon;
-                  return (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleDemoLogin(cred.role, cred.email)}
-                      className={`p-2.5 rounded-xl border text-left transition-all hover:scale-102 ${cred.color}`}
-                    >
-                      <div className="flex items-center gap-1.5 text-xs font-bold truncate">
-                        <CredIcon className="w-3.5 h-3.5 flex-shrink-0" />
-                        <span className="truncate">{cred.role}</span>
-                      </div>
-                      <div className="text-[10px] opacity-75 truncate mt-0.5">{cred.email}</div>
-                    </button>
-                  );
-                })}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {DEMO_CREDENTIALS.map((cred, idx) => {
+                    const CredIcon = cred.icon;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => handleDemoLogin(cred.role, cred.email)}
+                        className={`p-2.5 rounded-xl border text-left transition-all hover:scale-102 focus-visible:ring-2 focus-visible:ring-cyan-400 ${cred.color}`}
+                      >
+                        <div className="flex items-center gap-1.5 text-xs font-bold truncate">
+                          <CredIcon className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="truncate">{cred.role}</span>
+                        </div>
+                        <div className="text-[10px] opacity-75 truncate mt-0.5">{cred.email}</div>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="relative text-center">
               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10" /></div>
@@ -339,33 +352,35 @@ export default function AuthModal({
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 uppercase mb-1 flex items-center gap-1.5">
+                <label htmlFor="login-email" className="block text-xs font-bold text-slate-300 uppercase mb-1 flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5 text-cyan-400" /> Email Address
                 </label>
                 <input
+                  id="login-email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="e.g. student@karmasetu.ai"
-                  className="w-full bg-slate-900/90 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full bg-slate-900/90 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 focus-visible:ring-2 focus-visible:ring-cyan-400"
                 />
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="text-xs font-bold text-slate-300 uppercase flex items-center gap-1.5">
+                  <label htmlFor="login-password" className="text-xs font-bold text-slate-300 uppercase flex items-center gap-1.5">
                     <Lock className="w-3.5 h-3.5 text-cyan-400" /> Password
                   </label>
                   <a href="#" className="text-xs text-amber-400 hover:underline">Forgot Password?</a>
                 </div>
                 <input
+                  id="login-password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-slate-900/90 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400"
+                  className="w-full bg-slate-900/90 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-400 focus-visible:ring-2 focus-visible:ring-cyan-400"
                 />
               </div>
 
@@ -397,7 +412,7 @@ export default function AuthModal({
               </label>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {ROLES.map((r) => {
+                {ROLES.filter(r => SELF_REGISTERABLE_ROLES.has(r.id)).map((r) => {
                   const RoleIcon = r.icon;
                   const isSelected = selectedRole === r.id;
                   return (

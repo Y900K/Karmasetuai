@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 export interface StudentRecord {
   id: string;
@@ -74,25 +74,59 @@ const DEFAULT_DISTRICTS: DistrictMetric[] = [
   { name: "Pune Industrial Belt", state: "Maharashtra", placementRate: 90, totalStudentsPlaced: 2100, topDemandTrades: ["Auto Assembly", "Mechatronics Tech"], supplyDeficitTrades: ["EV Battery Tech"], clusters: ["Chakan MIDC"], keyIndustrialClusters: ["Pimpri-Chinchwad MIDC", "Chakan Auto Hub", "Bhosari"], status: "EXCELLENT" },
 ];
 
-export function useEcosystemStore() {
-  const [students, setStudents] = useState<StudentRecord[]>(DEFAULT_STUDENTS);
-  const [jobs, setJobs] = useState<JobPosting[]>(DEFAULT_JOBS);
-  const [capstones, setCapstones] = useState<CapstoneSubmission[]>(DEFAULT_CAPSTONES);
-  const [districts, setDistricts] = useState<DistrictMetric[]>(DEFAULT_DISTRICTS);
+interface EcosystemStoreContextType {
+  students: StudentRecord[];
+  jobs: JobPosting[];
+  capstones: CapstoneSubmission[];
+  districts: DistrictMetric[];
+  verifyCapstone: (id: string) => void;
+  addJob: (job: Omit<JobPosting, "id" | "status">) => void;
+  hireCandidate: (jobId: string, studentId: string) => void;
+}
 
-  // Synchronize state across tabs and windows using localStorage
-  useEffect(() => {
+const EcosystemStoreContext = createContext<EcosystemStoreContextType>({
+  students: DEFAULT_STUDENTS,
+  jobs: DEFAULT_JOBS,
+  capstones: DEFAULT_CAPSTONES,
+  districts: DEFAULT_DISTRICTS,
+  verifyCapstone: () => {},
+  addJob: () => {},
+  hireCandidate: () => {},
+});
+
+export function EcosystemStoreProvider({ children }: { children: React.ReactNode }) {
+  // P1-7 fix: Lazy initialization from localStorage so data doesn't flash/reset
+  const [students, setStudents] = useState<StudentRecord[]>(() => {
     if (typeof window !== "undefined") {
       const s = localStorage.getItem("ks_students");
-      if (s) try { setStudents(JSON.parse(s)); } catch (e) {}
-      const j = localStorage.getItem("ks_jobs");
-      if (j) try { setJobs(JSON.parse(j)); } catch (e) {}
-      const c = localStorage.getItem("ks_capstones");
-      if (c) try { setCapstones(JSON.parse(c)); } catch (e) {}
-      const d = localStorage.getItem("ks_districts");
-      if (d) try { setDistricts(JSON.parse(d)); } catch (e) {}
+      if (s) { try { return JSON.parse(s); } catch {} }
     }
-  }, []);
+    return DEFAULT_STUDENTS;
+  });
+
+  const [jobs, setJobs] = useState<JobPosting[]>(() => {
+    if (typeof window !== "undefined") {
+      const j = localStorage.getItem("ks_jobs");
+      if (j) { try { return JSON.parse(j); } catch {} }
+    }
+    return DEFAULT_JOBS;
+  });
+
+  const [capstones, setCapstones] = useState<CapstoneSubmission[]>(() => {
+    if (typeof window !== "undefined") {
+      const c = localStorage.getItem("ks_capstones");
+      if (c) { try { return JSON.parse(c); } catch {} }
+    }
+    return DEFAULT_CAPSTONES;
+  });
+
+  const [districts, setDistricts] = useState<DistrictMetric[]>(() => {
+    if (typeof window !== "undefined") {
+      const d = localStorage.getItem("ks_districts");
+      if (d) { try { return JSON.parse(d); } catch {} }
+    }
+    return DEFAULT_DISTRICTS;
+  });
 
   const saveStudents = (newVal: StudentRecord[]) => {
     setStudents(newVal);
@@ -121,7 +155,6 @@ export function useEcosystemStore() {
 
     const verifiedCap = capstones.find(c => c.id === id);
     if (verifiedCap) {
-      // Boost student score & certificates
       const updatedStudents = students.map(s => {
         if (s.name.includes(verifiedCap.studentName) || verifiedCap.studentName.includes(s.name)) {
           return {
@@ -135,7 +168,6 @@ export function useEcosystemStore() {
       });
       saveStudents(updatedStudents);
 
-      // Increment Noida district placement total
       const updatedDistricts = districts.map(d => {
         if (d.name.includes("Noida") || d.name.includes("Lucknow")) {
           return { ...d, totalStudentsPlaced: d.totalStudentsPlaced + 1 };
@@ -156,7 +188,6 @@ export function useEcosystemStore() {
     const updatedJobs = [newJob, ...jobs];
     saveJobs(updatedJobs);
 
-    // Update live matches count for students in matching trade
     const updatedStudents = students.map(s => {
       if (s.trade.toLowerCase().includes(job.trade.toLowerCase()) || job.trade.toLowerCase().includes(s.trade.toLowerCase())) {
         return { ...s, liveMatchesCount: s.liveMatchesCount + 1 };
@@ -182,13 +213,21 @@ export function useEcosystemStore() {
     saveDistricts(updatedDistricts);
   };
 
-  return {
-    students,
-    jobs,
-    capstones,
-    districts,
-    verifyCapstone,
-    addJob,
-    hireCandidate,
-  };
+  return React.createElement(
+    EcosystemStoreContext.Provider,
+    {
+      value: {
+        students,
+        jobs,
+        capstones,
+        districts,
+        verifyCapstone,
+        addJob,
+        hireCandidate,
+      },
+    },
+    children
+  );
 }
+
+export const useEcosystemStore = () => useContext(EcosystemStoreContext);

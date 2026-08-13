@@ -13,6 +13,7 @@ import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
 import { useAuth } from "@/lib/auth/context";
 import { useEcosystem } from "@/lib/context/EcosystemContext";
+import { getRouteForRole } from "@/lib/constants";
 
 export default function Home() {
   const router = useRouter();
@@ -32,18 +33,8 @@ export default function Home() {
     await login({ ...userObj, role: userRole }, userRole, session);
     setAuthOpen(false);
 
-    // Route to role-specific dashboard with persistent sidebars
-    const roleRoutes: Record<string, string> = {
-      STUDENT: "/student",
-      INSTITUTE: "/institute",
-      INDUSTRY: "/expert",
-      EMPLOYER: "/employer",
-      HR: "/admin",
-      NATIONAL: "/admin",
-      SUPER_ADMIN: "/admin",
-    };
-
-    const targetRoute = roleRoutes[userRole] || "/student";
+    // Route to role-specific dashboard using canonical route map
+    const targetRoute = getRouteForRole(userRole);
     router.push(targetRoute);
   };
 

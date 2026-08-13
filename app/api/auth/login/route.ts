@@ -18,7 +18,12 @@ export async function POST(req: Request) {
       user: { id: authData.user.id, email: authData.user.email || "", full_name: profile?.full_name || authData.user.user_metadata?.full_name || "User" },
       role: profile?.role || "STUDENT",
       message: "Signed in successfully!",
-      session: { access_token: authData.session.access_token, refresh_token: authData.session.refresh_token },
+      session: {
+        access_token: authData.session.access_token,
+        refresh_token: authData.session.refresh_token,
+        expires_in: authData.session.expires_in,
+        expires_at: authData.session.expires_at,
+      },
     });
     response.cookies.set("karmasetu_access_token", authData.session.access_token, {
       httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", maxAge: authData.session.expires_in || 3600, path: "/",

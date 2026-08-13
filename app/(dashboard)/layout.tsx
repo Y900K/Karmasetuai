@@ -8,6 +8,7 @@ import AnalyticsSmartSidebar from "@/components/dashboard/shared/AnalyticsSmartS
 import { useAuth } from "@/lib/auth/context";
 import { useEcosystem } from "@/lib/context/EcosystemContext";
 import FloatingBuddyAI from "@/components/dashboard/shared/FloatingBuddyAI";
+import { getRoleFromPath } from "@/lib/constants";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { role, isAuthenticated, isLoading } = useAuth();
@@ -27,20 +28,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }
   }, [isLoading, isAuthenticated, router]);
 
-  // Determine current active role based on path or fallback to auth role
-  let currentRole = role || "STUDENT";
-  if (role === "HR") {
+  // Determine current active role based on path, with auth role as context
+  // If the auth role is HR, keep HR even when visiting /admin/* sub-routes
+  // (since HR sidebar links to some admin pages)
+  let currentRole = getRoleFromPath(pathname);
+  if (role === "HR" && (pathname.startsWith("/hr") || pathname.startsWith("/admin") || pathname.startsWith("/employer"))) {
     currentRole = "HR";
-  } else if (pathname.startsWith("/student")) {
-    currentRole = "STUDENT";
-  } else if (pathname.startsWith("/institute")) {
-    currentRole = "INSTITUTE";
-  } else if (pathname.startsWith("/expert")) {
-    currentRole = "INDUSTRY";
-  } else if (pathname.startsWith("/employer")) {
-    currentRole = "EMPLOYER";
-  } else if (pathname.startsWith("/admin")) {
-    currentRole = "NATIONAL";
   }
 
   // Auto-close sidebar on route change (mobile)
