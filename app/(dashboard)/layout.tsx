@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       className={`min-h-screen bg-[var(--bg-primary)] text-slate-100 flex font-sans selection:bg-cyan-500 selection:text-black overflow-x-hidden relative transition-colors duration-300 theme-${theme}`}
     >
       {/* Desktop Sidebar — always visible on md+ */}
-      <div className="hidden md:block">
+      <div className="hidden md:block sticky top-0 h-screen z-30 flex-shrink-0">
         <Sidebar currentRole={currentRole} />
       </div>
 

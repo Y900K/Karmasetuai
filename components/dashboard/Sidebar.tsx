@@ -136,7 +136,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
     <aside
       className={`relative z-50 bg-[#070b16]/98 border-r border-white/10 flex flex-col justify-between transition-all duration-300 ${
         collapsed ? "w-20" : "w-64"
-      } min-h-screen select-none`}
+      } h-full select-none`}
     >
       {/* Sidebar Header & Branding */}
       <div className="p-4 flex items-center justify-between border-b border-white/10 flex-shrink-0">
