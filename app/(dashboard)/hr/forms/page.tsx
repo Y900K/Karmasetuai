@@ -7,7 +7,7 @@ import {
   Sparkles, RefreshCw, Eye, Star, Layers, BarChart3, ChevronRight, X, ArrowUp, ArrowDown
 } from "lucide-react";
 import { useFormStore, FormSchema, QuestionItem, QuestionType } from "@/lib/store/FormStore";
-import { exportToCSV, exportToJSON, exportToTSV, exportToFormattedText } from "@/lib/utils/export";
+import { exportToCSV, exportToTSV, exportToFormattedText } from "@/lib/utils/export";
 
 function HrFormsContent() {
   const { forms, createForm, deleteForm } = useFormStore();
@@ -436,18 +436,6 @@ function HrFormsContent() {
                 className="px-3 py-1.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-extrabold text-[11px] flex items-center gap-1 transition-all shadow-md shadow-purple-500/20"
               >
                 <Download className="w-3.5 h-3.5" /> CSV
-              </button>
-
-              <button
-                onClick={() => {
-                  const target = selectedFormForResponses || forms[0];
-                  if (target && target.responses.length > 0) {
-                    exportToJSON(`${target.id}_responses`, target.responses);
-                  }
-                }}
-                className="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-[11px] flex items-center gap-1 transition-all shadow-md shadow-cyan-500/20"
-              >
-                <Download className="w-3.5 h-3.5" /> JSON
               </button>
 
               <button

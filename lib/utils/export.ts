@@ -28,12 +28,6 @@ export function exportToCSV(filename: string, data: Record<string, any>[]) {
   downloadBlobChunks(chunks, `${sanitizeFilename(filename)}_${getFormattedDate()}.csv`, "text/csv;charset=utf-8;");
 }
 
-export function exportToJSON(filename: string, data: Record<string, any>[]) {
-  if (!data || !data.length) return;
-  const jsonContent = JSON.stringify(data, null, 2);
-  downloadBlobChunks([jsonContent], `${sanitizeFilename(filename)}_${getFormattedDate()}.json`, "application/json;charset=utf-8;");
-}
-
 export function exportToTSV(filename: string, data: Record<string, any>[]) {
   if (!data || !data.length) return;
 

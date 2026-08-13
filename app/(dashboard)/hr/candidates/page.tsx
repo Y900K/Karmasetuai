@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Users, UserCheck, Search, ShieldCheck, ExternalLink, Download, CheckCircle2, Award, FileText } from "lucide-react";
 import FilterBar from "@/components/shared/FilterBar";
 import { useFilterSort } from "@/lib/hooks/useFilterSort";
-import { exportToCSV, exportToJSON, exportToTSV, exportToFormattedText, triggerPrintableDocument } from "@/lib/utils/export";
+import { exportToCSV, exportToTSV, exportToFormattedText, triggerPrintableDocument } from "@/lib/utils/export";
 import { useEcosystemStore } from "@/lib/store/EcosystemStore";
 
 function HrCandidatesContent() {
@@ -47,13 +47,6 @@ function HrCandidatesContent() {
             className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center gap-1 transition-all shadow-md shadow-amber-500/20"
           >
             <Download className="w-3.5 h-3.5" /> CSV
-          </button>
-
-          <button
-            onClick={() => exportToJSON("candidate_audits", filtered)}
-            className="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1 transition-all shadow-md shadow-cyan-500/20"
-          >
-            <Download className="w-3.5 h-3.5" /> JSON
           </button>
 
           <button

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import {
   Users, Sparkles, Award, CheckCircle2, Search, Filter, Calendar, Video, FileText, Send, Eye, X, Download, HelpCircle, Briefcase
 } from "lucide-react";
-import { exportToCSV, exportToJSON, exportToTSV, exportToFormattedText, triggerPrintableDocument } from "@/lib/utils/export";
+import { exportToCSV, exportToTSV, exportToFormattedText, triggerPrintableDocument } from "@/lib/utils/export";
 
 export default function EmployerCandidatesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -125,13 +125,6 @@ export default function EmployerCandidatesPage() {
               className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs flex items-center gap-1 transition-all shadow-md shadow-emerald-500/20"
             >
               <Download className="w-3.5 h-3.5" /> CSV
-            </button>
-
-            <button
-              onClick={() => exportToJSON("applicant_pipeline", filtered)}
-              className="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1 transition-all shadow-md shadow-cyan-500/20"
-            >
-              <Download className="w-3.5 h-3.5" /> JSON
             </button>
 
             <button
