@@ -160,6 +160,16 @@ export default function CertificateModal({ isOpen, onClose, certificate }: Certi
           </div>
 
           <div className="flex items-center gap-2">
+            <a
+              href={`/verify/${certificate.certificateCode}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/30 font-extrabold text-xs flex items-center gap-1 transition-all"
+              title="Open Public QR Verification Link"
+            >
+              <FileText className="w-3.5 h-3.5" /> Verify Link
+            </a>
+
             <button
               onClick={handleDownloadPNG}
               className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-cyan-500 hover:opacity-90 text-xs font-black text-black flex items-center gap-1.5 transition-all shadow-md"

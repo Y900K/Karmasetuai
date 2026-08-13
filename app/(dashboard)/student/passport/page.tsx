@@ -140,12 +140,23 @@ export default function StudentPassportPage() {
                 <h4 className="text-xs font-bold text-white mt-1.5">{c.courseTitle}</h4>
               </div>
 
-              <button
-                onClick={() => setSelectedCert(c)}
-                className="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-extrabold text-xs transition-all no-print"
-              >
-                View / Print Certificate 📜
-              </button>
+              <div className="flex gap-2 no-print">
+                <button
+                  onClick={() => setSelectedCert(c)}
+                  className="flex-1 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-extrabold text-xs transition-all"
+                >
+                  View Certificate 📜
+                </button>
+                <a
+                  href={`/verify/${c.certificateCode}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 font-bold text-xs flex items-center gap-1 transition-all"
+                  title="Public QR Verifier Link"
+                >
+                  Verify 🌐
+                </a>
+              </div>
             </div>
           ))}
         </div>

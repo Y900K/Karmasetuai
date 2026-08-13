@@ -21,6 +21,15 @@ export function checkRateLimit(
   const now = Date.now();
   const tracker = rateLimitMap.get(identifier);
 
+  // Memory hygiene: prune expired rate limit entries if map grows large
+  if (rateLimitMap.size > 500) {
+    for (const [key, item] of rateLimitMap.entries()) {
+      if (now > item.resetTime) {
+        rateLimitMap.delete(key);
+      }
+    }
+  }
+
   // Clean up expired entry or set initial
   if (!tracker || now > tracker.resetTime) {
     rateLimitMap.set(identifier, {
