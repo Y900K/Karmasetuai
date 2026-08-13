@@ -91,6 +91,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       border: "border-amber-500/30",
       items: [
         { labelKey: "navDashboard", label: "HR & Admin Dashboard", href: "/hr", icon: LayoutDashboard },
+        { labelKey: "navFormBuilder", label: "Form Builder & QR", href: "/hr/forms", icon: FileText, badge: "QR Code" },
         { labelKey: "navCandidates", label: "Candidate Talent Radar", href: "/hr/candidates", icon: Users },
         { labelKey: "navInstitutesDirectory", label: "Institutes Directory", href: "/hr/institutes", icon: Landmark },
         { labelKey: "navComplianceReports", label: "Compliance & System Audit", href: "/hr/reports", icon: FileText },
