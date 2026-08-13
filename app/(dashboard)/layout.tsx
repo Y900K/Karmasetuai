@@ -29,11 +29,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [isLoading, isAuthenticated, router]);
 
   // Determine current active role based on path, with auth role as context
-  // If the auth role is HR, keep HR even when visiting /admin/* sub-routes
-  // (since HR sidebar links to some admin pages)
   let currentRole = getRoleFromPath(pathname);
-  if (role === "HR" && (pathname.startsWith("/hr") || pathname.startsWith("/admin") || pathname.startsWith("/employer"))) {
+  if ((role === "HR" || role === "NATIONAL") && (pathname.startsWith("/hr") || pathname.startsWith("/admin") || pathname.startsWith("/employer"))) {
     currentRole = "HR";
+  }
+  if ((role === "INSTITUTE" || role === "INDUSTRY") && (pathname.startsWith("/institute") || pathname.startsWith("/expert"))) {
+    currentRole = "INSTITUTE";
   }
 
   // Auto-close sidebar on route change (mobile)
