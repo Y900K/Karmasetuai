@@ -7,7 +7,7 @@ import {
   Sparkles, RefreshCw, Eye, Star, Layers, BarChart3, ChevronRight, X, ArrowUp, ArrowDown
 } from "lucide-react";
 import { useFormStore, FormSchema, QuestionItem, QuestionType } from "@/lib/store/FormStore";
-import { exportToCSV } from "@/lib/utils/export";
+import { exportToCSV, exportToJSON, exportToTSV, exportToFormattedText } from "@/lib/utils/export";
 
 function HrFormsContent() {
   const { forms, createForm, deleteForm } = useFormStore();
@@ -425,17 +425,55 @@ function HrFormsContent() {
               </select>
             </div>
 
-            <button
-              onClick={() => {
-                const target = selectedFormForResponses || forms[0];
-                if (target && target.responses.length > 0) {
-                  exportToCSV(`${target.id}_responses`, target.responses);
-                }
-              }}
-              className="px-3.5 py-1.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-extrabold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-purple-500/20"
-            >
-              <Download className="w-4 h-4" /> Export Responses CSV
-            </button>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <button
+                onClick={() => {
+                  const target = selectedFormForResponses || forms[0];
+                  if (target && target.responses.length > 0) {
+                    exportToCSV(`${target.id}_responses`, target.responses);
+                  }
+                }}
+                className="px-3 py-1.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-extrabold text-[11px] flex items-center gap-1 transition-all shadow-md shadow-purple-500/20"
+              >
+                <Download className="w-3.5 h-3.5" /> CSV
+              </button>
+
+              <button
+                onClick={() => {
+                  const target = selectedFormForResponses || forms[0];
+                  if (target && target.responses.length > 0) {
+                    exportToJSON(`${target.id}_responses`, target.responses);
+                  }
+                }}
+                className="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-[11px] flex items-center gap-1 transition-all shadow-md shadow-cyan-500/20"
+              >
+                <Download className="w-3.5 h-3.5" /> JSON
+              </button>
+
+              <button
+                onClick={() => {
+                  const target = selectedFormForResponses || forms[0];
+                  if (target && target.responses.length > 0) {
+                    exportToTSV(`${target.id}_responses`, target.responses);
+                  }
+                }}
+                className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-[11px] flex items-center gap-1 transition-all shadow-md shadow-emerald-500/20"
+              >
+                <Download className="w-3.5 h-3.5" /> Excel (TSV)
+              </button>
+
+              <button
+                onClick={() => {
+                  const target = selectedFormForResponses || forms[0];
+                  if (target && target.responses.length > 0) {
+                    exportToFormattedText(`${target.id}_summary`, target.title, target.responses);
+                  }
+                }}
+                className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-[11px] flex items-center gap-1 transition-all shadow-md shadow-amber-500/20"
+              >
+                <Download className="w-3.5 h-3.5" /> Text Summary
+              </button>
+            </div>
           </div>
 
           {/* Submissions List */}

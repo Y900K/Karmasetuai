@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Users, UserCheck, Search, ShieldCheck, ExternalLink, Download, CheckCircle2, Award, FileText } from "lucide-react";
 import FilterBar from "@/components/shared/FilterBar";
 import { useFilterSort } from "@/lib/hooks/useFilterSort";
+import { exportToCSV, exportToJSON, exportToTSV, exportToFormattedText, triggerPrintableDocument } from "@/lib/utils/export";
 import { useEcosystemStore } from "@/lib/store/EcosystemStore";
 
 function HrCandidatesContent() {
@@ -40,12 +41,35 @@ function HrCandidatesContent() {
           </p>
         </div>
 
-        <button
-          onClick={() => window.print()}
-          className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center gap-1.5 transition-all no-print shadow-lg shadow-amber-500/20"
-        >
-          <Download className="w-4 h-4" /> Export Audit Summary
-        </button>
+        <div className="flex items-center gap-1.5 flex-wrap no-print">
+          <button
+            onClick={() => exportToCSV("candidate_audits", filtered)}
+            className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs flex items-center gap-1 transition-all shadow-md shadow-amber-500/20"
+          >
+            <Download className="w-3.5 h-3.5" /> CSV
+          </button>
+
+          <button
+            onClick={() => exportToJSON("candidate_audits", filtered)}
+            className="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-xs flex items-center gap-1 transition-all shadow-md shadow-cyan-500/20"
+          >
+            <Download className="w-3.5 h-3.5" /> JSON
+          </button>
+
+          <button
+            onClick={() => exportToTSV("candidate_audits", filtered)}
+            className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs flex items-center gap-1 transition-all shadow-md shadow-emerald-500/20"
+          >
+            <Download className="w-3.5 h-3.5" /> Excel (TSV)
+          </button>
+
+          <button
+            onClick={() => triggerPrintableDocument()}
+            className="px-3 py-1.5 rounded-xl bg-white/10 border border-white/20 text-white font-bold text-xs hover:bg-white/20 transition-all flex items-center gap-1"
+          >
+            <FileText className="w-3.5 h-3.5 text-amber-400" /> PDF / Print
+          </button>
+        </div>
       </div>
 
       {/* FilterBar */}

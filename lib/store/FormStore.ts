@@ -114,25 +114,21 @@ const FormContext = createContext<FormContextType>({
 export function FormProvider({ children }: { children: React.ReactNode }) {
   const [forms, setForms] = useState<FormSchema[]>(INITIAL_FORMS);
 
+  // Sync with Server Database API
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem("ks_form_builder_schemas");
-      if (saved) {
-        setForms(JSON.parse(saved));
+    async function fetchFormsFromDatabase() {
+      try {
+        const res = await fetch("/api/forms");
+        const json = await res.json();
+        if (json.data && json.data.length > 0) {
+          setForms(json.data);
+        }
+      } catch (e) {
+        console.error("Failed to fetch forms from database", e);
       }
-    } catch (e) {
-      console.error("Failed to load forms from localStorage", e);
     }
+    fetchFormsFromDatabase();
   }, []);
-
-  const saveToStorage = (newForms: FormSchema[]) => {
-    setForms(newForms);
-    try {
-      localStorage.setItem("ks_form_builder_schemas", JSON.stringify(newForms));
-    } catch (e) {
-      console.error("Failed to save forms to localStorage", e);
-    }
-  };
 
   const createForm = (data: Omit<FormSchema, "id" | "createdAt" | "responses">): FormSchema => {
     const newId = `FRM-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -142,8 +138,17 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
       createdAt: new Date().toISOString().split("T")[0],
       responses: [],
     };
+
     const updated = [newForm, ...forms];
-    saveToStorage(updated);
+    setForms(updated);
+
+    // Persist to Server Database API
+    fetch("/api/forms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).catch((e) => console.error("Database persist error for form", e));
+
     return newForm;
   };
 
@@ -163,13 +168,20 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
       if (f.id === formId) {
         return {
           ...f,
-          responses: [newResponse, ...f.responses],
+          responses: [newResponse, ...(f.responses || [])],
         };
       }
       return f;
     });
 
-    saveToStorage(updated);
+    setForms(updated);
+
+    // Persist response to Server Database API
+    fetch(`/api/forms/${formId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(responseData),
+    }).catch((e) => console.error("Database persist error for response", e));
   };
 
   const getFormById = (formId: string) => {
@@ -179,7 +191,7 @@ export function FormProvider({ children }: { children: React.ReactNode }) {
 
   const deleteForm = (formId: string) => {
     const updated = forms.filter((f) => f.id !== formId);
-    saveToStorage(updated);
+    setForms(updated);
   };
 
   return React.createElement(FormContext.Provider, {
