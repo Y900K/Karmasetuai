@@ -184,15 +184,7 @@ export default function TopBar({ onToggleSidebar, onToggleAnalytics }: TopBarPro
           />
         </div>
 
-        {/* Real-Time AI Analytics Drawer Toggle */}
-        <button
-          onClick={() => onToggleAnalytics?.()}
-          className="h-8 sm:h-9 px-2.5 sm:px-3 rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 hover:border-cyan-400 text-cyan-300 flex items-center gap-1.5 transition-all text-xs font-extrabold shadow-sm"
-          title="Open Real-Time AI Telemetry Analytics"
-        >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-          <span className="hidden md:inline">Live Analytics</span>
-        </button>
+
 
         {/* Language Toggle */}
         <div className="relative" onClick={(e) => e.stopPropagation()}>

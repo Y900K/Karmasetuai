@@ -61,12 +61,12 @@ const ROLES = [
 ];
 
 const DEMO_CREDENTIALS = [
-  { role: "Student", email: "student@karmasetu.ai", icon: GraduationCap, color: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10" },
-  { role: "Institute", email: "institute@karmasetu.ai", icon: Landmark, color: "text-blue-400 border-blue-500/30 bg-blue-500/10" },
-  { role: "Expert Mentor", email: "expert@karmasetu.ai", icon: UserCheck, color: "text-purple-400 border-purple-500/30 bg-purple-500/10" },
-  { role: "Employer / MSME", email: "employer@karmasetu.ai", icon: Briefcase, color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" },
-  { role: "HR Manager", email: "hr@karmasetu.ai", icon: Shield, color: "text-amber-400 border-amber-500/30 bg-amber-500/10" },
-  { role: "Admin", email: "admin@karmasetu.ai", icon: Flag, color: "text-pink-400 border-pink-500/30 bg-pink-500/10" },
+  { role: "Student", roleId: "STUDENT", email: "student@karmasetu.ai", icon: GraduationCap, color: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10" },
+  { role: "Institute", roleId: "INSTITUTE", email: "institute@karmasetu.ai", icon: Landmark, color: "text-blue-400 border-blue-500/30 bg-blue-500/10" },
+  { role: "Expert Mentor", roleId: "INDUSTRY", email: "expert@karmasetu.ai", icon: UserCheck, color: "text-purple-400 border-purple-500/30 bg-purple-500/10" },
+  { role: "Employer / MSME", roleId: "EMPLOYER", email: "employer@karmasetu.ai", icon: Briefcase, color: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" },
+  { role: "HR Manager", roleId: "HR", email: "hr@karmasetu.ai", icon: Shield, color: "text-amber-400 border-amber-500/30 bg-amber-500/10" },
+  { role: "Admin", roleId: "NATIONAL", email: "admin@karmasetu.ai", icon: Flag, color: "text-pink-400 border-pink-500/30 bg-pink-500/10" },
 ];
 
 export default function AuthModal({
@@ -122,7 +122,7 @@ export default function AuthModal({
 
   if (!isOpen) return null;
 
-  const handleDemoLogin = async (demoRole: string, demoEmail: string) => {
+  const handleDemoLogin = async (demoRole: string, demoEmail: string, demoRoleId?: string) => {
     setEmail(demoEmail);
     setPassword("KarmaSetuDemo!2026");
     setIsLogin(true);
@@ -145,7 +145,7 @@ export default function AuthModal({
       }
 
       const userObj = data.user || { email: demoEmail, full_name: demoEmail.split("@")[0] };
-      const roleReturned = data.role || selectedRole;
+      const roleReturned = demoRoleId || (data.role !== "STUDENT" ? data.role : (selectedRole !== "STUDENT" ? selectedRole : demoRoleId || "STUDENT"));
 
       setMessage({
         type: "success",
@@ -328,7 +328,7 @@ export default function AuthModal({
                       <button
                         key={idx}
                         type="button"
-                        onClick={() => handleDemoLogin(cred.role, cred.email)}
+                        onClick={() => handleDemoLogin(cred.role, cred.email, cred.roleId)}
                         className={`p-2.5 rounded-xl border text-left transition-all hover:scale-102 focus-visible:ring-2 focus-visible:ring-cyan-400 ${cred.color}`}
                       >
                         <div className="flex items-center gap-1.5 text-xs font-bold truncate">

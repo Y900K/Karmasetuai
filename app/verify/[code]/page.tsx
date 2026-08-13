@@ -29,15 +29,37 @@ export default function PublicCertificateVerifierPage() {
     hash: string;
     status: "VERIFIED" | "REVOKED";
   }> = {
+    "CRT-8A92F1": {
+      studentName: "Rajesh Kumar",
+      trade: "CNC Machinist & Programmer",
+      institute: "Government ITI Lucknow Main Campus",
+      jobReadyIndex: 94.0,
+      issueDate: "2026-08-01",
+      certificateCode: "CRT-8A92F1",
+      ncvtRegNo: "NCVT/UP/2026/89421",
+      hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      status: "VERIFIED",
+    },
     "KMP-8A92F1": {
       studentName: "Rajesh Kumar",
       trade: "CNC Machinist & Programmer",
       institute: "Government ITI Lucknow Main Campus",
       jobReadyIndex: 94.0,
       issueDate: "2026-08-01",
-      certificateCode: "KMP-8A92F1",
+      certificateCode: "CRT-8A92F1",
       ncvtRegNo: "NCVT/UP/2026/89421",
       hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      status: "VERIFIED",
+    },
+    "CRT-3B41C2": {
+      studentName: "Mohit Verma",
+      trade: "Industrial Electrician",
+      institute: "Government ITI Kanpur Nagar",
+      jobReadyIndex: 86.5,
+      issueDate: "2026-08-05",
+      certificateCode: "CRT-3B41C2",
+      ncvtRegNo: "NCVT/UP/2026/73112",
+      hash: "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4",
       status: "VERIFIED",
     },
     "KMP-7B31E2": {
@@ -46,9 +68,20 @@ export default function PublicCertificateVerifierPage() {
       institute: "Government ITI Kanpur Nagar",
       jobReadyIndex: 86.5,
       issueDate: "2026-08-05",
-      certificateCode: "KMP-7B31E2",
+      certificateCode: "CRT-3B41C2",
       ncvtRegNo: "NCVT/UP/2026/73112",
       hash: "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4",
+      status: "VERIFIED",
+    },
+    "CRT-7D19E4": {
+      studentName: "Priya Sharma",
+      trade: "TIG/MIG Welder",
+      institute: "Government ITI Noida Industrial Hub",
+      jobReadyIndex: 91.2,
+      issueDate: "2026-08-10",
+      certificateCode: "CRT-7D19E4",
+      ncvtRegNo: "NCVT/UP/2026/94410",
+      hash: "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
       status: "VERIFIED",
     },
     "KMP-9C44F3": {
@@ -57,15 +90,25 @@ export default function PublicCertificateVerifierPage() {
       institute: "Government ITI Noida Industrial Hub",
       jobReadyIndex: 91.2,
       issueDate: "2026-08-10",
-      certificateCode: "KMP-9C44F3",
+      certificateCode: "CRT-7D19E4",
       ncvtRegNo: "NCVT/UP/2026/94410",
       hash: "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35",
       status: "VERIFIED",
     },
   };
 
-  // Find cert in static map or search students store
-  let cert = certDatabase[code];
+  // Strip prefix for fuzzy matching
+  const cleanCode = code.replace(/^(CRT|KMP)-?/i, "").toUpperCase();
+
+  // Find cert in static map by exact match, prefix swap, or suffix match
+  let cert = certDatabase[code] || certDatabase[`CRT-${cleanCode}`] || certDatabase[`KMP-${cleanCode}`];
+
+  if (!cert) {
+    const matchedKey = Object.keys(certDatabase).find(k => k.toUpperCase().includes(cleanCode));
+    if (matchedKey) {
+      cert = certDatabase[matchedKey];
+    }
+  }
 
   if (!cert) {
     const foundStudent = students.find(s => s.id === code.toLowerCase() || s.name.toLowerCase().includes(code.toLowerCase()));

@@ -139,115 +139,113 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
       } min-h-screen select-none`}
     >
       {/* Sidebar Header & Branding */}
-      <div>
-        <div className="p-4 flex items-center justify-between border-b border-white/10">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-emerald-400 p-0.5 flex-shrink-0 shadow-md shadow-cyan-500/20">
-              <div className="w-full h-full bg-[#070b16] rounded-[10px] flex items-center justify-center">
-                <Cpu className="w-5 h-5 text-cyan-400" />
-              </div>
-            </div>
-            {!collapsed && (
-              <div className="truncate">
-                <div className="flex items-center gap-1">
-                  <span className="text-sm font-black text-white">Karma<span className="text-cyan-400">Setu</span></span>
-                  <span className="text-[9px] font-black bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded border border-amber-500/30">AI</span>
-                </div>
-                <div className={`text-[10px] font-extrabold uppercase ${activeConfig.color}`}>
-                  {activeConfig.title}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center gap-1">
-            {/* Mobile close button */}
-            {onClose && (
-              <button
-                onClick={onClose}
-                className="md:hidden w-7 h-7 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-all"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-            {/* Desktop collapse button */}
-            <button
-              onClick={() => setCollapsed(!collapsed)}
-              className="hidden md:flex w-7 h-7 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white items-center justify-center transition-all"
-            >
-              {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Demo Switcher Quick Menu */}
-        {!collapsed && isDemoMode && (
-          <div className="p-3 border-b border-white/10 bg-slate-900/50">
-            <div className="text-[9px] font-extrabold text-slate-400 uppercase mb-1.5 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-amber-400" /> SWITCH PORTAL DEMO
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {demoRoles.map((r) => (
-                <button
-                  key={r.id}
-                  onClick={() => handleSwitchRole(r.id)}
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
-                    currentRole === r.id
-                      ? "bg-cyan-500 text-black font-black"
-                      : "bg-white/5 text-slate-400 hover:text-white"
-                  }`}
-                >
-                  {r.label}
-                </button>
-              ))}
+      <div className="p-4 flex items-center justify-between border-b border-white/10 flex-shrink-0">
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-400 via-blue-500 to-emerald-400 p-0.5 flex-shrink-0 shadow-md shadow-cyan-500/20">
+            <div className="w-full h-full bg-[#070b16] rounded-[10px] flex items-center justify-center">
+              <Cpu className="w-5 h-5 text-cyan-400" />
             </div>
           </div>
-        )}
-
-        {/* Navigation Items */}
-        <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-220px)]">
-          {activeConfig.items.map((item, idx) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href || (item.href !== "/student" && item.href !== "/institute" && item.href !== "/expert" && item.href !== "/employer" && item.href !== "/admin" && pathname.startsWith(item.href));
-            const translatedLabel = t(item.labelKey, item.label);
-
-            return (
-              <Link
-                key={idx}
-                href={item.href}
-                onClick={handleNavClick}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all relative group ${
-                  isActive
-                    ? `${activeConfig.bg} text-white border ${activeConfig.border} shadow-lg shadow-black/40`
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
-                }`}
-                title={collapsed ? translatedLabel : undefined}
-              >
-                <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? activeConfig.color : "group-hover:text-slate-200"}`} />
-                {!collapsed && (
-                  <span className="truncate flex-1 flex items-center justify-between">
-                    <span>{translatedLabel}</span>
-                    {item.badge && (
-                      <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                        {item.badge}
-                      </span>
-                    )}
-                  </span>
-                )}
-                {isActive && (
-                  <div className={`absolute left-0 top-2 bottom-2 w-1 rounded-r ${activeConfig.color.replace('text-', 'bg-')}`} />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-
-      {/* User Footer Bar */}
-      <div className="p-3 border-t border-white/10 bg-slate-950/80">
-        <div className="flex items-center justify-between gap-2">
           {!collapsed && (
             <div className="truncate">
+              <div className="flex items-center gap-1">
+                <span className="text-sm font-black text-white">Karma<span className="text-cyan-400">Setu</span></span>
+                <span className="text-[9px] font-black bg-amber-500/20 text-amber-300 px-1 py-0.5 rounded border border-amber-500/30">AI</span>
+              </div>
+              <div className={`text-[10px] font-extrabold uppercase ${activeConfig.color}`}>
+                {activeConfig.title}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-1">
+          {/* Mobile close button */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="md:hidden w-7 h-7 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white flex items-center justify-center transition-all"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+          {/* Desktop collapse button */}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="hidden md:flex w-7 h-7 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-400 hover:text-white items-center justify-center transition-all"
+          >
+            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Demo Switcher Quick Menu */}
+      {!collapsed && isDemoMode && (
+        <div className="p-3 border-b border-white/10 bg-slate-900/50 flex-shrink-0">
+          <div className="text-[9px] font-extrabold text-slate-400 uppercase mb-1.5 flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-amber-400" /> SWITCH PORTAL DEMO
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {demoRoles.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => handleSwitchRole(r.id)}
+                className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                  currentRole === r.id
+                    ? "bg-cyan-500 text-black font-black"
+                    : "bg-white/5 text-slate-400 hover:text-white"
+                }`}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Navigation Items (Middle Scrollable Space) */}
+      <nav className="flex-1 p-3 space-y-1 overflow-y-auto min-h-0">
+        {activeConfig.items.map((item, idx) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href || (item.href !== "/student" && item.href !== "/institute" && item.href !== "/expert" && item.href !== "/employer" && item.href !== "/admin" && pathname.startsWith(item.href));
+          const translatedLabel = t(item.labelKey, item.label);
+
+          return (
+            <Link
+              key={idx}
+              href={item.href}
+              onClick={handleNavClick}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all relative group ${
+                isActive
+                  ? `${activeConfig.bg} text-white border ${activeConfig.border} shadow-lg shadow-black/40`
+                  : "text-slate-400 hover:text-white hover:bg-white/5"
+              }`}
+              title={collapsed ? translatedLabel : undefined}
+            >
+              <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? activeConfig.color : "group-hover:text-slate-200"}`} />
+              {!collapsed && (
+                <span className="truncate flex-1 flex items-center justify-between">
+                  <span>{translatedLabel}</span>
+                  {item.badge && (
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                      {item.badge}
+                    </span>
+                  )}
+                </span>
+              )}
+              {isActive && (
+                <div className={`absolute left-0 top-2 bottom-2 w-1 rounded-r ${activeConfig.color.replace('text-', 'bg-')}`} />
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* User Footer Bar (Sticky & Fixed at Bottom Corner) */}
+      <div className="p-3 border-t border-white/10 bg-[#070b16] flex-shrink-0 mt-auto z-20">
+        <div className="flex items-center justify-between gap-2">
+          {!collapsed && (
+            <div className="truncate min-w-0 flex-1">
               <div className="text-xs font-bold text-white truncate">{user?.full_name || "KarmaSetu User"}</div>
               <div className="text-[10px] text-slate-400 truncate">{user?.email || "user@karmasetu.ai"}</div>
             </div>

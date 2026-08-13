@@ -23,13 +23,25 @@ export async function GET() {
       return NextResponse.json({ user: null }, { status: 401 });
     }
 
-    const userRole = authUser.user_metadata?.role || "STUDENT";
+    const { data: profile } = await supabase.from("profiles").select("role, full_name").eq("user_id", authUser.id).single();
+
+    const DEMO_EMAIL_ROLES: Record<string, string> = {
+      "student@karmasetu.ai": "STUDENT",
+      "institute@karmasetu.ai": "INSTITUTE",
+      "expert@karmasetu.ai": "INDUSTRY",
+      "employer@karmasetu.ai": "EMPLOYER",
+      "hr@karmasetu.ai": "HR",
+      "admin@karmasetu.ai": "NATIONAL",
+    };
+
+    const userEmail = authUser.email?.toLowerCase() || "";
+    const userRole = profile?.role || authUser.user_metadata?.role || DEMO_EMAIL_ROLES[userEmail] || "STUDENT";
 
     return NextResponse.json({
       user: {
         id: authUser.id,
         email: authUser.email || "",
-        full_name: authUser.user_metadata?.full_name || "User",
+        full_name: profile?.full_name || authUser.user_metadata?.full_name || "User",
         role: userRole,
       },
     });

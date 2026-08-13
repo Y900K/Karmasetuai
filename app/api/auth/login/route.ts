@@ -13,10 +13,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: authError?.message || "Invalid login credentials." }, { status: 401 });
     }
     const { data: profile } = await supabase.from("profiles").select("role, full_name").eq("user_id", authData.user.id).single();
+    
+    const DEMO_EMAIL_ROLES: Record<string, string> = {
+      "student@karmasetu.ai": "STUDENT",
+      "institute@karmasetu.ai": "INSTITUTE",
+      "expert@karmasetu.ai": "INDUSTRY",
+      "employer@karmasetu.ai": "EMPLOYER",
+      "hr@karmasetu.ai": "HR",
+      "admin@karmasetu.ai": "NATIONAL",
+    };
+
+    const userEmail = authData.user.email?.toLowerCase() || email.trim().toLowerCase();
+    const resolvedRole = profile?.role || authData.user.user_metadata?.role || DEMO_EMAIL_ROLES[userEmail] || "STUDENT";
+
     const response = NextResponse.json({
       success: true,
       user: { id: authData.user.id, email: authData.user.email || "", full_name: profile?.full_name || authData.user.user_metadata?.full_name || "User" },
-      role: profile?.role || "STUDENT",
+      role: resolvedRole,
       message: "Signed in successfully!",
       session: {
         access_token: authData.session.access_token,
