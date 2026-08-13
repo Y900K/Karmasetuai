@@ -83,7 +83,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           onToggleAnalytics={() => setAnalyticsOpen(!analyticsOpen)}
         />
-        <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 pt-4 space-y-4 sm:space-y-6 overflow-y-auto relative">
+        <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8 pt-5 sm:pt-6 pb-20 space-y-4 sm:space-y-6 overflow-y-auto relative">
           {children}
         </main>
       </div>

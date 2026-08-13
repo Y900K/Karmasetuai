@@ -321,17 +321,6 @@ export default function TopBar({ onToggleSidebar, onToggleAnalytics }: TopBarPro
           )}
         </div>
 
-        {/* Logout Button (user details shown in Sidebar footer) */}
-        <div className="flex items-center pl-1.5 sm:pl-2 border-l border-white/10">
-          <button
-            onClick={logout}
-            className="p-1.5 sm:p-2 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all"
-            title="Sign Out"
-          >
-            <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400" />
-          </button>
-        </div>
-
       </div>
 
     </header>

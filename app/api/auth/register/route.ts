@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/server";
 
+const SELF_REGISTERABLE_ROLES = new Set(["STUDENT", "INSTITUTE", "INDUSTRY", "EMPLOYER"]);
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -20,14 +22,14 @@ export async function POST(req: Request) {
     } = body;
 
     // Input validation
-    if (!email || !password || !fullName) {
+    if (!email || !password || !fullName || !role) {
       return NextResponse.json(
         { error: "Full Name, Email, and Password are required." },
         { status: 400 }
       );
     }
 
-    if (password.length < 6) {
+    if (password.length < 10) {
       return NextResponse.json(
         { error: "Password must be at least 6 characters." },
         { status: 400 }
@@ -40,6 +42,10 @@ export async function POST(req: Request) {
         { error: "Please enter a valid email address." },
         { status: 400 }
       );
+    }
+
+    if (!SELF_REGISTERABLE_ROLES.has(role)) {
+      return NextResponse.json({ error: "This role must be provisioned by an authorized administrator." }, { status: 403 });
     }
 
     if (phone && !/^\d{10,15}$/.test(phone.replace(/[\s\-\+]/g, ""))) {
@@ -59,7 +65,7 @@ export async function POST(req: Request) {
       user_metadata: {
         full_name: fullName,
         phone,
-        role: role || "STUDENT",
+        role,
         institute_name: instituteName,
         trade,
         roll_no: rollNo,
@@ -98,7 +104,7 @@ export async function POST(req: Request) {
       full_name: fullName,
       email: email,
       phone: phone,
-      role: role || "STUDENT",
+      role,
     });
 
     if (profileError) {
@@ -140,7 +146,7 @@ export async function POST(req: Request) {
       success: true,
       message: `Registration for ${fullName} (${role || "STUDENT"}) completed successfully!`,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Register API route error:", error);
     return NextResponse.json(
       { error: "Registration service temporarily unavailable." },

@@ -11,7 +11,6 @@ import StakeholderGrid from "@/components/StakeholderGrid";
 import ImpactStats from "@/components/ImpactStats";
 import Footer from "@/components/Footer";
 import AuthModal from "@/components/AuthModal";
-import { Language } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth/context";
 import { useEcosystem } from "@/lib/context/EcosystemContext";
 
@@ -29,8 +28,8 @@ export default function Home() {
     setAuthOpen(true);
   };
 
-  const handleLoginSuccess = (userObj: any, userRole: string) => {
-    login(userObj, userRole);
+  const handleLoginSuccess = async (userObj: { id: string; email: string; full_name: string }, userRole: string, session?: { access_token: string; refresh_token: string } | null) => {
+    await login({ ...userObj, role: userRole }, userRole, session);
     setAuthOpen(false);
 
     // Route to role-specific dashboard with persistent sidebars

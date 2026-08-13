@@ -11,7 +11,7 @@ interface AuthModalProps {
   onClose: () => void;
   defaultRole?: string;
   defaultMode?: "login" | "register";
-  onLoginSuccess?: (user: any, role: string) => void;
+  onLoginSuccess?: (user: { id: string; email: string; full_name: string }, role: string, session?: { access_token: string; refresh_token: string } | null) => void;
 }
 
 const ROLES = [
@@ -112,7 +112,7 @@ export default function AuthModal({
 
   const handleDemoLogin = async (demoRole: string, demoEmail: string) => {
     setEmail(demoEmail);
-    setPassword("password123");
+    setPassword("KarmaSetuDemo!2026");
     setIsLogin(true);
     setLoading(true);
     setMessage({
@@ -124,7 +124,7 @@ export default function AuthModal({
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: demoEmail, password: "password123" }),
+        body: JSON.stringify({ email: demoEmail, password: "KarmaSetuDemo!2026" }),
       });
 
       const data = await res.json();
@@ -142,7 +142,7 @@ export default function AuthModal({
 
       setTimeout(() => {
         if (onLoginSuccess) {
-          onLoginSuccess(userObj, roleReturned);
+          onLoginSuccess(userObj, roleReturned, data.session);
         } else {
           onClose();
         }
@@ -186,7 +186,7 @@ export default function AuthModal({
 
         setTimeout(() => {
           if (onLoginSuccess) {
-            onLoginSuccess(userObj, roleReturned);
+            onLoginSuccess(userObj, roleReturned, data.session);
           } else {
             onClose();
           }
@@ -224,7 +224,7 @@ export default function AuthModal({
 
         setTimeout(() => {
           if (onLoginSuccess) {
-            onLoginSuccess({ email, full_name: fullName }, selectedRole);
+            onLoginSuccess({ id: "", email, full_name: fullName }, selectedRole);
           } else {
             onClose();
           }
@@ -306,7 +306,7 @@ export default function AuthModal({
                   <Sparkles className="w-4 h-4 text-amber-400" />
                   QUICK DEMO CREDENTIALS (1-CLICK LOGIN)
                 </span>
-                <span className="text-[10px] text-slate-400 font-mono">Password: password123</span>
+                <span className="text-[10px] text-slate-400 font-mono">Password: KarmaSetuDemo!2026</span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">

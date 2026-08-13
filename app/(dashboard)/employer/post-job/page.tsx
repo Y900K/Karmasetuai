@@ -3,10 +3,8 @@
 import React, { useState } from "react";
 import { FilePlus, Sparkles, RefreshCw, Save, Check } from "lucide-react";
 import AutosaveIndicator from "@/components/dashboard/shared/AutosaveIndicator";
-import { useEcosystemStore } from "@/lib/store/EcosystemStore";
 
 export default function EmployerPostJobPage() {
-  const { addJob } = useEcosystemStore();
   const [roleSummary, setRoleSummary] = useState("CNC Lathe Operator for Noida Plant");
   const [tradeSelect, setTradeSelect] = useState("CNC Machinist & Programmer");
   const [customTrade, setCustomTrade] = useState("");
@@ -52,17 +50,21 @@ export default function EmployerPostJobPage() {
     setTimeout(() => setStatus("SAVED"), 600);
   };
 
-  const handlePublishJob = () => {
-    addJob({
-      title: roleSummary || effectiveTrade,
-      company: "Tata Motors Noida Auto Plant",
-      location: location || "Noida, UP",
-      trade: effectiveTrade,
-      salary: salary || "₹24,000 / month",
-      matchedScore: minScore,
-    });
-    setPublished(true);
-    setTimeout(() => setPublished(false), 3000);
+  const handlePublishJob = async () => {
+    setStatus("SAVING");
+    try {
+      const response = await fetch("/api/jobs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: roleSummary || effectiveTrade, location, requiredTrade: effectiveTrade, salaryRange: salary, minScore, description: jdDescription }),
+      });
+      if (!response.ok) throw new Error();
+      setPublished(true);
+      setTimeout(() => setPublished(false), 3000);
+      setStatus("SAVED");
+    } catch {
+      setStatus("ERROR");
+    }
   };
 
   return (
