@@ -6,7 +6,7 @@ import { Language, translations } from "@/lib/i18n";
 import AnimatedEcosystemBridge from "@/components/AnimatedEcosystemBridge";
 
 interface HeroProps {
-  onOpenAuth: (role: string) => void;
+  onOpenAuth: (role?: string, mode?: "login" | "register") => void;
   language: Language;
 }
 
@@ -42,7 +42,7 @@ export default function Hero({ onOpenAuth, language }: HeroProps) {
         {/* Action Buttons */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
           <button
-            onClick={() => onOpenAuth("STUDENT")}
+            onClick={() => onOpenAuth("STUDENT", "register")}
             className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-extrabold text-black bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-400 hover:scale-105 shadow-xl shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 group"
           >
             <span>{t.btnStart}</span>
@@ -50,7 +50,7 @@ export default function Hero({ onOpenAuth, language }: HeroProps) {
           </button>
           
           <button
-            onClick={() => onOpenAuth("STUDENT")}
+            onClick={() => onOpenAuth("STUDENT", "login")}
             className="w-full sm:w-auto px-8 py-4 rounded-xl text-sm font-bold text-slate-200 bg-slate-900/80 border border-white/15 hover:border-white/30 hover:bg-slate-800 flex items-center justify-center gap-2 transition-all"
           >
             <Lock className="w-4 h-4 text-amber-400" />

@@ -131,10 +131,19 @@ export default function Navbar({
 
           <div className="pt-2 flex flex-col gap-2">
             <button
-              onClick={() => { setMobileMenuOpen(false); onOpenAuth("STUDENT", "register"); }}
-              className="w-full py-3 text-xs font-extrabold text-black bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl text-center"
+              onClick={() => { setMobileMenuOpen(false); onOpenAuth("STUDENT", "login"); }}
+              className="w-full py-3 text-xs font-bold text-white bg-slate-900/90 border border-white/15 rounded-xl text-center flex items-center justify-center gap-2"
             >
-              Register / Login to Portal
+              <LogIn className="w-4 h-4 text-cyan-400" />
+              <span>Login to Portal</span>
+            </button>
+
+            <button
+              onClick={() => { setMobileMenuOpen(false); onOpenAuth("STUDENT", "register"); }}
+              className="w-full py-3 text-xs font-extrabold text-black bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl text-center flex items-center justify-center gap-1.5 shadow-lg shadow-cyan-500/25"
+            >
+              <span>Create New Account (Register)</span>
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>

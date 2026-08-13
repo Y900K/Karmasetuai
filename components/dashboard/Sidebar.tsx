@@ -119,7 +119,7 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
     <aside
       className={`relative z-50 bg-[#070b16]/98 border-r border-white/10 flex flex-col justify-between transition-all duration-300 ${
         collapsed ? "w-20" : "w-64"
-      } h-full select-none`}
+      } h-full select-none overflow-hidden`}
     >
       {/* Sidebar Header & Branding */}
       <div className="p-4 flex items-center justify-between border-b border-white/10 flex-shrink-0">
@@ -186,8 +186,8 @@ export default function Sidebar({ currentRole, isOpen, onClose }: SidebarProps) 
         </div>
       )}
 
-      {/* Navigation Items (Middle Scrollable Space) */}
-      <nav className="flex-1 p-3 space-y-1 overflow-y-auto min-h-0">
+      {/* Navigation Items (Middle Content — Scrollable only if overflowing, scrollbars hidden) */}
+      <nav className="flex-1 p-3 space-y-1 overflow-y-auto min-h-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {activeConfig.items.map((item, idx) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || (item.href !== "/student" && item.href !== "/institute" && item.href !== "/expert" && item.href !== "/employer" && item.href !== "/admin" && pathname.startsWith(item.href));

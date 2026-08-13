@@ -8,7 +8,7 @@ import {
 import { Language, translations } from "@/lib/i18n";
 
 interface WorkflowDiagramProps {
-  onOpenAuth: (role: string) => void;
+  onOpenAuth: (role?: string, mode?: "login" | "register") => void;
   language: Language;
 }
 

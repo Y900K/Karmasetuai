@@ -5,7 +5,7 @@ import { GraduationCap, Landmark, Factory, Building2, UserCheck, CheckCircle2, C
 import { Language, translations } from "@/lib/i18n";
 
 interface StakeholderGridProps {
-  onOpenAuth: (role: string) => void;
+  onOpenAuth: (role: string, mode?: "login" | "register") => void;
   language: Language;
 }
 
@@ -131,7 +131,7 @@ export default function StakeholderGrid({ onOpenAuth, language }: StakeholderGri
                 </div>
 
                 <button
-                  onClick={() => onOpenAuth(r.id)}
+                  onClick={() => onOpenAuth(r.id, "login")}
                   className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-slate-800/90 border border-white/15 hover:border-cyan-400 hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-1.5"
                 >
                   <span>Login / Register</span>

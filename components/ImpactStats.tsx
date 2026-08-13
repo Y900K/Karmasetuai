@@ -8,7 +8,7 @@ import {
 import { Language, translations } from "@/lib/i18n";
 
 interface ImpactStatsProps {
-  onOpenAuth: (role: string) => void;
+  onOpenAuth: (role?: string, mode?: "login" | "register") => void;
   language: Language;
 }
 
@@ -241,7 +241,7 @@ export default function ImpactStats({ onOpenAuth, language }: ImpactStatsProps) 
             Join thousands of ITI & Polytechnic students, top training institutes, verified industry experts, and hiring MSMEs.
           </p>
           <button
-            onClick={() => onOpenAuth("STUDENT")}
+            onClick={() => onOpenAuth("STUDENT", "login")}
             className="px-8 py-4 rounded-xl text-sm font-extrabold text-black bg-gradient-to-r from-cyan-400 to-emerald-400 hover:scale-105 shadow-xl shadow-cyan-500/25 transition-all inline-flex items-center gap-2"
           >
             <span>{t.btnStart}</span>

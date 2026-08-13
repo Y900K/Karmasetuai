@@ -21,9 +21,9 @@ export default function Home() {
   const { language, setLanguage, theme, setTheme } = useEcosystem();
   const [authOpen, setAuthOpen] = useState(false);
   const [authRole, setAuthRole] = useState("STUDENT");
-  const [authMode, setAuthMode] = useState<"login" | "register">("register");
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
 
-  const handleOpenAuth = (role = "STUDENT", mode: "login" | "register" = "register") => {
+  const handleOpenAuth = (role = "STUDENT", mode: "login" | "register" = "login") => {
     setAuthRole(role);
     setAuthMode(mode);
     setAuthOpen(true);
